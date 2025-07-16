@@ -5,7 +5,7 @@
       "headers": [
         {
           "key": "Access-Control-Allow-Origin",
-          "value": "https://rithu-bl-web-side-frontend.vercel.app"
+          "value": "https://rithu-business-frontend.vercel.app"
         },
         {
           "key": "Access-Control-Allow-Methods",

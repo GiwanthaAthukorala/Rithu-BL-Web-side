@@ -13,13 +13,22 @@ const app = express();
 
 app.use(
   cors({
-    origin:
-      process.env.FRONTEND_URL || "https://rithu-business-frontend.vercel.app",
+    origin: [
+      process.env.FRONTEND_URL,
+      "https://rithu-business-frontend.vercel.app",
+      "http://localhost:3000", // for local development
+    ],
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
+app.get("/test-cors", (req, res) => {
+  res.json({ message: "CORS is working!" });
+});
+// Handle OPTIONS requests
+app.options("*", cors());
+
 app.use(express.json());
 
 app.use("/api/users", userRoutes);
