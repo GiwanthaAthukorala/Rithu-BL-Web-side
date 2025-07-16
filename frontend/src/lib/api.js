@@ -1,16 +1,12 @@
 import axios from "axios";
 
-const API_URL =
-  process.env.NEXT_PUBLIC_API_URL ||
-  "https://rithu-bl-web-side-api.vercel.app/api";
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
 
 // Create axios instance
 const api = axios.create({
-  baseURL: "https://rithu-bl-web-side-api.vercel.app/api",
-  withCredentials: true,
+  baseURL: API_URL,
   headers: {
     "Content-Type": "application/json",
-    "X-Requested-With": "XMLHttpRequest",
   },
 });
 
@@ -34,8 +30,6 @@ api.interceptors.response.use(
 
 api.interceptors.request.use(
   (config) => {
-    // Add CORS headers to every request
-    config.headers["X-Requested-With"] = "XMLHttpRequest";
     const token = localStorage.getItem("token");
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
