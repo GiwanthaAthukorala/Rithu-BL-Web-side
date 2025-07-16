@@ -15,7 +15,7 @@ app.use(
   cors({
     origin: [
       process.env.FRONTEND_URL,
-      "https://rithu-business-frontend.vercel.app",
+      "",
       "http://localhost:3000", // for local development
     ],
     credentials: true,
