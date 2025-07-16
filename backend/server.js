@@ -13,14 +13,18 @@ const app = express();
 
 app.use(
   cors({
-    origin:
-      process.env.FRONTEND_URL ||
-      "https://rithu-bl-web-side-frontend.vercel.app/",
+    origin: [
+      "http://localhost:3000",
+      "https://rithu-bl-web-side-frontend.vercel.app",
+      process.env.FRONTEND_URL,
+    ].filter(Boolean), // Remove any undefined values
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
+app.options("*", cors());
+
 app.use(express.json());
 
 app.use("/api/users", userRoutes);
