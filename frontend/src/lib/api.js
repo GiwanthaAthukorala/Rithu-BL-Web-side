@@ -6,11 +6,12 @@ const API_URL =
 
 // Create axios instance
 const api = axios.create({
-  baseURL: API_URL,
+  baseURL: "https://rithu-bl-web-side-api.vercel.app/api",
+  withCredentials: true,
   headers: {
     "Content-Type": "application/json",
+    "X-Requested-With": "XMLHttpRequest",
   },
-  withCredentials: true,
 });
 
 // Add response interceptor to handle errors
