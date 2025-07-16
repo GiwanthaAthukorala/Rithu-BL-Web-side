@@ -11,18 +11,19 @@ connectDB();
 
 const app = express();
 
-app.use(
-  cors({
-    origin: [
-      "http://localhost:3000",
-      "https://rithu-bl-web-side-frontend.vercel.app",
-      process.env.FRONTEND_URL,
-    ].filter(Boolean), // Remove any undefined values
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-  })
-);
+const corsOptions = {
+  origin: [
+    "http://localhost:3000",
+    "https://rithu-bl-web-side-frontend.vercel.app",
+    process.env.FRONTEND_URL,
+  ].filter(Boolean),
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
+  preflightContinue: false,
+  optionsSuccessStatus: 204,
+};
+app.use(cors(corsOptions));
 app.options("*", cors());
 
 app.use(express.json());

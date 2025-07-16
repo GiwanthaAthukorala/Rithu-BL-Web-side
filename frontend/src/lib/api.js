@@ -10,6 +10,7 @@ const api = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
+  withCredentials: true,
 });
 
 // Add response interceptor to handle errors
@@ -32,6 +33,8 @@ api.interceptors.response.use(
 
 api.interceptors.request.use(
   (config) => {
+    // Add CORS headers to every request
+    config.headers["X-Requested-With"] = "XMLHttpRequest";
     const token = localStorage.getItem("token");
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
