@@ -27,7 +27,7 @@ app.use(
   cors({
     origin: [
       process.env.FRONTEND_URL,
-      "https://rithu-business-frontend-nxf88euuu-giwanthaathukoralas-projects.vercel.app",
+      "https://rithu-business-frontend.vercel.app",
     ],
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
