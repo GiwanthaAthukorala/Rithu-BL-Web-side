@@ -1,5 +1,49 @@
 import React from "react";
 
+// Reusable Button Component
+const Button = ({
+  children,
+  variant = "primary",
+  size = "medium",
+  onClick,
+  disabled = false,
+  className = "",
+  ...props
+}) => {
+  const baseStyles =
+    "font-semibold rounded-lg transition-colors duration-200 shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2";
+
+  const variants = {
+    primary: "bg-blue-600 hover:bg-blue-700 text-white focus:ring-blue-500",
+    secondary:
+      "bg-gray-200 hover:bg-gray-300 text-gray-900 focus:ring-gray-500",
+    outline:
+      "border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white focus:ring-blue-500",
+    success: "bg-green-600 hover:bg-green-700 text-white focus:ring-green-500",
+    danger: "bg-red-600 hover:bg-red-700 text-white focus:ring-red-500",
+    ghost: "text-blue-600 hover:bg-blue-50 focus:ring-blue-500",
+  };
+
+  const sizes = {
+    small: "px-4 py-2 text-sm",
+    medium: "px-6 py-3 text-base",
+    large: "px-8 py-4 text-lg",
+  };
+
+  const disabledStyles = disabled ? "opacity-50 cursor-not-allowed" : "";
+
+  return (
+    <button
+      className={`${baseStyles} ${variants[variant]} ${sizes[size]} ${disabledStyles} ${className}`}
+      onClick={onClick}
+      disabled={disabled}
+      {...props}
+    >
+      {children}
+    </button>
+  );
+};
+
 export default function Categories() {
   const platforms = [
     {
@@ -51,6 +95,14 @@ export default function Categories() {
     },
   ];
 
+  const handleConnect = (platformName) => {
+    alert(`Connecting to ${platformName}...`);
+  };
+
+  const handleConnectAll = () => {
+    alert("Connecting all accounts...");
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-6xl mx-auto">
@@ -95,23 +147,49 @@ export default function Categories() {
                 </p>
 
                 {/* Rate and Payouts */}
-                <div className="flex items-center justify-between text-sm text-gray-500">
+                <div className="flex items-center justify-between text-sm text-gray-500 mb-4">
                   <span className="font-medium">{platform.rate}</span>
                   <span className="flex items-center">
                     <div className="w-2 h-2 bg-gray-400 rounded-full mr-2"></div>
                     {platform.payouts}
                   </span>
                 </div>
+
+                {/* Individual Platform Connect Button */}
+                <Button
+                  variant="outline"
+                  size="small"
+                  onClick={() => handleConnect(platform.name)}
+                  className="w-full"
+                >
+                  Connect {platform.name}
+                </Button>
               </div>
             </div>
           ))}
         </div>
 
-        {/* Connect Button */}
-        <div className="text-center">
-          <button className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-3 rounded-lg transition-colors duration-200 shadow-sm">
-            Connect Your Accounts
-          </button>
+        {/* Connect All Button */}
+        <div className="text-center space-y-4">
+          <Button variant="primary" size="large" onClick={handleConnectAll}>
+            Connect All Accounts
+          </Button>
+
+          {/* Example of different button variants */}
+          <div className="flex flex-wrap justify-center gap-4 mt-8">
+            <Button variant="secondary" size="small">
+              Secondary
+            </Button>
+            <Button variant="success" size="small">
+              Success
+            </Button>
+            <Button variant="danger" size="small">
+              Danger
+            </Button>
+            <Button variant="ghost" size="small">
+              Ghost
+            </Button>
+          </div>
         </div>
       </div>
     </div>
