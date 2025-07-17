@@ -15,7 +15,10 @@ if (!process.env.MONGO_URI || !process.env.JWT_SECRET) {
 }
 
 // Connect to database
-connectDB();
+connectDB().catch((err) => {
+  console.error("MongoDB connection error:", err);
+  process.exit(1);
+});
 
 const app = express();
 
