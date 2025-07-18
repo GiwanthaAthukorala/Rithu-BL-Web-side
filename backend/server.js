@@ -4,7 +4,8 @@ const connectDB = require("./config/db");
 const cors = require("cors");
 
 const userRoutes = require("./routes/userRoutes");
-
+const submissionsRouter = require("./routes/submissions");
+const earningsRoutes = require("./routes/earnings");
 // Load env vars
 dotenv.config();
 
@@ -25,13 +26,10 @@ const app = express();
 // CORS middleware
 app.use(
   cors({
-    origin: [
-      process.env.FRONTEND_URL,
-      "https://rithu-business-frontend.vercel.app",
-    ],
+    origin: [process.env.FRONTEND_URL, "http://localhost:3000"],
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
+    allowedHeaders: ["Content-Type", "Authorization", "x-file-name"],
   })
 );
 
@@ -53,6 +51,8 @@ app.get("/", (req, res) => {
 
 // Routes
 app.use("/api/users", userRoutes);
+app.use("/api/submissions", submissionsRouter);
+app.use("/api/earnings", earningsRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
