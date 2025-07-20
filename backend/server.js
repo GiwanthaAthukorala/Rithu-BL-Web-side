@@ -2,10 +2,13 @@ const express = require("express");
 const dotenv = require("dotenv");
 const connectDB = require("./config/db");
 const cors = require("cors");
-
+const path = require("path");
 const userRoutes = require("./routes/userRoutes");
 const submissionsRouter = require("./routes/submissions");
 const earningsRoutes = require("./routes/earnings");
+const fileUpload = require("express-fileupload");
+const { createServer } = require("http");
+const { Server } = require("socket.io");
 // Load env vars
 dotenv.config();
 
@@ -22,6 +25,21 @@ connectDB().catch((err) => {
 });
 
 const app = express();
+const httpServer = createServer(app);
+const io = new Server(httpServer, {
+  cors: {
+    origin: [process.env.FRONTEND_URL, "http://localhost:3000"],
+    methods: ["GET", "POST"],
+  },
+});
+// Socket.io for real-time updates
+io.on("connection", (socket) => {
+  console.log("Client connected");
+
+  socket.on("disconnect", () => {
+    console.log("Client disconnected");
+  });
+});
 
 // CORS middleware
 app.use(
@@ -32,6 +50,10 @@ app.use(
     allowedHeaders: ["Content-Type", "Authorization", "x-file-name"],
   })
 );
+
+app.use(express.json());
+app.use(fileUpload());
+app.use(express.static(path.join(__dirname, "public")));
 
 // Test endpoint
 app.get("/test-cors", (req, res) => {
@@ -50,9 +72,10 @@ app.get("/", (req, res) => {
 });
 
 // Routes
-app.use("/api/users", userRoutes);
-app.use("/api/submissions", submissionsRouter);
-app.use("/api/earnings", earningsRoutes);
+app.use("/api/users", require("./routes/userRoutes"));
+app.use("/api/submissions", require("./routes/submissionRoutes"));
+app.use("/api/earnings", require("./routes/earningRoutes"));
+app.use("/api/admin", require("./routes/adminRoutes"));
 
 // Error handling middleware
 app.use((err, req, res, next) => {
@@ -61,8 +84,8 @@ app.use((err, req, res, next) => {
 });
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () =>
-  console.log(`Server running on port ${PORT}
-  MongoDB:${process.env.MONGO_URI}
-  Frontend:${process.env.FRONTEND_URL}`)
-);
+httpServer.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+  console.log(`MongoDB: ${process.env.MONGO_URI}`);
+  console.log(`Frontend: ${process.env.FRONTEND_URL}`);
+});

@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const bcrypt = require("bcryptjs");
 
 const earningsSchema = new mongoose.Schema(
   {
@@ -6,21 +7,32 @@ const earningsSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
+      unique: true,
     },
     totalEarned: {
       type: Number,
       default: 0,
+      min: 0,
     },
     availableBalance: {
       type: Number,
       default: 0,
+      min: 0,
+    },
+    pendingWithdrawal: {
+      type: Number,
+      default: 0,
+      min: 0,
     },
     withdrawnAmount: {
       type: Number,
       default: 0,
+      min: 0,
     },
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+  }
 );
 
 module.exports = mongoose.model("Earnings", earningsSchema);

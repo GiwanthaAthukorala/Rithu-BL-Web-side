@@ -1,28 +1,104 @@
-"use client"; // Must be the very first line
+"use client";
 
 import React, { useEffect, useState } from "react";
-import { User, DollarSign } from "lucide-react";
+import { User, DollarSign, Clock, CheckCircle, XCircle } from "lucide-react";
 import Header from "@/components/Header/Header";
 import { useAuth } from "@/Context/AuthContext";
 import { useRouter } from "next/navigation"; // Updated import
+import api from "@/lib/api";
+import { io } from "socket.io-client";
 
 export default function Profile() {
-  const [totalEarned, setTotalEarned] = useState(500.0);
+  //const [totalEarned, setTotalEarned] = useState(500.0);
   const [availableBalance, setAvailableBalance] = useState(500.0);
   const [withdrawAmount, setWithdrawAmount] = useState("500");
   const [isWithdrawModalOpen, setIsWithdrawModalOpen] = useState(false);
   const { user, isLoading, logout } = useAuth();
   const router = useRouter();
   const [isClient, setIsClient] = useState(false);
+  const [earnings, setEarnings] = useState({
+    totalEarned: 0,
+    availableBalance: 0,
+    pendingWithdrawal: 0,
+    withdrawnAmount: 0,
+    transactions: [],
+  });
+  const [isEarningLoading, setIsEarningLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    setIsClient(true);
-    if (!isLoading && !user) {
-      router.push("/Log-in/page");
-    }
-  }, [isLoading, user, router]);
+    if (!user) return;
 
-  if (!isClient || isLoading) {
+    const fetchEarnings = async () => {
+      try {
+        const response = await api.get("/api/earnings");
+        setEarnings(response.data);
+      } catch (error) {
+        console.error("Error fetching earnings:", error);
+      }
+    };
+
+    fetchEarnings();
+
+    // Set up Socket.io for real-time updates
+    const socket = io(process.env.NEXT_PUBLIC_API_URL, {
+      withCredentials: true,
+    });
+
+    socket.on("connect", () => {
+      console.log("Connected to WebSocket");
+      socket.emit("register", user._id);
+    });
+
+    socket.on("earningsUpdate", (updatedEarnings) => {
+      setEarnings(updatedEarnings);
+    });
+
+    socket.on("withdrawalProcessed", ({ earnings, transaction }) => {
+      setEarnings(earnings);
+      // Update the specific transaction in state
+      setEarnings((prev) => ({
+        ...prev,
+        transactions: prev.transactions.map((t) =>
+          t._id === transaction._id ? transaction : t
+        ),
+      }));
+    });
+
+    return () => {
+      socket.disconnect();
+    };
+  }, [user]);
+
+  const handleWithdraw = async () => {
+    if (!withdrawAmount || parseFloat(withdrawAmount) <= 0) {
+      setError("Please enter a valid amount");
+      return;
+    }
+
+    if (parseFloat(withdrawAmount) > earnings.availableBalance) {
+      setError("Amount exceeds available balance");
+      return;
+    }
+
+    setIsEarningLoading(true);
+    setError(null);
+
+    try {
+      const response = await api.post("/api/earnings/withdraw", {
+        amount: parseFloat(withdrawAmount),
+      });
+
+      setEarnings(response.data.earnings);
+      setIsWithdrawModalOpen(false);
+    } catch (error) {
+      setError(error.response?.data?.message || "Withdrawal failed");
+    } finally {
+      setIsEarningLoading(false);
+    }
+  };
+
+  if (!user) {
     return (
       <div className="min-h-screen bg-gray-50">
         <Header />
@@ -32,28 +108,6 @@ export default function Profile() {
       </div>
     );
   }
-
-  if (!user) {
-    return null; // Router will handle the redirect
-  }
-
-  const handleWithdraw = () => {
-    const amount = parseFloat(withdrawAmount);
-    if (amount > 0 && amount <= availableBalance) {
-      setAvailableBalance((prev) => prev - amount);
-      setWithdrawAmount(
-        availableBalance - amount > 0
-          ? (availableBalance - amount).toFixed(2)
-          : "0"
-      );
-      setIsWithdrawModalOpen(false);
-    }
-  };
-
-  const handleWithdrawClick = () => {
-    setWithdrawAmount(availableBalance.toFixed(2));
-    setIsWithdrawModalOpen(true);
-  };
 
   return (
     <div className="min-h-screen bg-gray-50 p-0">
@@ -118,121 +172,148 @@ export default function Profile() {
               </div>
             </div>
 
-            {/* Earnings Section */}
-            <div className="mb-6">
-              <h3 className="text-sm font-medium text-gray-500 mb-4">
-                Earnings
-              </h3>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="bg-blue-50 p-4 rounded-lg">
-                  <p className="text-sm text-blue-600 font-medium mb-1">
-                    Total Earned
-                  </p>
-                  <p className="text-2xl font-bold text-blue-600">
-                    Rs{totalEarned.toFixed(2)}
-                  </p>
+            {/* Earnings Summary */}
+            <div className="space-y-6">
+              <div className="bg-blue-50 p-4 rounded-lg">
+                <h2 className="text-lg font-semibold mb-4">Your Earnings</h2>
+
+                <div className="space-y-4">
+                  <div>
+                    <p className="text-sm text-gray-600">Total Earned</p>
+                    <p className="text-2xl font-bold">
+                      Rs{earnings.totalEarned.toFixed(2)}
+                    </p>
+                  </div>
+
+                  <div>
+                    <p className="text-sm text-gray-600">Available Balance</p>
+                    <p className="text-2xl font-bold text-green-600">
+                      Rs{earnings.availableBalance.toFixed(2)}
+                    </p>
+                  </div>
+
+                  {earnings.pendingWithdrawal > 0 && (
+                    <div>
+                      <p className="text-sm text-gray-600">
+                        Pending Withdrawal
+                      </p>
+                      <p className="text-xl font-bold text-yellow-600">
+                        Rs{earnings.pendingWithdrawal.toFixed(2)}
+                      </p>
+                    </div>
+                  )}
+
+                  <div>
+                    <p className="text-sm text-gray-600">Total Withdrawn</p>
+                    <p className="text-xl font-bold">
+                      Rs{earnings.withdrawnAmount.toFixed(2)}
+                    </p>
+                  </div>
                 </div>
-                <div className="bg-blue-50 p-4 rounded-lg">
-                  <p className="text-sm text-blue-600 font-medium mb-1">
-                    Available Balance
-                  </p>
-                  <p className="text-2xl font-bold text-blue-600">
-                    Rs{availableBalance.toFixed(2)}
-                  </p>
-                </div>
+
+                <button
+                  onClick={() => setIsWithdrawModalOpen(true)}
+                  disabled={earnings.availableBalance <= 0}
+                  className={`mt-6 w-full py-3 px-4 rounded-lg font-semibold flex items-center justify-center ${
+                    earnings.availableBalance > 0
+                      ? "bg-green-600 hover:bg-green-700 text-white"
+                      : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                  }`}
+                >
+                  <DollarSign size={20} className="mr-2" />
+                  Withdraw Funds
+                </button>
               </div>
-            </div>
 
-            {/* Action Buttons */}
-            <div className="flex flex-col space-y-3">
-              <button
-                onClick={handleWithdrawClick}
-                disabled={availableBalance <= 0}
-                className={`w-full py-3 px-4 rounded-lg font-semibold text-white transition-colors ${
-                  availableBalance > 0
-                    ? "bg-green-600 hover:bg-green-700 focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
-                    : "bg-gray-400 cursor-not-allowed"
-                }`}
-              >
-                <DollarSign size={20} className="inline mr-2" />
-                Withdraw Funds
-              </button>
-
-              <button
-                onClick={logout}
-                className="w-full py-2 px-4 bg-red-600 text-white rounded-md font-medium hover:bg-red-700"
-              >
-                Logout
-              </button>
+              <div className="bg-white border border-gray-200 p-4 rounded-lg">
+                <h3 className="font-medium mb-2">Withdrawal Rules</h3>
+                <ul className="text-sm text-gray-600 space-y-2">
+                  <li className="flex items-start">
+                    <span className="text-green-500 mr-2">✓</span>
+                    Minimum withdrawal: Rs500
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-green-500 mr-2">✓</span>
+                    Processed within 3-5 business days
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-green-500 mr-2">✓</span>
+                    No withdrawal fees
+                  </li>
+                </ul>
+              </div>
             </div>
           </div>
         </div>
+      </div>
 
-        {/* Withdraw Modal */}
-        {isWithdrawModalOpen && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-            <div className="bg-white rounded-lg max-w-md w-full">
-              {/* Modal Header */}
-              <div className="bg-blue-600 text-white p-4 rounded-t-lg">
-                <h3 className="font-semibold">Withdraw Funds</h3>
+      {/* Withdraw Modal */}
+      {isWithdrawModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-lg max-w-md w-full">
+            <div className="bg-blue-600 text-white p-4 rounded-t-lg">
+              <h3 className="font-semibold">Withdraw Funds</h3>
+            </div>
+
+            <div className="p-6">
+              {error && (
+                <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-md">
+                  {error}
+                </div>
+              )}
+
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Amount to withdraw
+                </label>
+                <div className="relative">
+                  <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">
+                    Rs
+                  </span>
+                  <input
+                    type="number"
+                    value={withdrawAmount}
+                    onChange={(e) => setWithdrawAmount(e.target.value)}
+                    max={earnings.availableBalance}
+                    min="500"
+                    step="0.01"
+                    className="w-full pl-8 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    placeholder={`Maximum: Rs${earnings.availableBalance.toFixed(
+                      2
+                    )}`}
+                  />
+                </div>
+                <p className="text-sm text-gray-500 mt-1">
+                  Available balance: Rs{earnings.availableBalance.toFixed(2)}
+                </p>
               </div>
 
-              {/* Modal Content */}
-              <div className="p-6">
-                <div className="mb-4">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Amount to withdraw
-                  </label>
-                  <div className="relative">
-                    <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">
-                      Rs
-                    </span>
-                    <input
-                      type="number"
-                      value={withdrawAmount}
-                      onChange={(e) => setWithdrawAmount(e.target.value)}
-                      max={availableBalance}
-                      min="0"
-                      step="0.01"
-                      className="w-full pl-8 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    />
-                  </div>
-                  <p className="text-sm text-gray-500 mt-1">
-                    Available balance: Rs{availableBalance.toFixed(2)}
-                  </p>
-                </div>
-
-                {/* Modal Actions */}
-                <div className="flex space-x-3">
-                  <button
-                    onClick={() => setIsWithdrawModalOpen(false)}
-                    className="flex-1 py-2 px-4 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    onClick={handleWithdraw}
-                    disabled={
-                      !withdrawAmount ||
-                      parseFloat(withdrawAmount) <= 0 ||
-                      parseFloat(withdrawAmount) > availableBalance
-                    }
-                    className={`flex-1 py-2 px-4 rounded-lg font-semibold text-white transition-colors ${
-                      withdrawAmount &&
-                      parseFloat(withdrawAmount) > 0 &&
-                      parseFloat(withdrawAmount) <= availableBalance
-                        ? "bg-blue-600 hover:bg-blue-700"
-                        : "bg-gray-400 cursor-not-allowed"
-                    }`}
-                  >
-                    Withdraw
-                  </button>
-                </div>
+              <div className="flex space-x-3">
+                <button
+                  onClick={() => {
+                    setIsWithdrawModalOpen(false);
+                    setError(null);
+                  }}
+                  className="flex-1 py-2 px-4 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleWithdraw}
+                  disabled={isLoading}
+                  className={`flex-1 py-2 px-4 rounded-lg font-semibold text-white ${
+                    isLoading
+                      ? "bg-blue-400 cursor-not-allowed"
+                      : "bg-blue-600 hover:bg-blue-700"
+                  }`}
+                >
+                  {isLoading ? "Processing..." : "Request Withdrawal"}
+                </button>
               </div>
             </div>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 }
