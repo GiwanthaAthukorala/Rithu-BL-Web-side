@@ -1,9 +1,8 @@
 const Submission = require("../models/Submission");
 const Earnings = require("../models/Earnings");
 const Transaction = require("../models/Transaction");
-const User = require("../models/userModel");
 
-exports.getAllSubmissions = async (req, res) => {
+const getPendingSubmissions = async (req, res) => {
   try {
     const submissions = await Submission.find({ status: "pending" })
       .populate("user", "firstName lastName email")
@@ -22,7 +21,7 @@ exports.getAllSubmissions = async (req, res) => {
   }
 };
 
-exports.getPendingWithdrawals = async (req, res) => {
+const getPendingWithdrawals = async (req, res) => {
   try {
     const withdrawals = await Transaction.find({
       type: "debit",
@@ -44,7 +43,7 @@ exports.getPendingWithdrawals = async (req, res) => {
   }
 };
 
-exports.processWithdrawal = async (req, res) => {
+const processWithdrawal = async (req, res) => {
   try {
     const { action } = req.body;
     const withdrawal = await Transaction.findById(req.params.id);
@@ -60,17 +59,13 @@ exports.processWithdrawal = async (req, res) => {
     const earnings = await Earnings.findOne({ user: withdrawal.user });
 
     if (action === "approve") {
-      // Deduct from available balance
       earnings.availableBalance -= withdrawal.amount;
       earnings.withdrawnAmount += withdrawal.amount;
       earnings.pendingWithdrawal -= withdrawal.amount;
-
       withdrawal.status = "completed";
     } else if (action === "reject") {
-      // Return funds to available balance
       earnings.availableBalance += withdrawal.amount;
       earnings.pendingWithdrawal -= withdrawal.amount;
-
       withdrawal.status = "failed";
       withdrawal.rejectionReason = req.body.reason || "Withdrawal rejected";
     }
@@ -89,4 +84,10 @@ exports.processWithdrawal = async (req, res) => {
       error: error.message,
     });
   }
+};
+
+module.exports = {
+  getPendingSubmissions,
+  getPendingWithdrawals,
+  processWithdrawal,
 };

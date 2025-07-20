@@ -1,91 +1,80 @@
+require("dotenv").config();
 const express = require("express");
-const dotenv = require("dotenv");
-const connectDB = require("./config/db");
-const cors = require("cors");
-const path = require("path");
-//const userRoutes = require("./routes/userRoutes");
-//const submissionsRouter = require("./routes/submissions");
-//const earningsRoutes = require("./routes/earnings");
-const fileUpload = require("express-fileupload");
 const { createServer } = require("http");
 const { Server } = require("socket.io");
-// Load env vars
-dotenv.config();
+const cors = require("cors");
+const path = require("path");
+const connectDB = require("./config/db");
+const fileUpload = require("express-fileupload");
 
-// Verify required environment variables
-if (!process.env.MONGO_URI || !process.env.JWT_SECRET) {
-  console.error("Missing required environment variables");
-  process.exit(1);
-}
-
-// Connect to database
-connectDB().catch((err) => {
-  console.error("MongoDB connection error:", err);
-  process.exit(1);
-});
-
+// Initialize Express app
 const app = express();
 const httpServer = createServer(app);
+
+// Configure Socket.IO
 const io = new Server(httpServer, {
   cors: {
     origin: [process.env.FRONTEND_URL, "http://localhost:3000"],
     methods: ["GET", "POST"],
+    credentials: true,
   },
+  path: "/socket.io",
 });
-// Socket.io for real-time updates
+
+// Socket.IO connection handler
 io.on("connection", (socket) => {
-  console.log("Client connected");
+  console.log("Client connected:", socket.id);
+
+  socket.on("register", (userId) => {
+    socket.join(userId);
+    console.log(`User ${userId} registered for updates`);
+  });
 
   socket.on("disconnect", () => {
-    console.log("Client disconnected");
+    console.log("Client disconnected:", socket.id);
   });
 });
 
-// CORS middleware
+// Make io accessible in routes
+app.set("io", io);
+
+// Connect to database
+connectDB().catch((err) => {
+  console.error("Database connection failed:", err);
+  process.exit(1);
+});
+
+// Middleware
 app.use(
   cors({
     origin: [process.env.FRONTEND_URL, "http://localhost:3000"],
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization", "x-file-name"],
   })
 );
-
 app.use(express.json());
 app.use(fileUpload());
 app.use(express.static(path.join(__dirname, "public")));
 
-// Test endpoint
-app.get("/test-cors", (req, res) => {
-  res.json({ message: "CORS is working!" });
-});
-
-// Handle OPTIONS requests
-app.options("*", cors());
-
-// Body parser
-app.use(express.json());
-
-// Root route
-app.get("/", (req, res) => {
-  res.send("API is running");
-});
-
 // Routes
 app.use("/api/users", require("./routes/userRoutes"));
-app.use("/api/submissions", require("./routes/submissions"));
+app.use("/api/submissions", require("./routes/submissions")); // Changed from submissions.js to submissionRoutes.js
 app.use("/api/earnings", require("./routes/earnings"));
 app.use("/api/admin", require("./routes/adminRoutes"));
+
+// Health check endpoint
+app.get("/health", (req, res) => {
+  res.status(200).json({ status: "ok" });
+});
 
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
-  res.status(500).json({ message: "Something Broke!!" });
+  res.status(500).json({ message: "Internal Server Error" });
 });
 
 const PORT = process.env.PORT || 5000;
 httpServer.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
-  console.log(`MongoDB: ${process.env.MONGO_URI}`);
-  console.log(`Frontend: ${process.env.FRONTEND_URL}`);
+  console.log(`Socket.IO path: /socket.io`);
 });

@@ -1,4 +1,5 @@
 import { AuthProvider } from "@/Context/AuthContext";
+import { SocketContext } from "@/Context/SocketContext";
 import "@/styles/globals.css";
 import { ErrorBoundary } from "react-error-boundary";
 function ErrorFallback({ error }) {
@@ -14,9 +15,11 @@ export default function App({ Component, pageProps }) {
   return (
     <>
       <ErrorBoundary FallbackComponent={ErrorFallback}>
-        <AuthProvider>
-          <Component {...pageProps} />
-        </AuthProvider>
+        <SocketContext>
+          <AuthProvider>
+            <Component {...pageProps} />
+          </AuthProvider>
+        </SocketContext>
       </ErrorBoundary>
     </>
   );
