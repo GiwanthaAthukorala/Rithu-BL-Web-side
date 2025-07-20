@@ -5,10 +5,13 @@ const {
   loginUser,
   getUserProfile,
 } = require("../controllers/userController");
-const { protect } = require("../middleware/authMiddleware");
+const { protect, admin } = require("../middleware/authMiddleware");
 
 router.post("/register", registerUser);
 router.post("/login", loginUser);
 router.get("/profile", protect, getUserProfile);
+router.get("/admin", protect, admin, (req, res) => {
+  res.json({ message: "Admin dashboard" });
+});
 
 module.exports = router;

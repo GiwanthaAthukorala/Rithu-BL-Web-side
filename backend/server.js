@@ -3,9 +3,9 @@ const dotenv = require("dotenv");
 const connectDB = require("./config/db");
 const cors = require("cors");
 const path = require("path");
-const userRoutes = require("./routes/userRoutes");
-const submissionsRouter = require("./routes/submissions");
-const earningsRoutes = require("./routes/earnings");
+//const userRoutes = require("./routes/userRoutes");
+//const submissionsRouter = require("./routes/submissions");
+//const earningsRoutes = require("./routes/earnings");
 const fileUpload = require("express-fileupload");
 const { createServer } = require("http");
 const { Server } = require("socket.io");
@@ -73,8 +73,8 @@ app.get("/", (req, res) => {
 
 // Routes
 app.use("/api/users", require("./routes/userRoutes"));
-app.use("/api/submissions", require("./routes/submissionRoutes"));
-app.use("/api/earnings", require("./routes/earningRoutes"));
+app.use("/api/submissions", require("./routes/submissions"));
+app.use("/api/earnings", require("./routes/earnings"));
 app.use("/api/admin", require("./routes/adminRoutes"));
 
 // Error handling middleware

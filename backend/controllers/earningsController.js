@@ -1,6 +1,6 @@
 const Earnings = require("../models/Earnings");
 const Transaction = require("../models/Transaction");
-const User = require("../models/User");
+const userModel = require("../models/userModel");
 
 exports.getUserEarnings = async (req, res) => {
   try {
