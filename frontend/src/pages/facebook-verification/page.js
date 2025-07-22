@@ -1,21 +1,19 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Upload, ExternalLink, User, CheckCircle } from "lucide-react";
+import { Upload, ExternalLink, CheckCircle } from "lucide-react";
 import Header from "@/components/Header/Header";
-import axios from "axios";
 import api from "@/lib/api";
+import { useAuth } from "@/Context/AuthContext";
 
 export default function FbVerificationTask() {
   const [file, setFile] = useState(null);
   const [preview, setPreview] = useState(null);
-  const [dragActive, setDragActive] = useState(false);
-  const [uploadedFile, setUploadedFile] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [error, setError] = useState(null);
   const router = useRouter();
-  const { user } = useAuth();
+  const { user, isLoading: isAuthLoading } = useAuth();
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
@@ -57,21 +55,32 @@ export default function FbVerificationTask() {
       formData.append("screenshot", file);
       formData.append("platform", "facebook");
 
-      const response = await api.post("/api/submissions", formData, {
+      // Important: Don't set Content-Type header - let browser set it
+      const apiUrl =
+        process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+      const response = await fetch(`${apiUrl}/api/submissions`, {
+        method: "POST",
+        body: formData,
+        credentials: "include",
         headers: {
-          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Submission failed");
+      }
 
       setIsSubmitted(true);
     } catch (error) {
-      setError(error.response?.data?.message || "Submission failed");
+      console.error("Submission error:", error);
+      setError(error.message || "Submission failed. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
   };
-
-  if (!user) {
+  if (isAuthLoading || !user) {
     return (
       <div className="min-h-screen bg-gray-50">
         <Header />
@@ -109,9 +118,9 @@ export default function FbVerificationTask() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50  p-">
+    <div className="min-h-screen bg-gray-50 p-4">
       <Header />
-      <div className=" mx-auto">
+      <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="bg-blue-600 text-white p-6 rounded-t-lg">
           <h1 className="text-xl font-semibold mb-2">
@@ -149,6 +158,7 @@ export default function FbVerificationTask() {
               Visit our Facebook page <ExternalLink className="w-4 h-4 ml-1" />
             </a>
           </div>
+
           <div className="mb-8 bg-yellow-50 p-4 rounded-lg border border-yellow-200">
             <h3 className="text-md font-medium mb-2 text-yellow-800">
               Screenshot Requirements

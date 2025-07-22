@@ -1,27 +1,43 @@
-import { createContext, useEffect, useState } from "react";
+"use client";
+
+import { createContext, useContext, useEffect, useState } from "react";
 import { io } from "socket.io-client";
 
-export const SocketContext = createContext();
+const SocketContext = createContext(null);
 
-export const SocketProvider = ({ children }) => {
+export function SocketProvider({ children }) {
   const [socket, setSocket] = useState(null);
 
   useEffect(() => {
-    // Initialize Socket.IO connection
-    const newSocket = io(process.env.NEXT_PUBLIC_API_URL, {
+    // Only initialize socket on client side
+    if (typeof window === "undefined") return;
+
+    const socketInstance = io(process.env.NEXT_PUBLIC_API_URL, {
       path: "/socket.io",
       withCredentials: true,
       transports: ["websocket", "polling"],
+      reconnectionAttempts: 5,
+      reconnectionDelay: 1000,
     });
 
-    setSocket(newSocket);
+    setSocket(socketInstance);
 
     return () => {
-      if (newSocket) newSocket.disconnect();
+      socketInstance?.disconnect();
     };
   }, []);
 
   return (
     <SocketContext.Provider value={socket}>{children}</SocketContext.Provider>
   );
-};
+}
+
+export function useSocket() {
+  const context = useContext(SocketContext);
+
+  if (context === undefined) {
+    throw new Error("useSocket must be used within a SocketProvider");
+  }
+
+  return context;
+}

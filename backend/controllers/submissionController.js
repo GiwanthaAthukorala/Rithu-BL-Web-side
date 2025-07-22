@@ -7,25 +7,19 @@ const writeFileAsync = promisify(fs.writeFile);
 
 const createSubmission = async (req, res) => {
   try {
-    if (!req.files || !req.files.screenshot) {
-      return res.status(400).json({ message: "Please upload a screenshot" });
+    console.log("Uploaded file:", req.file);
+
+    if (!req.file) {
+      return res.status(400).json({
+        success: false,
+        message: "No file uploaded",
+      });
     }
-
-    const screenshot = req.files.screenshot;
-    const uploadDir = path.join(__dirname, "../public/uploads");
-
-    if (!fs.existsSync(uploadDir)) {
-      fs.mkdirSync(uploadDir, { recursive: true });
-    }
-
-    const fileName = `${Date.now()}-${screenshot.name}`;
-    const filePath = path.join(uploadDir, fileName);
-    await screenshot.mv(filePath);
 
     const submission = await Submission.create({
       user: req.user._id,
-      platform: req.body.platform,
-      screenshot: `/uploads/${fileName}`,
+      platform: req.body.platform || "facebook",
+      screenshot: `/uploads/${req.file.filename}`,
       status: "pending",
       amount: 0.8,
     });
@@ -36,7 +30,9 @@ const createSubmission = async (req, res) => {
       data: submission,
     });
   } catch (error) {
+    console.error("Submission error:", error);
     res.status(500).json({
+      success: false,
       message: "Submission failed",
       error: error.message,
     });
@@ -49,6 +45,7 @@ const getUserSubmissions = async (req, res) => {
     res.status(200).json({ success: true, data: submissions });
   } catch (error) {
     res.status(500).json({
+      success: false,
       message: "Failed to get user submissions",
       error: error.message,
     });

@@ -12,23 +12,6 @@ const api = axios.create({
 });
 
 // Add response interceptor to handle errors
-api.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    if (error.response) {
-      const message =
-        error.response.data?.message ||
-        (error.response.status === 400 ? "Invalid request" : "Request failed");
-      return Promise.reject(new Error(message));
-    } else if (error.request) {
-      return Promise.reject(
-        new Error("No response from server. Please check your connection.")
-      );
-    }
-    return Promise.reject(error);
-  }
-);
-
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("token");
@@ -38,6 +21,36 @@ api.interceptors.request.use(
     return config;
   },
   (error) => {
+    return Promise.reject(error);
+  }
+);
+
+export const endpoints = {
+  login: "/users/login",
+  register: "/users/register",
+  profile: "/users/profile",
+  submissions: "/api/submissions", // Note: Changed from /submissions to /api/submissions
+  earnings: "/api/earnings",
+};
+
+// Response interceptor
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response) {
+      // Handle 401 Unauthorized
+      if (error.response.status === 401) {
+        if (typeof window !== "undefined") {
+          localStorage.removeItem("token");
+          window.location.href = "/login";
+        }
+      }
+
+      const errorMessage =
+        error.response?.data?.message || error.message || "Request failed";
+      return Promise.reject(new Error(errorMessage));
+    }
+
     return Promise.reject(error);
   }
 );

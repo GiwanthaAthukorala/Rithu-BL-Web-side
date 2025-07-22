@@ -7,13 +7,14 @@ import { useAuth } from "@/Context/AuthContext";
 import { useRouter } from "next/navigation"; // Updated import
 import api from "@/lib/api";
 import { io } from "socket.io-client";
+import { useSocket } from "@/Context/SocketContext";
 
 export default function Profile() {
-  //const [totalEarned, setTotalEarned] = useState(500.0);
+  const [totalEarned, setTotalEarned] = useState(500.0);
   const [availableBalance, setAvailableBalance] = useState(500.0);
   const [withdrawAmount, setWithdrawAmount] = useState("500");
   const [isWithdrawModalOpen, setIsWithdrawModalOpen] = useState(false);
-  const { user, isLoading, logout } = useAuth();
+  const { user, isLoading, isAuthLoading } = useAuth();
   const router = useRouter();
   const [isClient, setIsClient] = useState(false);
   const [earnings, setEarnings] = useState({
@@ -25,9 +26,10 @@ export default function Profile() {
   });
   const [isEarningLoading, setIsEarningLoading] = useState(false);
   const [error, setError] = useState(null);
+  const socket = useSocket();
 
   useEffect(() => {
-    if (!user) return;
+    if (!isClient || !socket || !user) return;
 
     const fetchEarnings = async () => {
       try {
@@ -40,35 +42,26 @@ export default function Profile() {
 
     fetchEarnings();
 
-    // Set up Socket.io for real-time updates
-    const socket = io(process.env.NEXT_PUBLIC_API_URL, {
-      withCredentials: true,
-    });
+    if (socket) {
+      socket.on("earningsUpdate", (updatedEarnings) => {
+        setEarnings(updatedEarnings);
+      });
 
-    socket.on("connect", () => {
-      console.log("Connected to WebSocket");
-      socket.emit("register", user._id);
-    });
+      socket.on("earningsUpdate", (updatedEarnings) => {
+        setEarnings((prev) => ({
+          ...earnings,
+          transactions: prev.transactions.map((t) =>
+            t._id === transaction._id ? transaction : t
+          ),
+        }));
+      });
 
-    socket.on("earningsUpdate", (updatedEarnings) => {
-      setEarnings(updatedEarnings);
-    });
-
-    socket.on("withdrawalProcessed", ({ earnings, transaction }) => {
-      setEarnings(earnings);
-      // Update the specific transaction in state
-      setEarnings((prev) => ({
-        ...prev,
-        transactions: prev.transactions.map((t) =>
-          t._id === transaction._id ? transaction : t
-        ),
-      }));
-    });
-
-    return () => {
-      socket.disconnect();
-    };
-  }, [user]);
+      return () => {
+        socket.off("earningsUpdate");
+        socket.off("withdrawalProcessed");
+      };
+    }
+  }, [isClient, socket, user]);
 
   const handleWithdraw = async () => {
     if (!withdrawAmount || parseFloat(withdrawAmount) <= 0) {
@@ -98,7 +91,7 @@ export default function Profile() {
     }
   };
 
-  if (!user) {
+  if (isAuthLoading || !user) {
     return (
       <div className="min-h-screen bg-gray-50">
         <Header />

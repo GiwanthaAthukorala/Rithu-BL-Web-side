@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
-import Header from "@/components/Header";
+
 import api from "@/lib/api";
 import { CheckCircle, XCircle, Clock, User } from "lucide-react";
 import { useAuth } from "@/Context/AuthContext";
+import Header from "@/components/Header/Header";
 
 export default function AdminDashboard() {
   const [submissions, setSubmissions] = useState([]);
