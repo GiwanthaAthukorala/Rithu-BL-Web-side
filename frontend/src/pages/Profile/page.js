@@ -33,7 +33,7 @@ export default function Profile() {
 
     const fetchEarnings = async () => {
       try {
-        const response = await api.get("/api/earnings");
+        const response = await api.get("/earnings");
         setEarnings(response.data);
       } catch (error) {
         console.error("Error fetching earnings:", error);
@@ -44,7 +44,10 @@ export default function Profile() {
 
     if (socket) {
       socket.on("earningsUpdate", (updatedEarnings) => {
-        setEarnings(updatedEarnings);
+        setEarnings((prev) => ({
+          ...prev,
+          ...updatedEarnings,
+        }));
       });
 
       socket.on("earningsUpdate", (updatedEarnings) => {

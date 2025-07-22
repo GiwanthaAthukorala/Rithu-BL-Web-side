@@ -55,9 +55,7 @@ export default function FbVerificationTask() {
       formData.append("screenshot", file);
       formData.append("platform", "facebook");
 
-      // Important: Don't set Content-Type header - let browser set it
-      const apiUrl =
-        process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
       const response = await fetch(`${apiUrl}/api/submissions`, {
         method: "POST",
         body: formData,
@@ -66,10 +64,16 @@ export default function FbVerificationTask() {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
-      const data = await response.json();
+
+      const contentType = response.headers.get("content-type");
+      if (!contentType || !contentType.includes("application/json")) {
+        const text = await response.text();
+        throw new Error(text || "Invalid response from server");
+      }
 
       if (!response.ok) {
-        throw new Error(data.message || "Submission failed");
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || "Submission failed");
       }
 
       setIsSubmitted(true);
@@ -80,6 +84,7 @@ export default function FbVerificationTask() {
       setIsSubmitting(false);
     }
   };
+
   if (isAuthLoading || !user) {
     return (
       <div className="min-h-screen bg-gray-50">
@@ -106,7 +111,7 @@ export default function FbVerificationTask() {
               approval.
             </p>
             <button
-              onClick={() => router.push("/tasks")}
+              onClick={() => router.push("/Profile/page")}
               className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700"
             >
               Back to Tasks

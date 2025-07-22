@@ -1,14 +1,48 @@
 const Submission = require("../models/Submission");
 const Earnings = require("../models/Earnings");
 const path = require("path");
-const fs = require("fs");
-const { promisify } = require("util");
-const writeFileAsync = promisify(fs.writeFile);
+const fs = require("fs").promises;
+const { v4: uuidv4 } = require("uuid");
+const multer = require("multer");
 
+// Configure storage
+const storage = multer.diskStorage({
+  destination: async (req, file, cb) => {
+    try {
+      const uploadDir = path.join(__dirname, "../../public/uploads");
+      await fs.mkdir(uploadDir, { recursive: true });
+      cb(null, uploadDir);
+    } catch (err) {
+      cb(err);
+    }
+  },
+  filename: (req, file, cb) => {
+    const ext = path.extname(file.originalname);
+    cb(null, `${uuidv4()}${ext}`);
+  },
+});
+
+const fileFilter = (req, file, cb) => {
+  const validTypes = ["image/jpeg", "image/png", "image/jpg"];
+  if (validTypes.includes(file.mimetype)) {
+    cb(null, true);
+  } else {
+    cb(new Error("Only JPEG/JPG/PNG images allowed"), false);
+  }
+};
+
+// Create multer instance
+const upload = multer({
+  storage,
+  fileFilter,
+  limits: {
+    fileSize: 5 * 1024 * 1024, // 5MB
+  },
+});
+
+// Controller functions
 const createSubmission = async (req, res) => {
   try {
-    console.log("Uploaded file:", req.file);
-
     if (!req.file) {
       return res.status(400).json({
         success: false,
@@ -79,7 +113,12 @@ const approveSubmission = async (req, res) => {
     }
 
     const io = req.app.get("io");
-    io.to(submission.user.toString()).emit("earningsUpdate", earnings);
+    io.to(submission.user.toString()).emit("earningsUpdate", {
+      totalEarned: earnings.totalEarned,
+      availableBalance: earnings.availableBalance,
+      pendingWithdrawal: earnings.pendingWithdrawal,
+      withdrawnAmount: earnings.withdrawnAmount,
+    });
 
     res.json({
       success: true,
@@ -115,9 +154,9 @@ const rejectSubmission = async (req, res) => {
   }
 };
 
-module.exports = {
-  createSubmission,
-  getUserSubmissions,
-  approveSubmission,
-  rejectSubmission,
-};
+// Export as separate named exports
+module.exports.uploadFile = upload.single("screenshot");
+module.exports.createSubmission = createSubmission;
+module.exports.getUserSubmissions = getUserSubmissions;
+module.exports.approveSubmission = approveSubmission;
+module.exports.rejectSubmission = rejectSubmission;

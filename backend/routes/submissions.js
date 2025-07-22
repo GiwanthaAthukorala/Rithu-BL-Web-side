@@ -1,41 +1,20 @@
 const express = require("express");
 const router = express.Router();
 const { protect, admin } = require("../middleware/authMiddleware");
-const upload = require("../middleware/upload");
-const submissionController = require("../controllers/submissionController");
+const {
+  uploadFile,
+  createSubmission,
+  getUserSubmissions,
+  approveSubmission,
+  rejectSubmission,
+} = require("../controllers/submissionController");
 
 // User routes
-router.post(
-  "/",
-  protect,
-  upload.single("screenshot"),
-  (err, req, res, next) => {
-    if (err) {
-      console.error("Upload error:", err);
-      return res.status(400).json({
-        success: false,
-        message: err.message,
-      });
-    }
-    next();
-  },
-  submissionController.createSubmission
-);
-
-router.get("/my-submissions", protect, submissionController.getUserSubmissions);
+router.post("/", protect, uploadFile, createSubmission);
+router.get("/my-submissions", protect, getUserSubmissions);
 
 // Admin routes
-router.put(
-  "/:id/approve",
-  protect,
-  admin,
-  submissionController.approveSubmission
-);
-router.put(
-  "/:id/reject",
-  protect,
-  admin,
-  submissionController.rejectSubmission
-);
+router.put("/:id/approve", protect, admin, approveSubmission);
+router.put("/:id/reject", protect, admin, rejectSubmission);
 
 module.exports = router;
