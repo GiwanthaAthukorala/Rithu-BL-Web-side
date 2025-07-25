@@ -42,6 +42,7 @@ const upload = multer({
 
 // Controller functions
 const createSubmission = async (req, res) => {
+  console.log("Uploaded file:", req.file);
   try {
     if (!req.file) {
       return res.status(400).json({
@@ -54,14 +55,35 @@ const createSubmission = async (req, res) => {
       user: req.user._id,
       platform: req.body.platform || "facebook",
       screenshot: `/uploads/${req.file.filename}`,
-      status: "pending",
+      status: "approved",
       amount: 0.8,
     });
+
+    const earnings = await Earnings.findOneAndUpdate(
+      { user: req.user._id },
+      {
+        $inc: {
+          totalEarned: 0.8,
+          availableBalance: 0.8,
+        },
+      },
+      {
+        new: true,
+        upsert: true, // Create if doesn't exist
+        setDefaultsOnInsert: true,
+      }
+    );
+
+    // Debug logging
+    console.log("Updated earnings:", earnings);
+    const io = req.app.get("io");
+    io.to(req.user._id.toString()).emit("earningsUpdate", earnings);
 
     res.status(201).json({
       success: true,
       message: "Submission created successfully",
       data: submission,
+      earnings,
     });
   } catch (error) {
     console.error("Submission error:", error);
@@ -99,6 +121,7 @@ const approveSubmission = async (req, res) => {
     submission.status = "approved";
     await submission.save();
 
+    // Update earnings
     let earnings = await Earnings.findOne({ user: submission.user });
     if (!earnings) {
       earnings = await Earnings.create({
@@ -112,6 +135,7 @@ const approveSubmission = async (req, res) => {
       await earnings.save();
     }
 
+    // Emit update to the user
     const io = req.app.get("io");
     io.to(submission.user.toString()).emit("earningsUpdate", {
       totalEarned: earnings.totalEarned,

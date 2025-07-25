@@ -1,96 +1,90 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { User, DollarSign, Clock, CheckCircle, XCircle } from "lucide-react";
+import { User, DollarSign } from "lucide-react";
 import Header from "@/components/Header/Header";
 import { useAuth } from "@/Context/AuthContext";
-import { useRouter } from "next/navigation"; // Updated import
+import { useRouter } from "next/navigation";
 import api from "@/lib/api";
-import { io } from "socket.io-client";
 import { useSocket } from "@/Context/SocketContext";
 
 export default function Profile() {
-  const [totalEarned, setTotalEarned] = useState(500.0);
-  const [availableBalance, setAvailableBalance] = useState(500.0);
-  const [withdrawAmount, setWithdrawAmount] = useState("500");
-  const [isWithdrawModalOpen, setIsWithdrawModalOpen] = useState(false);
-  const { user, isLoading, isAuthLoading } = useAuth();
-  const router = useRouter();
-  const [isClient, setIsClient] = useState(false);
   const [earnings, setEarnings] = useState({
     totalEarned: 0,
     availableBalance: 0,
     pendingWithdrawal: 0,
     withdrawnAmount: 0,
-    transactions: [],
   });
-  const [isEarningLoading, setIsEarningLoading] = useState(false);
+  const [withdrawAmount, setWithdrawAmount] = useState("500");
+  const [isWithdrawModalOpen, setIsWithdrawModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const { user, isAuthLoading } = useAuth();
   const socket = useSocket();
+  const router = useRouter();
+
+  // Initialize earnings with default values
+  const initializeEarnings = () => ({
+    totalEarned: 0,
+    availableBalance: 0,
+    pendingWithdrawal: 0,
+    withdrawnAmount: 0,
+  });
+
+  const fetchEarnings = async () => {
+    try {
+      const response = await api.get("/earnings");
+      setEarnings(response.data || initializeEarnings());
+    } catch (error) {
+      console.error("Error fetching earnings:", error);
+      setEarnings(initializeEarnings());
+    }
+  };
 
   useEffect(() => {
-    if (!isClient || !socket || !user) return;
+    if (user) {
+      fetchEarnings();
+    }
+  }, [user]);
 
-    const fetchEarnings = async () => {
-      try {
-        const response = await api.get("/earnings");
-        setEarnings(response.data);
-      } catch (error) {
-        console.error("Error fetching earnings:", error);
-      }
+  useEffect(() => {
+    if (!socket) return;
+
+    const handleEarningsUpdate = (updatedEarnings) => {
+      setEarnings(updatedEarnings || initializeEarnings());
     };
 
-    fetchEarnings();
+    socket.on("earningsUpdate", handleEarningsUpdate);
 
-    if (socket) {
-      socket.on("earningsUpdate", (updatedEarnings) => {
-        setEarnings((prev) => ({
-          ...prev,
-          ...updatedEarnings,
-        }));
-      });
-
-      socket.on("earningsUpdate", (updatedEarnings) => {
-        setEarnings((prev) => ({
-          ...earnings,
-          transactions: prev.transactions.map((t) =>
-            t._id === transaction._id ? transaction : t
-          ),
-        }));
-      });
-
-      return () => {
-        socket.off("earningsUpdate");
-        socket.off("withdrawalProcessed");
-      };
-    }
-  }, [isClient, socket, user]);
+    return () => {
+      socket.off("earningsUpdate", handleEarningsUpdate);
+    };
+  }, [socket]);
 
   const handleWithdraw = async () => {
-    if (!withdrawAmount || parseFloat(withdrawAmount) <= 0) {
-      setError("Please enter a valid amount");
+    const amount = parseFloat(withdrawAmount);
+
+    if (!amount || amount < 500) {
+      setError("Minimum withdrawal amount is Rs 500");
       return;
     }
 
-    if (parseFloat(withdrawAmount) > earnings.availableBalance) {
+    if (amount > (earnings.availableBalance || 0)) {
       setError("Amount exceeds available balance");
       return;
     }
 
-    setIsEarningLoading(true);
+    setIsLoading(true);
     setError(null);
 
     try {
-      const response = await api.post("/api/earnings/withdraw", {
-        amount: parseFloat(withdrawAmount),
-      });
-
-      setEarnings(response.data.earnings);
+      const response = await api.post("/earnings/withdraw", { amount });
+      setEarnings(response.data?.earnings || initializeEarnings());
       setIsWithdrawModalOpen(false);
     } catch (error) {
       setError(error.response?.data?.message || "Withdrawal failed");
     } finally {
-      setIsEarningLoading(false);
+      setIsLoading(false);
     }
   };
 
@@ -105,11 +99,15 @@ export default function Profile() {
     );
   }
 
+  // Helper function to safely format currency
+  const formatCurrency = (value) => {
+    return (value || 0).toFixed(2);
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 p-0">
       <Header />
       <div className="max-w-2xl mx-auto">
-        {/* Header */}
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
             Your Profile
@@ -120,9 +118,7 @@ export default function Profile() {
           </p>
         </div>
 
-        {/* User Profile Card */}
         <div className="bg-white rounded-lg shadow-sm overflow-hidden">
-          {/* User Profile Header */}
           <div className="bg-blue-600 text-white p-4">
             <div className="flex items-center">
               <User size={20} className="mr-2" />
@@ -130,7 +126,6 @@ export default function Profile() {
             </div>
           </div>
 
-          {/* Profile Content */}
           <div className="p-6">
             <div className="flex items-center mb-6">
               <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mr-4">
@@ -148,7 +143,6 @@ export default function Profile() {
               </div>
             </div>
 
-            {/* User Bank Info */}
             <div className="mb-6">
               <h3 className="text-sm font-medium text-gray-500 mb-3">
                 Bank Information
@@ -168,7 +162,6 @@ export default function Profile() {
               </div>
             </div>
 
-            {/* Earnings Summary */}
             <div className="space-y-6">
               <div className="bg-blue-50 p-4 rounded-lg">
                 <h2 className="text-lg font-semibold mb-4">Your Earnings</h2>
@@ -177,14 +170,14 @@ export default function Profile() {
                   <div>
                     <p className="text-sm text-gray-600">Total Earned</p>
                     <p className="text-2xl font-bold">
-                      Rs{earnings.totalEarned.toFixed(2)}
+                      Rs{formatCurrency(earnings.totalEarned)}
                     </p>
                   </div>
 
                   <div>
                     <p className="text-sm text-gray-600">Available Balance</p>
                     <p className="text-2xl font-bold text-green-600">
-                      Rs{earnings.availableBalance.toFixed(2)}
+                      Rs{formatCurrency(earnings.availableBalance)}
                     </p>
                   </div>
 
@@ -194,7 +187,7 @@ export default function Profile() {
                         Pending Withdrawal
                       </p>
                       <p className="text-xl font-bold text-yellow-600">
-                        Rs{earnings.pendingWithdrawal.toFixed(2)}
+                        Rs{formatCurrency(earnings.pendingWithdrawal)}
                       </p>
                     </div>
                   )}
@@ -202,16 +195,16 @@ export default function Profile() {
                   <div>
                     <p className="text-sm text-gray-600">Total Withdrawn</p>
                     <p className="text-xl font-bold">
-                      Rs{earnings.withdrawnAmount.toFixed(2)}
+                      Rs{formatCurrency(earnings.withdrawnAmount)}
                     </p>
                   </div>
                 </div>
 
                 <button
                   onClick={() => setIsWithdrawModalOpen(true)}
-                  disabled={earnings.availableBalance <= 0}
+                  disabled={earnings.availableBalance < 500}
                   className={`mt-6 w-full py-3 px-4 rounded-lg font-semibold flex items-center justify-center ${
-                    earnings.availableBalance > 0
+                    earnings.availableBalance >= 500
                       ? "bg-green-600 hover:bg-green-700 text-white"
                       : "bg-gray-300 text-gray-500 cursor-not-allowed"
                   }`}
@@ -243,7 +236,6 @@ export default function Profile() {
         </div>
       </div>
 
-      {/* Withdraw Modal */}
       {isWithdrawModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-lg max-w-md w-full">
@@ -274,13 +266,14 @@ export default function Profile() {
                     min="500"
                     step="0.01"
                     className="w-full pl-8 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    placeholder={`Maximum: Rs${earnings.availableBalance.toFixed(
-                      2
+                    placeholder={`Maximum: Rs${formatCurrency(
+                      earnings.availableBalance
                     )}`}
                   />
                 </div>
                 <p className="text-sm text-gray-500 mt-1">
-                  Available balance: Rs{earnings.availableBalance.toFixed(2)}
+                  Available balance: Rs
+                  {formatCurrency(earnings.availableBalance)}
                 </p>
               </div>
 

@@ -3,7 +3,11 @@ import { io } from "socket.io-client";
 export default function useSocket(userId) {
   const socket = io(process.env.NEXT_PUBLIC_API_URL, {
     withCredentials: true,
-    transports: ["websocket"],
+    transports: ["websocket", "polling"],
+    // Additional options for stability
+    reconnectionAttempts: 5,
+    reconnectionDelay: 1000,
+    autoConnect: true,
   });
 
   useEffect(() => {

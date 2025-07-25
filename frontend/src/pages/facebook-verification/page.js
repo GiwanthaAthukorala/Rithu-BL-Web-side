@@ -70,11 +70,22 @@ export default function FbVerificationTask() {
         const text = await response.text();
         throw new Error(text || "Invalid response from server");
       }
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.message || "Submission failed");
+      }
+      setEarnings((prev) => ({
+        ...prev,
+        totalEarned: prev.totalEarned + 0.8,
+        availableBalance: prev.availableBalance + 0.8,
+      }));
+      router.push("/profile?refreshed=true");
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
         throw new Error(errorData.message || "Submission failed");
       }
+      router.refresh();
 
       setIsSubmitted(true);
     } catch (error) {

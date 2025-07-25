@@ -16,6 +16,9 @@ const io = new Server(httpServer, {
     methods: ["GET", "POST"],
     credentials: true,
   },
+  pingTimeout: 60000,
+  pingInterval: 25000,
+  transports: ["websocket", "polling"],
   path: "/socket.io",
 });
 
@@ -51,6 +54,13 @@ app.use(
     allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
+
+app.use((req, res, next) => {
+  console.log(`Incoming ${req.method} request to ${req.path}`);
+  console.log("Auth header:", req.headers.authorization);
+  next();
+});
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
