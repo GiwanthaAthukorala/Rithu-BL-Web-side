@@ -74,10 +74,16 @@ const createSubmission = async (req, res) => {
       }
     );
 
-    // Debug logging
-    console.log("Updated earnings:", earnings);
     const io = req.app.get("io");
-    io.to(req.user._id.toString()).emit("earningsUpdate", earnings);
+    io.to(req.user._id.toString()).emit("earningsUpdate", {
+      totalEarned: earnings.totalEarned,
+      availableBalance: earnings.availableBalance,
+      pendingWithdrawal: earnings.pendingWithdrawal,
+      withdrawnAmount: earnings.withdrawnAmount,
+    });
+    console.log("Updated earnings:", earnings);
+
+    // Debug logging
 
     res.status(201).json({
       success: true,

@@ -34,7 +34,7 @@ export const endpoints = {
   register: "/users/register",
   profile: "/users/profile",
   submissions: "/api/submissions", // Note: Changed from /submissions to /api/submissions
-  earnings: "/api/earnings",
+  earnings: "/earnings",
 };
 
 // Response interceptor

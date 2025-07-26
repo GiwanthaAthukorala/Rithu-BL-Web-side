@@ -5,6 +5,7 @@ const { protect } = require("../middleware/authMiddleware");
 
 router.get("/", protect, async (req, res) => {
   try {
+    console.log("Fetching earnings for user:", req.user._id);
     let earnings = await Earnings.findOne({ user: req.user._id });
 
     if (!earnings) {
@@ -22,7 +23,6 @@ router.get("/", protect, async (req, res) => {
       data: earnings,
     });
   } catch (error) {
-    console.error("Earnings error:", error);
     res.status(500).json({
       success: false,
       message: "Failed to get earnings",

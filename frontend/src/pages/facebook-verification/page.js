@@ -65,29 +65,13 @@ export default function FbVerificationTask() {
         },
       });
 
-      const contentType = response.headers.get("content-type");
-      if (!contentType || !contentType.includes("application/json")) {
-        const text = await response.text();
-        throw new Error(text || "Invalid response from server");
-      }
-      const data = await response.json();
-      if (!response.ok) {
-        throw new Error(data.message || "Submission failed");
-      }
-      setEarnings((prev) => ({
-        ...prev,
-        totalEarned: prev.totalEarned + 0.8,
-        availableBalance: prev.availableBalance + 0.8,
-      }));
-      router.push("/profile?refreshed=true");
-
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
         throw new Error(errorData.message || "Submission failed");
       }
-      router.refresh();
 
       setIsSubmitted(true);
+      router.push("/Profile/page");
     } catch (error) {
       console.error("Submission error:", error);
       setError(error.message || "Submission failed. Please try again.");
@@ -118,14 +102,13 @@ export default function FbVerificationTask() {
             </div>
             <h2 className="text-2xl font-bold mb-2">Submission Successful!</h2>
             <p className="text-gray-600 mb-6">
-              You've earned Rs 0.80. Your balance will be updated after
-              approval.
+              You've earned Rs 0.80. Your balance has been updated.
             </p>
             <button
               onClick={() => router.push("/Profile/page")}
               className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700"
             >
-              Back to Tasks
+              View Your Earnings
             </button>
           </div>
         </div>

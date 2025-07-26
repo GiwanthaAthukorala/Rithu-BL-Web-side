@@ -90,6 +90,10 @@ app.use((err, req, res, next) => {
     message: err.message || "Internal server error",
   });
 });
+app.use((req, res, next) => {
+  console.log(`${req.method} ${req.url}`);
+  next();
+});
 
 const PORT = process.env.PORT || 5000;
 httpServer.listen(PORT, () => {

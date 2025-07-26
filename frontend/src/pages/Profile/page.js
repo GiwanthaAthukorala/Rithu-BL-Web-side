@@ -24,34 +24,48 @@ export default function Profile() {
   const router = useRouter();
 
   // Initialize earnings with default values
-  const initializeEarnings = () => ({
-    totalEarned: 0,
-    availableBalance: 0,
-    pendingWithdrawal: 0,
-    withdrawnAmount: 0,
-  });
 
   const fetchEarnings = async () => {
     try {
+      console.log("Fetching earnings from:", "/earnings");
       const response = await api.get("/earnings");
-      setEarnings(response.data || initializeEarnings());
+      console.log("Earnign response : ", response.data);
+
+      setEarnings(response.data);
     } catch (error) {
       console.error("Error fetching earnings:", error);
-      setEarnings(initializeEarnings());
+      setEarnings({
+        totalEarned: 0,
+        availableBalance: 0,
+        pendingWithdrawal: 0,
+        withdrawnAmount: 0,
+      });
     }
   };
 
   useEffect(() => {
-    if (user) {
-      fetchEarnings();
-    }
-  }, [user]);
+    if (!socket || !user) return;
 
-  useEffect(() => {
-    if (!socket) return;
+    const fetchEarnings = async () => {
+      try {
+        const response = await api.get("/earnings");
+        setEarnings(response.data);
+      } catch (error) {
+        console.error("Error fetching earnings:", error);
+      }
+    };
 
+    fetchEarnings();
+
+    // Handle earnings updates from socket
     const handleEarningsUpdate = (updatedEarnings) => {
-      setEarnings(updatedEarnings || initializeEarnings());
+      setEarnings((prev) => ({
+        ...prev,
+        totalEarned: updatedEarnings.totalEarned,
+        availableBalance: updatedEarnings.availableBalance,
+        pendingWithdrawal: updatedEarnings.pendingWithdrawal,
+        withdrawnAmount: updatedEarnings.withdrawnAmount,
+      }));
     };
 
     socket.on("earningsUpdate", handleEarningsUpdate);
@@ -59,7 +73,7 @@ export default function Profile() {
     return () => {
       socket.off("earningsUpdate", handleEarningsUpdate);
     };
-  }, [socket]);
+  }, [socket, user]);
 
   const handleWithdraw = async () => {
     const amount = parseFloat(withdrawAmount);
@@ -78,8 +92,15 @@ export default function Profile() {
     setError(null);
 
     try {
-      const response = await api.post("/earnings/withdraw", { amount });
-      setEarnings(response.data?.earnings || initializeEarnings());
+      const response = await api.post("/api/earnings/withdraw", { amount });
+      setEarnings(
+        response.data?.earnings || {
+          totalEarned: 0,
+          availableBalance: 0,
+          pendingWithdrawal: 0,
+          withdrawnAmount: 0,
+        }
+      );
       setIsWithdrawModalOpen(false);
     } catch (error) {
       setError(error.response?.data?.message || "Withdrawal failed");
