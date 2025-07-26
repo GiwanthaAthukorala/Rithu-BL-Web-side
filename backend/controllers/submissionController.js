@@ -51,6 +51,14 @@ const createSubmission = async (req, res) => {
       });
     }
 
+    // Validate required fields
+    if (!req.body.platform || !req.user._id) {
+      return res.status(400).json({
+        success: false,
+        message: "Missing required fields",
+      });
+    }
+
     const submission = await Submission.create({
       user: req.user._id,
       platform: req.body.platform || "facebook",
@@ -59,28 +67,23 @@ const createSubmission = async (req, res) => {
       amount: 0.8,
     });
 
-    const earnings = await Earnings.findOneAndUpdate(
-      { user: req.user._id },
-      {
-        $inc: {
-          totalEarned: 0.8,
-          availableBalance: 0.8,
-        },
-      },
-      {
-        new: true,
-        upsert: true, // Create if doesn't exist
-        setDefaultsOnInsert: true,
-      }
-    );
+    let earnings = await Earnings.findOne({ user: req.user._id });
+    if (!earnings) {
+      earnings = await Earnings.create({
+        user: req.user._id,
+        totalEarned: 0,
+        availableBalance: 0,
+        pendingWithdrawal: 0,
+        withdrawnAmount: 0,
+      });
+    }
 
+    // Update earnings (only when admin approves)
+    // We'll move this to the approveSubmission function
+
+    // Emit update to the user
     const io = req.app.get("io");
-    io.to(req.user._id.toString()).emit("earningsUpdate", {
-      totalEarned: earnings.totalEarned,
-      availableBalance: earnings.availableBalance,
-      pendingWithdrawal: earnings.pendingWithdrawal,
-      withdrawnAmount: earnings.withdrawnAmount,
-    });
+    io.to(req.user._id.toString()).emit("earningsUpdate", earnings);
     console.log("Updated earnings:", earnings);
 
     // Debug logging
@@ -134,6 +137,8 @@ const approveSubmission = async (req, res) => {
         user: submission.user,
         totalEarned: submission.amount,
         availableBalance: submission.amount,
+        pendingWithdrawal: 0,
+        withdrawnAmount: 0,
       });
     } else {
       earnings.totalEarned += submission.amount;
@@ -152,7 +157,7 @@ const approveSubmission = async (req, res) => {
 
     res.json({
       success: true,
-      message: "Submission approved",
+      message: "Submission approved and earnings updated",
       data: submission,
     });
   } catch (error) {

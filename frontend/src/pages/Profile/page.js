@@ -25,26 +25,36 @@ export default function Profile() {
 
   // Initialize earnings with default values
 
-  const fetchEarnings = async () => {
-    try {
-      console.log("Fetching earnings from:", "/earnings");
-      const response = await api.get("/earnings");
-      console.log("Earnign response : ", response.data);
+  useEffect(() => {
+    const fetchEarnings = async () => {
+      try {
+        const response = await api.get("/earnings");
+        setEarnings(
+          response.data.data || {
+            totalEarned: 0,
+            availableBalance: 0,
+            pendingWithdrawal: 0,
+            withdrawnAmount: 0,
+          }
+        );
+      } catch (error) {
+        console.error("Error fetching earnings:", error);
+        setEarnings({
+          totalEarned: 0,
+          availableBalance: 0,
+          pendingWithdrawal: 0,
+          withdrawnAmount: 0,
+        });
+      }
+    };
 
-      setEarnings(response.data);
-    } catch (error) {
-      console.error("Error fetching earnings:", error);
-      setEarnings({
-        totalEarned: 0,
-        availableBalance: 0,
-        pendingWithdrawal: 0,
-        withdrawnAmount: 0,
-      });
+    if (user?._id) {
+      fetchEarnings();
     }
-  };
+  }, [user?._id]);
 
   useEffect(() => {
-    if (!socket || !user) return;
+    if (!socket || !user?._id) return;
 
     const fetchEarnings = async () => {
       try {
@@ -52,19 +62,25 @@ export default function Profile() {
         setEarnings(response.data);
       } catch (error) {
         console.error("Error fetching earnings:", error);
+        setEarnings({
+          totalEarned: 0,
+          availableBalance: 0,
+          pendingWithdrawal: 0,
+          withdrawnAmount: 0,
+        });
       }
     };
 
     fetchEarnings();
 
-    // Handle earnings updates from socket
+    // Join user-specific room
+    socket.emit("register", user._id);
+
+    // Handle real-time updates
     const handleEarningsUpdate = (updatedEarnings) => {
       setEarnings((prev) => ({
         ...prev,
-        totalEarned: updatedEarnings.totalEarned,
-        availableBalance: updatedEarnings.availableBalance,
-        pendingWithdrawal: updatedEarnings.pendingWithdrawal,
-        withdrawnAmount: updatedEarnings.withdrawnAmount,
+        ...updatedEarnings,
       }));
     };
 
@@ -73,7 +89,7 @@ export default function Profile() {
     return () => {
       socket.off("earningsUpdate", handleEarningsUpdate);
     };
-  }, [socket, user]);
+  }, [socket, user?._id]);
 
   const handleWithdraw = async () => {
     const amount = parseFloat(withdrawAmount);
@@ -186,6 +202,16 @@ export default function Profile() {
             <div className="space-y-6">
               <div className="bg-blue-50 p-4 rounded-lg">
                 <h2 className="text-lg font-semibold mb-4">Your Earnings</h2>
+                <div className="space-y-4">
+                  {" "}
+                  <p className="text-sm text-gray-600">
+                    Total Approved Submissions
+                  </p>
+                  <p className="text-xl font-bold">
+                    {earnings.totalEarned / 0.8}{" "}
+                    {/* Shows count of submissions */}
+                  </p>
+                </div>
 
                 <div className="space-y-4">
                   <div>

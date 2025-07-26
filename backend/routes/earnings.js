@@ -5,10 +5,10 @@ const { protect } = require("../middleware/authMiddleware");
 
 router.get("/", protect, async (req, res) => {
   try {
-    console.log("Fetching earnings for user:", req.user._id);
     let earnings = await Earnings.findOne({ user: req.user._id });
 
     if (!earnings) {
+      // Create new earnings record if doesn't exist
       earnings = await Earnings.create({
         user: req.user._id,
         totalEarned: 0,
@@ -18,9 +18,32 @@ router.get("/", protect, async (req, res) => {
       });
     }
 
+    // Get user's submissions count
+    const submissions = await Submission.find({
+      user: req.user._id,
+      status: "approved",
+    });
+
+    // Calculate total earned from approved submissions
+    const calculatedEarned = submissions.reduce(
+      (total, sub) => total + sub.amount,
+      0
+    );
+
+    // Ensure earnings are in sync
+    if (earnings.totalEarned !== calculatedEarned) {
+      earnings.totalEarned = calculatedEarned;
+      earnings.availableBalance =
+        calculatedEarned -
+        earnings.withdrawnAmount -
+        earnings.pendingWithdrawal;
+      await earnings.save();
+    }
+
     res.json({
       success: true,
       data: earnings,
+      submissionsCount: submissions.length,
     });
   } catch (error) {
     res.status(500).json({
