@@ -1,14 +1,23 @@
 const express = require("express");
 const router = express.Router();
 const Earnings = require("../models/Earnings");
+const Submission = require("../models/Submission");
 const { protect } = require("../middleware/authMiddleware");
 
 router.get("/", protect, async (req, res) => {
   try {
+    // Validate user exists
+    if (!req.user?._id) {
+      return res.status(400).json({
+        success: false,
+        message: "User not authenticated",
+      });
+    }
+
+    // Find or create earnings record
     let earnings = await Earnings.findOne({ user: req.user._id });
 
     if (!earnings) {
-      // Create new earnings record if doesn't exist
       earnings = await Earnings.create({
         user: req.user._id,
         totalEarned: 0,
@@ -18,34 +27,32 @@ router.get("/", protect, async (req, res) => {
       });
     }
 
-    // Get user's submissions count
+    // Get approved submissions
     const submissions = await Submission.find({
       user: req.user._id,
       status: "approved",
     });
 
-    // Calculate total earned from approved submissions
-    const calculatedEarned = submissions.reduce(
-      (total, sub) => total + sub.amount,
+    // Calculate total from approved submissions
+    const calculatedTotal = submissions.reduce(
+      (sum, sub) => sum + (sub.amount || 0),
       0
     );
 
-    // Ensure earnings are in sync
-    if (earnings.totalEarned !== calculatedEarned) {
-      earnings.totalEarned = calculatedEarned;
+    // Update earnings if needed
+    if (earnings.totalEarned !== calculatedTotal) {
+      earnings.totalEarned = calculatedTotal;
       earnings.availableBalance =
-        calculatedEarned -
-        earnings.withdrawnAmount -
-        earnings.pendingWithdrawal;
+        calculatedTotal - earnings.withdrawnAmount - earnings.pendingWithdrawal;
       await earnings.save();
     }
 
     res.json({
       success: true,
       data: earnings,
-      submissionsCount: submissions.length,
     });
   } catch (error) {
+    console.error("Earnings route error:", error);
     res.status(500).json({
       success: false,
       message: "Failed to get earnings",

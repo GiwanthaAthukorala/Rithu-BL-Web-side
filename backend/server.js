@@ -18,6 +18,8 @@ const io = new Server(httpServer, {
   },
   transports: ["websocket", "polling"],
   path: "/socket.io",
+  pingTimeout: 60000,
+  pingInterval: 25000,
 });
 
 // Socket.IO connection handler
@@ -82,12 +84,31 @@ app.get("/health", (req, res) => {
 
 // Error handling middleware
 app.use((err, req, res, next) => {
-  console.error("Server error:", err);
+  console.error("Error:", err);
+
+  // Handle JWT errors
+  if (err.name === "JsonWebTokenError") {
+    return res.status(401).json({
+      success: false,
+      message: "Invalid token",
+    });
+  }
+
+  // Handle validation errors
+  if (err.name === "ValidationError") {
+    return res.status(400).json({
+      success: false,
+      message: err.message,
+    });
+  }
+
+  // Handle other errors
   res.status(500).json({
     success: false,
     message: err.message || "Internal server error",
   });
 });
+
 app.use((req, res, next) => {
   console.log(`${req.method} ${req.url}`);
   next();

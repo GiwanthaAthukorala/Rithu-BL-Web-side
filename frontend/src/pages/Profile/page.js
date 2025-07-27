@@ -18,17 +18,23 @@ export default function Profile() {
   const [withdrawAmount, setWithdrawAmount] = useState("500");
   const [isWithdrawModalOpen, setIsWithdrawModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isFetching, setIsFetching] = useState(false); // Changed from setLoading to setIsFetching
   const [error, setError] = useState(null);
+
   const { user, isAuthLoading } = useAuth();
   const socket = useSocket();
   const router = useRouter();
 
-  // Initialize earnings with default values
+  const formatCurrency = (value) => (value || 0).toFixed(2);
 
-  useEffect(() => {
-    const fetchEarnings = async () => {
-      try {
-        const response = await api.get("/earnings");
+  const fetchEarnings = async () => {
+    try {
+      setIsFetching(true); // Changed from setLoading to setIsFetching
+      setError(null);
+
+      const response = await api.get("/earnings");
+
+      if (response.data?.success) {
         setEarnings(
           response.data.data || {
             totalEarned: 0,
@@ -37,17 +43,24 @@ export default function Profile() {
             withdrawnAmount: 0,
           }
         );
-      } catch (error) {
-        console.error("Error fetching earnings:", error);
-        setEarnings({
-          totalEarned: 0,
-          availableBalance: 0,
-          pendingWithdrawal: 0,
-          withdrawnAmount: 0,
-        });
+      } else {
+        throw new Error(response.data?.message || "Invalid earnings data");
       }
-    };
+    } catch (err) {
+      console.error("Fetch earnings error:", err);
+      setError(err.response?.data?.message || "Failed to load earnings");
+      setEarnings({
+        totalEarned: 0,
+        availableBalance: 0,
+        pendingWithdrawal: 0,
+        withdrawnAmount: 0,
+      });
+    } finally {
+      setIsFetching(false); // Changed from setLoading to setIsFetching
+    }
+  };
 
+  useEffect(() => {
     if (user?._id) {
       fetchEarnings();
     }
@@ -56,31 +69,12 @@ export default function Profile() {
   useEffect(() => {
     if (!socket || !user?._id) return;
 
-    const fetchEarnings = async () => {
-      try {
-        const response = await api.get("/earnings");
-        setEarnings(response.data);
-      } catch (error) {
-        console.error("Error fetching earnings:", error);
-        setEarnings({
-          totalEarned: 0,
-          availableBalance: 0,
-          pendingWithdrawal: 0,
-          withdrawnAmount: 0,
-        });
-      }
-    };
-
-    fetchEarnings();
-
-    // Join user-specific room
     socket.emit("register", user._id);
 
-    // Handle real-time updates
-    const handleEarningsUpdate = (updatedEarnings) => {
+    const handleEarningsUpdate = (updated) => {
       setEarnings((prev) => ({
         ...prev,
-        ...updatedEarnings,
+        ...updated,
       }));
     };
 
@@ -99,7 +93,7 @@ export default function Profile() {
       return;
     }
 
-    if (amount > (earnings.availableBalance || 0)) {
+    if (amount > earnings.availableBalance) {
       setError("Amount exceeds available balance");
       return;
     }
@@ -108,16 +102,13 @@ export default function Profile() {
     setError(null);
 
     try {
-      const response = await api.post("/api/earnings/withdraw", { amount });
-      setEarnings(
-        response.data?.earnings || {
-          totalEarned: 0,
-          availableBalance: 0,
-          pendingWithdrawal: 0,
-          withdrawnAmount: 0,
-        }
-      );
-      setIsWithdrawModalOpen(false);
+      const response = await api.post("/earnings/withdraw", { amount });
+      const updated = response.data?.earnings;
+      if (updated) {
+        setEarnings(updated);
+        setIsWithdrawModalOpen(false);
+        setWithdrawAmount("500");
+      }
     } catch (error) {
       setError(error.response?.data?.message || "Withdrawal failed");
     } finally {
@@ -136,34 +127,26 @@ export default function Profile() {
     );
   }
 
-  // Helper function to safely format currency
-  const formatCurrency = (value) => {
-    return (value || 0).toFixed(2);
-  };
-
   return (
-    <div className="min-h-screen bg-gray-50 p-0">
+    <div className="min-h-screen bg-gray-50">
       <Header />
-      <div className="max-w-2xl mx-auto">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            Your Profile
-          </h1>
+      <div className="max-w-2xl mx-auto p-6">
+        <div className="text-center mb-6">
+          <h1 className="text-3xl font-bold text-gray-900">Your Profile</h1>
           <p className="text-gray-600">
             Complete tasks by visiting links and uploading proof to earn
             rewards.
           </p>
         </div>
 
-        <div className="bg-white rounded-lg shadow-sm overflow-hidden">
-          <div className="bg-blue-600 text-white p-4">
-            <div className="flex items-center">
-              <User size={20} className="mr-2" />
-              <span className="font-semibold">User Profile</span>
-            </div>
+        <div className="bg-white rounded-lg shadow">
+          <div className="bg-blue-600 text-white p-4 flex items-center">
+            <User size={20} className="mr-2" />
+            <span className="font-semibold">User Profile</span>
           </div>
 
           <div className="p-6">
+            {/* User Info */}
             <div className="flex items-center mb-6">
               <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mr-4">
                 <span className="text-2xl font-bold text-blue-600">
@@ -180,116 +163,112 @@ export default function Profile() {
               </div>
             </div>
 
+            {/* Bank Info */}
             <div className="mb-6">
-              <h3 className="text-sm font-medium text-gray-500 mb-3">
+              <h3 className="text-sm font-medium text-gray-500 mb-2">
                 Bank Information
               </h3>
               <div className="bg-gray-50 p-4 rounded-md">
                 <p className="text-gray-700">
-                  <span className="font-medium">Bank:</span> {user?.bankName}
+                  <strong>Bank:</strong> {user?.bankName}
                 </p>
                 <p className="text-gray-700">
-                  <span className="font-medium">Branch:</span>{" "}
-                  {user?.bankBranch}
+                  <strong>Branch:</strong> {user?.bankBranch}
                 </p>
                 <p className="text-gray-700">
-                  <span className="font-medium">Account No:</span>{" "}
-                  {user?.bankAccountNo}
+                  <strong>Account No:</strong> {user?.bankAccountNo}
                 </p>
               </div>
             </div>
 
-            <div className="space-y-6">
-              <div className="bg-blue-50 p-4 rounded-lg">
-                <h2 className="text-lg font-semibold mb-4">Your Earnings</h2>
-                <div className="space-y-4">
-                  {" "}
+            {/* Earnings */}
+            <div className="bg-blue-50 p-4 rounded-lg mb-6">
+              <h2 className="text-lg font-semibold mb-4">Your Earnings</h2>
+
+              {isFetching ? ( // Changed from fetching to isFetching
+                <div className="text-center text-gray-500">Loading...</div>
+              ) : (
+                <>
                   <p className="text-sm text-gray-600">
                     Total Approved Submissions
                   </p>
                   <p className="text-xl font-bold">
-                    {earnings.totalEarned / 0.8}{" "}
-                    {/* Shows count of submissions */}
+                    {Math.round(earnings.totalEarned / 0.8)}
                   </p>
-                </div>
 
-                <div className="space-y-4">
-                  <div>
-                    <p className="text-sm text-gray-600">Total Earned</p>
-                    <p className="text-2xl font-bold">
-                      Rs{formatCurrency(earnings.totalEarned)}
-                    </p>
-                  </div>
-
-                  <div>
-                    <p className="text-sm text-gray-600">Available Balance</p>
-                    <p className="text-2xl font-bold text-green-600">
-                      Rs{formatCurrency(earnings.availableBalance)}
-                    </p>
-                  </div>
-
-                  {earnings.pendingWithdrawal > 0 && (
+                  <div className="mt-4 space-y-3">
                     <div>
-                      <p className="text-sm text-gray-600">
-                        Pending Withdrawal
-                      </p>
-                      <p className="text-xl font-bold text-yellow-600">
-                        Rs{formatCurrency(earnings.pendingWithdrawal)}
+                      <p className="text-sm text-gray-600">Total Earned</p>
+                      <p className="text-2xl font-bold">
+                        Rs{formatCurrency(earnings.totalEarned)}
                       </p>
                     </div>
-                  )}
 
-                  <div>
-                    <p className="text-sm text-gray-600">Total Withdrawn</p>
-                    <p className="text-xl font-bold">
-                      Rs{formatCurrency(earnings.withdrawnAmount)}
-                    </p>
+                    <div>
+                      <p className="text-sm text-gray-600">Available Balance</p>
+                      <p className="text-2xl font-bold text-green-600">
+                        Rs{formatCurrency(earnings.availableBalance)}
+                      </p>
+                    </div>
+
+                    {earnings.pendingWithdrawal > 0 && (
+                      <div>
+                        <p className="text-sm text-gray-600">
+                          Pending Withdrawal
+                        </p>
+                        <p className="text-xl font-bold text-yellow-600">
+                          Rs{formatCurrency(earnings.pendingWithdrawal)}
+                        </p>
+                      </div>
+                    )}
+
+                    <div>
+                      <p className="text-sm text-gray-600">Total Withdrawn</p>
+                      <p className="text-xl font-bold">
+                        Rs{formatCurrency(earnings.withdrawnAmount)}
+                      </p>
+                    </div>
                   </div>
-                </div>
 
-                <button
-                  onClick={() => setIsWithdrawModalOpen(true)}
-                  disabled={earnings.availableBalance < 500}
-                  className={`mt-6 w-full py-3 px-4 rounded-lg font-semibold flex items-center justify-center ${
-                    earnings.availableBalance >= 500
-                      ? "bg-green-600 hover:bg-green-700 text-white"
-                      : "bg-gray-300 text-gray-500 cursor-not-allowed"
-                  }`}
-                >
-                  <DollarSign size={20} className="mr-2" />
-                  Withdraw Funds
-                </button>
-              </div>
+                  <button
+                    onClick={() => {
+                      setIsWithdrawModalOpen(true);
+                      setError(null);
+                    }}
+                    disabled={earnings.availableBalance < 500}
+                    className={`mt-6 w-full py-3 px-4 rounded-lg font-semibold flex items-center justify-center ${
+                      earnings.availableBalance >= 500
+                        ? "bg-green-600 hover:bg-green-700 text-white"
+                        : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                    }`}
+                  >
+                    <DollarSign size={20} className="mr-2" />
+                    Withdraw Funds
+                  </button>
+                </>
+              )}
+            </div>
 
-              <div className="bg-white border border-gray-200 p-4 rounded-lg">
-                <h3 className="font-medium mb-2">Withdrawal Rules</h3>
-                <ul className="text-sm text-gray-600 space-y-2">
-                  <li className="flex items-start">
-                    <span className="text-green-500 mr-2">✓</span>
-                    Minimum withdrawal: Rs500
-                  </li>
-                  <li className="flex items-start">
-                    <span className="text-green-500 mr-2">✓</span>
-                    Processed within 3-5 business days
-                  </li>
-                  <li className="flex items-start">
-                    <span className="text-green-500 mr-2">✓</span>
-                    No withdrawal fees
-                  </li>
-                </ul>
-              </div>
+            {/* Withdrawal Rules */}
+            <div className="bg-white border border-gray-200 p-4 rounded-lg">
+              <h3 className="font-medium mb-2">Withdrawal Rules</h3>
+              <ul className="text-sm text-gray-600 space-y-2">
+                <li>✓ Minimum withdrawal: Rs500</li>
+                <li>✓ Processed within 3-5 business days</li>
+                <li>✓ No withdrawal fees</li>
+              </ul>
             </div>
           </div>
         </div>
       </div>
 
+      {/* Withdrawal Modal */}
       {isWithdrawModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-lg max-w-md w-full">
             <div className="bg-blue-600 text-white p-4 rounded-t-lg">
               <h3 className="font-semibold">Withdraw Funds</h3>
             </div>
-
             <div className="p-6">
               {error && (
                 <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-md">
@@ -297,31 +276,28 @@ export default function Profile() {
                 </div>
               )}
 
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Amount to withdraw
-                </label>
-                <div className="relative">
-                  <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">
-                    Rs
-                  </span>
-                  <input
-                    type="number"
-                    value={withdrawAmount}
-                    onChange={(e) => setWithdrawAmount(e.target.value)}
-                    max={earnings.availableBalance}
-                    min="500"
-                    step="0.01"
-                    className="w-full pl-8 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    placeholder={`Maximum: Rs${formatCurrency(
-                      earnings.availableBalance
-                    )}`}
-                  />
-                </div>
-                <p className="text-sm text-gray-500 mt-1">
-                  Available balance: Rs
-                  {formatCurrency(earnings.availableBalance)}
-                </p>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Amount to withdraw
+              </label>
+              <div className="relative mb-4">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">
+                  Rs
+                </span>
+                <input
+                  type="number"
+                  value={withdrawAmount}
+                  onChange={(e) => setWithdrawAmount(e.target.value)}
+                  min="500"
+                  max={earnings.availableBalance}
+                  className="w-full pl-8 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                  placeholder={`Max: Rs${formatCurrency(
+                    earnings.availableBalance
+                  )}`}
+                />
+              </div>
+
+              <div className="text-sm text-gray-500 mb-4">
+                Available balance: Rs{formatCurrency(earnings.availableBalance)}
               </div>
 
               <div className="flex space-x-3">
@@ -329,6 +305,7 @@ export default function Profile() {
                   onClick={() => {
                     setIsWithdrawModalOpen(false);
                     setError(null);
+                    setWithdrawAmount("500");
                   }}
                   className="flex-1 py-2 px-4 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
                 >

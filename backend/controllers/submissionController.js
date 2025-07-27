@@ -42,7 +42,7 @@ const upload = multer({
 
 // Controller functions
 const createSubmission = async (req, res) => {
-  console.log("Uploaded file:", req.file);
+  //console.log("Uploaded file:", req.file);
   try {
     if (!req.file) {
       return res.status(400).json({
@@ -52,10 +52,10 @@ const createSubmission = async (req, res) => {
     }
 
     // Validate required fields
-    if (!req.body.platform || !req.user._id) {
+    if (!req.user?._id) {
       return res.status(400).json({
         success: false,
-        message: "Missing required fields",
+        message: "User not authenticated",
       });
     }
 
@@ -71,11 +71,15 @@ const createSubmission = async (req, res) => {
     if (!earnings) {
       earnings = await Earnings.create({
         user: req.user._id,
-        totalEarned: 0,
-        availableBalance: 0,
+        totalEarned: 0.8,
+        availableBalance: 0.8,
         pendingWithdrawal: 0,
         withdrawnAmount: 0,
       });
+    } else {
+      earnings.totalEarned += 0.8;
+      earnings.availableBalance += 0.8;
+      await earnings.save();
     }
 
     // Update earnings (only when admin approves)
@@ -96,6 +100,17 @@ const createSubmission = async (req, res) => {
     });
   } catch (error) {
     console.error("Submission error:", error);
+
+    if (req.file) {
+      try {
+        await fs.unlink(
+          path.join(__dirname, "../../public/uploads", req.file.filename)
+        );
+      } catch (cleanupError) {
+        console.error("Failed to clean up file:", cleanupError);
+      }
+    }
+
     res.status(500).json({
       success: false,
       message: "Submission failed",
@@ -158,7 +173,10 @@ const approveSubmission = async (req, res) => {
     res.json({
       success: true,
       message: "Submission approved and earnings updated",
-      data: submission,
+      data: {
+        submission,
+        earnings,
+      },
     });
   } catch (error) {
     res.status(500).json({ message: "Approval failed", error: error.message });
@@ -182,9 +200,13 @@ const rejectSubmission = async (req, res) => {
     res.json({
       success: true,
       message: "Submission rejected",
-      data: submission,
+      data: {
+        submission,
+        earnings,
+      },
     });
   } catch (error) {
+    console.error("Approval Error : ", error);
     res.status(500).json({ message: "Rejection failed", error: error.message });
   }
 };

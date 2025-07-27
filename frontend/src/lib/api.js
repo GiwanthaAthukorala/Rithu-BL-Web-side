@@ -41,7 +41,7 @@ export const endpoints = {
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response) {
+    if (error.response?.status === 401) {
       // Handle 401 Unauthorized
       if (error.response.status === 401) {
         if (typeof window !== "undefined") {
