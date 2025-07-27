@@ -22,6 +22,10 @@
         "Connection": "Upgrade",
         "Upgrade": "websocket"
       }
+    },
+    {
+      "src": "/(.*)",
+      "dest": "server.js"
     }
   ]
 }

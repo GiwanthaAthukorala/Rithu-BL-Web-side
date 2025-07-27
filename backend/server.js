@@ -1,4 +1,6 @@
 require("dotenv").config();
+
+console.log("MongoDB URI:", process.env.MONGO_URI);
 const express = require("express");
 const { createServer } = require("http");
 const { Server } = require("socket.io");
@@ -12,7 +14,10 @@ const httpServer = createServer(app);
 // Configure Socket.IO
 const io = new Server(httpServer, {
   cors: {
-    origin: [process.env.FRONTEND_URL, "http://localhost:3000"],
+    origin: [
+      process.env.FRONTEND_URL,
+      "https://rithu-business-client-side-6pnc.vercel.app",
+    ],
     methods: ["GET", "POST"],
     credentials: true,
   },
