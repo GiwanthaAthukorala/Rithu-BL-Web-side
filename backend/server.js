@@ -1,31 +1,61 @@
 require("dotenv").config();
 
+console.log("MongoDB URI:", process.env.MONGO_URI);
 const express = require("express");
-const mongoose = require("mongoose");
 const { createServer } = require("http");
 const { Server } = require("socket.io");
 const cors = require("cors");
 const path = require("path");
-
-// Validate critical environment variables
-const requiredEnvVars = ["MONGO_URI", "JWT_SECRET", "FRONTEND_URL"];
-for (const envVar of requiredEnvVars) {
-  if (!process.env[envVar]) {
-    console.error(`CRITICAL: Missing environment variable: ${envVar}`);
-    process.exit(1);
-  }
-}
+const connectDB = require("./config/db");
 
 const app = express();
 const httpServer = createServer(app);
 
-// Enhanced CORS configuration
+// Configure Socket.IO
+const io = new Server(httpServer, {
+  cors: {
+    origin: [
+      process.env.FRONTEND_URL,
+      "https://rithu-business-client-side-6pnc-90zsbcwfv.vercel.app",
+    ],
+    methods: ["GET", "POST"],
+    credentials: true,
+  },
+  transports: ["websocket", "polling"],
+  path: "/socket.io",
+  pingTimeout: 60000,
+  pingInterval: 25000,
+});
+
+// Socket.IO connection handler
+io.on("connection", (socket) => {
+  console.log("Client connected:", socket.id);
+
+  socket.on("register", (userId) => {
+    socket.join(userId);
+    console.log(`User ${userId} registered for updates`);
+  });
+
+  socket.on("disconnect", () => {
+    console.log("Client disconnected:", socket.id);
+  });
+});
+
+// Make io accessible in routes
+app.set("io", io);
+
+// Connect to database
+connectDB().catch((err) => {
+  console.error("Database connection failed:", err);
+  process.exit(1);
+});
+
+// Middleware
 app.use(
   cors({
     origin: [
       process.env.FRONTEND_URL,
-      "http://localhost:3000",
-      "https://rithu-business-client-side-6pnc.vercel.app",
+      "https://rithu-business-client-side-6pnc-90zsbcwfv.vercel.app",
     ],
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
@@ -33,92 +63,77 @@ app.use(
   })
 );
 
-app.use(express.json({ limit: "10mb" }));
-app.use(express.urlencoded({ extended: true, limit: "10mb" }));
-app.use(express.static(path.join(__dirname, "public")));
-
-// Database connection
-const connectDB = async () => {
-  try {
-    console.log("Connecting to MongoDB...");
-    await mongoose.connect(process.env.MONGO_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-      serverSelectionTimeoutMS: 5000,
-      socketTimeoutMS: 30000,
-    });
-    console.log("MongoDB connected successfully");
-  } catch (error) {
-    console.error("MongoDB connection failed:", error.message);
-    throw error;
-  }
-};
-
-// Import routes
-const routes = [
-  require("./routes/userRoutes"),
-  require("./routes/submissions"),
-  require("./routes/earnings"),
-  require("./routes/adminRoutes"),
-];
-
-// Register routes
-routes.forEach((route) => {
-  app.use("/api", route);
+app.use((req, res, next) => {
+  console.log(`Incoming ${req.method} request to ${req.path}`);
+  console.log("Auth header:", req.headers.authorization);
+  next();
 });
 
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, "public")));
+
+// Import routes properly
+const userRoutes = require("./routes/userRoutes");
+const submissionsRoutes = require("./routes/submissions");
+const earningsRoutes = require("./routes/earnings");
+const adminRoutes = require("./routes/adminRoutes");
+
+// Use routes
+app.use("/api/users", userRoutes);
+app.use("/api/submissions", submissionsRoutes);
+app.use("/api/earnings", earningsRoutes);
+app.use("/api/admin", adminRoutes);
+
 // Health check endpoint
-app.get("/health", async (req, res) => {
-  try {
-    const dbStatus =
-      mongoose.connection.readyState === 1 ? "connected" : "disconnected";
-    res.status(200).json({
-      status: "ok",
-      database: dbStatus,
-      environment: process.env.NODE_ENV || "development",
-    });
-  } catch (error) {
-    res.status(500).json({ status: "error", message: error.message });
-  }
+app.get("/health", (req, res) => {
+  res.status(200).json({ status: "ok" });
 });
 
 // Error handling middleware
 app.use((err, req, res, next) => {
-  console.error("Server error:", err);
+  console.error("Error:", err);
+
+  // Handle JWT errors
+  if (err.name === "JsonWebTokenError") {
+    return res.status(401).json({
+      success: false,
+      message: "Invalid token",
+    });
+  }
+
+  // Handle validation errors
+  if (err.name === "ValidationError") {
+    return res.status(400).json({
+      success: false,
+      message: err.message,
+    });
+  }
+
+  // Handle other errors
   res.status(500).json({
-    status: "error",
-    message:
-      process.env.NODE_ENV === "production"
-        ? "Internal server error"
-        : err.message,
+    success: false,
+    message: err.message || "Internal server error",
   });
 });
 
-// Server startup
-const startServer = async () => {
-  try {
-    await connectDB();
-    const PORT = process.env.PORT || 5000;
-    httpServer.listen(PORT, () => {
-      console.log(`Server running on port ${PORT}`);
-    });
-  } catch (error) {
-    console.error("Failed to start server:", error);
-    process.exit(1);
-  }
-};
+app.use((req, res, next) => {
+  console.log(`${req.method} ${req.url}`);
+  next();
+});
 
-// Vercel serverless compatibility
+if (process.env.NODE_ENV !== "production") {
+  require("dotenv").config();
+}
+const handler = app;
+
 if (process.env.VERCEL) {
-  module.exports = async (req, res) => {
-    try {
-      await connectDB();
-      return app(req, res);
-    } catch (error) {
-      console.error("Serverless function error:", error);
-      return res.status(500).json({ error: "Internal server error" });
-    }
-  };
+  // Export for Vercel
+  module.exports = handler;
 } else {
-  startServer();
+  const PORT = process.env.PORT || 5000;
+  httpServer.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+    console.log(`Socket.IO path: /socket.io`);
+  });
 }
