@@ -120,9 +120,15 @@ app.use((req, res, next) => {
 if (process.env.NODE_ENV !== "production") {
   require("dotenv").config();
 }
+const handler = app;
 
-const PORT = process.env.PORT || 5000;
-httpServer.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-  console.log(`Socket.IO path: /socket.io`);
-});
+if (process.env.VERCEL) {
+  // Export for Vercel
+  module.exports = handler;
+} else {
+  const PORT = process.env.PORT || 5000;
+  httpServer.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+    console.log(`Socket.IO path: /socket.io`);
+  });
+}

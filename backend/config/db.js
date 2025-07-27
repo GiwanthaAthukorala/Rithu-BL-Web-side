@@ -6,22 +6,21 @@ const connectDB = async () => {
       useNewUrlParser: true,
       useUnifiedTopology: true,
       serverSelectionTimeoutMS: 5000,
-      socketTimeoutMS: 45000,
+      socketTimeoutMS: 30000,
     });
     console.log("MongoDB connected");
   } catch (error) {
     console.error("MongoDB connection failed:", error.message);
-    process.exit(1);
+    throw error; // Important for serverless
   }
 };
 
-// Handle serverless function cleanup
+// Serverless function cleanup
 if (process.env.VERCEL) {
-  process.on("SIGTERM", () => {
-    mongoose.connection.close(() => {
-      console.log("MongoDB connection closed due to app termination");
-      process.exit(0);
-    });
+  process.on("SIGTERM", async () => {
+    await mongoose.connection.close();
+    console.log("MongoDB connection closed due to app termination");
+    process.exit(0);
   });
 }
 

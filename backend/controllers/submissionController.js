@@ -59,6 +59,12 @@ const createSubmission = async (req, res) => {
       });
     }
 
+    const fileData = {
+      buffer: req.file.buffer,
+      mimetype: req.file.mimetype,
+      originalname: req.file.originalname,
+    };
+
     const submission = await Submission.create({
       user: req.user._id,
       platform: req.body.platform || "facebook",
