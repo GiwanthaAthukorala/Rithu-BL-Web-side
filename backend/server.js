@@ -18,7 +18,7 @@ const io = new Server(httpServer, {
   cors: {
     origin: [
       process.env.FRONTEND_URL,
-      "https://rithu-business-client-side-6pnc-90zsbcwfv.vercel.app",
+      "https://rithu-business-client-side-6pnc.vercel.app",
     ],
     methods: ["GET", "POST"],
     credentials: true,
@@ -54,7 +54,7 @@ app.use(
   cors({
     origin: [
       process.env.FRONTEND_URL,
-      "https://rithu-business-client-side-6pnc-90zsbcwfv.vercel.app",
+      "https://rithu-business-client-side-6pnc.vercel.app",
     ],
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
