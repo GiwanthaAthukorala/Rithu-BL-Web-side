@@ -24,9 +24,10 @@ const io = new Server(httpServer, {
     credentials: true,
   },
   transports: ["websocket", "polling"],
-  path: "/socket.io",
+  path: "/api/socket.io",
   pingTimeout: 60000,
   pingInterval: 25000,
+  allowEIO3: true,
 });
 
 io.on("connection", (socket) => {
