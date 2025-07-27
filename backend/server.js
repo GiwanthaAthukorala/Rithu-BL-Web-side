@@ -48,7 +48,10 @@ connectDB().catch((err) => {
 // Middleware
 app.use(
   cors({
-    origin: [process.env.FRONTEND_URL, "http://localhost:3000"],
+    origin: [
+      process.env.FRONTEND_URL,
+      "https://rithu-business-client-side-6pnc.vercel.app",
+    ],
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
