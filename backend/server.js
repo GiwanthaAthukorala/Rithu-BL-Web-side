@@ -18,16 +18,15 @@ const io = new Server(httpServer, {
   cors: {
     origin: [
       process.env.FRONTEND_URL,
-      "https://rithu-businuss-client-side.vercel.app",
+      "https://rithu-business-client-side.vercel.app",
     ],
     methods: ["GET", "POST"],
     credentials: true,
   },
-  transports: ["websocket"],
-  path: "/api/socket.io",
-  pingTimeout: 30000,
-  pingInterval: 10000,
-  allowEIO3: true,
+  transports: ["websocket", "polling"],
+  path: "/socket.io",
+  pingTimeout: 60000,
+  pingInterval: 25000,
 });
 
 io.on("connection", (socket) => {
@@ -55,7 +54,7 @@ app.use(
   cors({
     origin: [
       process.env.FRONTEND_URL,
-      "https://rithu-businuss-client-side.vercel.app",
+      "https://rithu-business-client-side.vercel.app",
     ],
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
