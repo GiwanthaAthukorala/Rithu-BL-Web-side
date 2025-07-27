@@ -15,9 +15,10 @@ export function SocketProvider({ children }) {
     const socketInstance = io(process.env.NEXT_PUBLIC_API_URL, {
       path: "/socket.io",
       withCredentials: true,
-      transports: ["websocket", "polling"],
+      transports: ["websocket"],
       reconnectionAttempts: 5,
       reconnectionDelay: 1000,
+      timeout: 20000,
     });
 
     setSocket(socketInstance);

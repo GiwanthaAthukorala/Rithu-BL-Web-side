@@ -6,11 +6,11 @@ const API_URL =
 // Create axios instance
 const api = axios.create({
   baseURL: API_URL,
+  timeout: 30000,
   headers: {
     "Content-Type": "application/json",
   },
   withCredentials: true,
-  timeout: 10000,
 });
 
 // Add response interceptor to handle errors
