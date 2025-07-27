@@ -2,7 +2,7 @@ import axios from "axios";
 
 const API_URL =
   process.env.NEXT_PUBLIC_API_URL ||
-  "https://rithu-server-side-mwujl43va-giwanthaathukoralas-projects.vercel.app/api";
+  "https://rithu-bl-web-side-l9drtwcpv-giwanthaathukoralas-projects.vercel.app/api";
 
 // Create axios instance
 const api = axios.create({
@@ -43,7 +43,7 @@ export const endpoints = {
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
+    if (error.response) {
       // Handle 401 Unauthorized
       if (error.response.status === 401) {
         if (typeof window !== "undefined") {
