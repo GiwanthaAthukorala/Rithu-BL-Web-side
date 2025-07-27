@@ -83,6 +83,10 @@ app.get("/health", (req, res) => {
   res.status(200).json({ status: "ok" });
 });
 
+// Root route
+app.get("/", (req, res) => {
+  res.status(200).json({ message: "Backend is running!" });
+});
 // === Error Handling ===
 app.use((err, req, res, next) => {
   console.error("Error:", err);
