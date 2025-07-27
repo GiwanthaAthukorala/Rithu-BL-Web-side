@@ -1,6 +1,5 @@
 const API_URL =
-  process.env.NEXT_PUBLIC_API_URL ||
-  "https://rithu-bl-web-side-l9drtwcpv-giwanthaathukoralas-projects.vercel.app/api";
+  process.env.NEXT_PUBLIC_API_URL || "https://rithu-bl-web-side.vercel.app/api";
 
 export const signup = async (data) => {
   const res = await fetch(`${API_URL}/users/signup`, {

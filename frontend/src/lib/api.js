@@ -1,8 +1,7 @@
 import axios from "axios";
 
 const API_URL =
-  process.env.NEXT_PUBLIC_API_URL ||
-  "https://rithu-bl-web-side-l9drtwcpv-giwanthaathukoralas-projects.vercel.app/api";
+  process.env.NEXT_PUBLIC_API_URL || "https://rithu-bl-web-side.vercel.app/api";
 
 // Create axios instance
 const api = axios.create({
