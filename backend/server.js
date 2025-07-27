@@ -1,122 +1,113 @@
-// Load environment variables FIRST
-require("dotenv").config();
-console.log("Environment:", process.env.NODE_ENV);
-console.log("MongoDB URI:", process.env.MONGO_URI ? "*****" : "MISSING!");
-
 const express = require("express");
 const { createServer } = require("http");
 const { Server } = require("socket.io");
 const cors = require("cors");
 const path = require("path");
-const mongoose = require("mongoose");
-const connectDB = require("./config/db");
 
-// Verify critical environment variables
-const requiredEnvVars = ["MONGO_URI", "JWT_SECRET", "FRONTEND_URL"];
-for (const envVar of requiredEnvVars) {
-  if (!process.env[envVar]) {
-    console.error(`CRITICAL: Missing environment variable: ${envVar}`);
-    process.exit(1);
-  }
+// Load env only in local development
+if (!process.env.VERCEL) {
+  require("dotenv").config();
 }
 
+const connectDB = require("./config/db");
 const app = express();
 const httpServer = createServer(app);
 
-// Enhanced CORS configuration
-const corsOptions = {
-  origin: [
-    process.env.FRONTEND_URL,
-    "http://localhost:3000",
-    "https://rithu-business-client-side-6pnc-90zsbcwfv.vercel.app",
-  ],
-  credentials: true,
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"],
-};
-
-// Configure Socket.IO with CORS
+// === Socket.IO Configuration ===
 const io = new Server(httpServer, {
-  cors: corsOptions,
+  cors: {
+    origin: [
+      process.env.FRONTEND_URL,
+      "https://rithu-business-client-side-6pnc-90zsbcwfv.vercel.app",
+    ],
+    methods: ["GET", "POST"],
+    credentials: true,
+  },
   transports: ["websocket", "polling"],
   path: "/socket.io",
+  pingTimeout: 60000,
+  pingInterval: 25000,
 });
 
-// Socket.IO connection handler
 io.on("connection", (socket) => {
   console.log("Client connected:", socket.id);
+
   socket.on("register", (userId) => {
     socket.join(userId);
     console.log(`User ${userId} registered for updates`);
   });
+
   socket.on("disconnect", () => {
     console.log("Client disconnected:", socket.id);
   });
 });
 
-// Make io accessible in routes
 app.set("io", io);
 
-// Middleware
-app.use(cors(corsOptions));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
-// Import routes
-const userRoutes = require("./routes/userRoutes");
-const submissionsRoutes = require("./routes/submissions");
-const earningsRoutes = require("./routes/earnings");
-const adminRoutes = require("./routes/adminRoutes");
-
-// Routes
-app.use("/api/users", userRoutes);
-app.use("/api/submissions", submissionsRoutes);
-app.use("/api/earnings", earningsRoutes);
-app.use("/api/admin", adminRoutes);
-
-// Enhanced health check
-app.get("/health", (req, res) => {
-  const dbStatus =
-    mongoose.connection.readyState === 1 ? "connected" : "disconnected";
-  res.status(200).json({
-    status: "ok",
-    db: dbStatus,
-    environment: process.env.NODE_ENV || "development",
-  });
+// === MongoDB Connection ===
+connectDB().catch((err) => {
+  console.error("Database connection failed:", err.message);
 });
 
-// Error handling middleware
+// === Middleware ===
+app.use(
+  cors({
+    origin: [
+      process.env.FRONTEND_URL,
+      "https://rithu-business-client-side-6pnc-90zsbcwfv.vercel.app",
+    ],
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, "public")));
+
+app.use((req, res, next) => {
+  console.log(`${req.method} ${req.path}`);
+  console.log("Auth header:", req.headers.authorization);
+  next();
+});
+
+// === Routes ===
+app.use("/api/users", require("./routes/userRoutes"));
+app.use("/api/submissions", require("./routes/submissions"));
+app.use("/api/earnings", require("./routes/earnings"));
+app.use("/api/admin", require("./routes/adminRoutes"));
+
+// === Health Check ===
+app.get("/health", (req, res) => {
+  res.status(200).json({ status: "ok" });
+});
+
+// === Error Handling ===
 app.use((err, req, res, next) => {
-  console.error("Server Error:", err);
+  console.error("Error:", err);
+
+  if (err.name === "JsonWebTokenError") {
+    return res.status(401).json({ success: false, message: "Invalid token" });
+  }
 
   if (err.name === "ValidationError") {
-    return res.status(400).json({ message: err.message });
+    return res.status(400).json({ success: false, message: err.message });
   }
 
   res.status(500).json({
-    message: "Internal server error",
-    error: process.env.NODE_ENV === "development" ? err.message : undefined,
+    success: false,
+    message: err.message || "Internal server error",
   });
 });
 
-// Server startup
-const startServer = async () => {
-  try {
-    await connectDB();
-    const PORT = process.env.PORT || 5000;
-    httpServer.listen(PORT, () => {
-      console.log(`Server running on port ${PORT}`);
-      console.log(`Environment: ${process.env.NODE_ENV || "development"}`);
-    });
-  } catch (error) {
-    console.error("Failed to start server:", error);
-    process.exit(1);
-  }
-};
-
-// Vercel serverless function handler
+// === Export Handler for Vercel ===
 if (process.env.VERCEL) {
   module.exports = app;
 } else {
-  startServer();
+  const PORT = process.env.PORT || 5000;
+  httpServer.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+    console.log(`Socket.IO path: /socket.io`);
+  });
 }

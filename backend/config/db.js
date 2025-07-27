@@ -3,35 +3,28 @@ const mongoose = require("mongoose");
 const connectDB = async () => {
   try {
     if (!process.env.MONGO_URI) {
-      throw new Error("MongoDB connection URI is not defined");
+      throw new Error("MONGO_URI is not defined in environment variables");
     }
-
-    console.log("Attempting to connect to MongoDB...");
 
     await mongoose.connect(process.env.MONGO_URI, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
-      serverSelectionTimeoutMS: 10000, // Increased timeout
-      socketTimeoutMS: 45000,
+      serverSelectionTimeoutMS: 5000,
+      socketTimeoutMS: 30000,
     });
 
     console.log("MongoDB connected successfully");
   } catch (error) {
     console.error("MongoDB connection failed:", error.message);
-    console.error("Full error:", error);
-    throw error; // Rethrow to ensure the error is visible
+    throw error;
   }
 };
 
-// Serverless function cleanup
-if (process.env.VERCEL) {
+// Prevent premature closing in serverless
+if (!process.env.VERCEL) {
   process.on("SIGTERM", async () => {
-    try {
-      await mongoose.connection.close();
-      console.log("MongoDB connection closed gracefully");
-    } catch (err) {
-      console.error("Error closing MongoDB connection:", err);
-    }
+    await mongoose.connection.close();
+    console.log("MongoDB connection closed gracefully");
     process.exit(0);
   });
 }
