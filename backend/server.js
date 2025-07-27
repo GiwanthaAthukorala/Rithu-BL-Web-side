@@ -1,12 +1,20 @@
-require("dotenv").config();
+require("dotenv").config(); // Load environment variables first
 
-console.log("MongoDB URI:", process.env.MONGO_URI);
 const express = require("express");
 const { createServer } = require("http");
 const { Server } = require("socket.io");
 const cors = require("cors");
 const path = require("path");
 const connectDB = require("./config/db");
+
+// Verify critical environment variables
+const requiredEnvVars = ["MONGO_URI", "JWT_SECRET", "FRONTEND_URL"];
+for (const envVar of requiredEnvVars) {
+  if (!process.env[envVar]) {
+    console.error(`Missing required environment variable: ${envVar}`);
+    process.exit(1);
+  }
+}
 
 const app = express();
 const httpServer = createServer(app);
@@ -16,6 +24,7 @@ const io = new Server(httpServer, {
   cors: {
     origin: [
       process.env.FRONTEND_URL,
+      "http://localhost:3000",
       "https://rithu-business-client-side-6pnc.vercel.app",
     ],
     methods: ["GET", "POST"],
@@ -23,31 +32,6 @@ const io = new Server(httpServer, {
   },
   transports: ["websocket", "polling"],
   path: "/socket.io",
-  pingTimeout: 60000,
-  pingInterval: 25000,
-});
-
-// Socket.IO connection handler
-io.on("connection", (socket) => {
-  console.log("Client connected:", socket.id);
-
-  socket.on("register", (userId) => {
-    socket.join(userId);
-    console.log(`User ${userId} registered for updates`);
-  });
-
-  socket.on("disconnect", () => {
-    console.log("Client disconnected:", socket.id);
-  });
-});
-
-// Make io accessible in routes
-app.set("io", io);
-
-// Connect to database
-connectDB().catch((err) => {
-  console.error("Database connection failed:", err);
-  process.exit(1);
 });
 
 // Middleware
@@ -55,6 +39,7 @@ app.use(
   cors({
     origin: [
       process.env.FRONTEND_URL,
+      "http://localhost:3000",
       "https://rithu-business-client-side-6pnc.vercel.app",
     ],
     credentials: true,
@@ -63,77 +48,60 @@ app.use(
   })
 );
 
-app.use((req, res, next) => {
-  console.log(`Incoming ${req.method} request to ${req.path}`);
-  console.log("Auth header:", req.headers.authorization);
-  next();
-});
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
 
-// Import routes properly
+// Import routes
 const userRoutes = require("./routes/userRoutes");
 const submissionsRoutes = require("./routes/submissions");
 const earningsRoutes = require("./routes/earnings");
 const adminRoutes = require("./routes/adminRoutes");
 
-// Use routes
+// Routes
 app.use("/api/users", userRoutes);
 app.use("/api/submissions", submissionsRoutes);
 app.use("/api/earnings", earningsRoutes);
 app.use("/api/admin", adminRoutes);
 
-// Health check endpoint
+// Health check
 app.get("/health", (req, res) => {
-  res.status(200).json({ status: "ok" });
+  res
+    .status(200)
+    .json({
+      status: "ok",
+      db: mongoose.connection.readyState === 1 ? "connected" : "disconnected",
+    });
 });
 
-// Error handling middleware
+// Error handling
 app.use((err, req, res, next) => {
   console.error("Error:", err);
 
-  // Handle JWT errors
-  if (err.name === "JsonWebTokenError") {
-    return res.status(401).json({
-      success: false,
-      message: "Invalid token",
-    });
-  }
-
-  // Handle validation errors
   if (err.name === "ValidationError") {
-    return res.status(400).json({
-      success: false,
-      message: err.message,
-    });
+    return res.status(400).json({ message: err.message });
   }
 
-  // Handle other errors
-  res.status(500).json({
-    success: false,
-    message: err.message || "Internal server error",
-  });
+  res.status(500).json({ message: "Internal server error" });
 });
 
-app.use((req, res, next) => {
-  console.log(`${req.method} ${req.url}`);
-  next();
-});
+// Start server
+const startServer = async () => {
+  try {
+    await connectDB();
+    const PORT = process.env.PORT || 5000;
+    httpServer.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
+    });
+  } catch (error) {
+    console.error("Failed to start server:", error);
+    process.exit(1);
+  }
+};
 
-if (process.env.NODE_ENV !== "production") {
-  require("dotenv").config();
-}
-const handler = app;
-
+// Vercel serverless function handler
 if (process.env.VERCEL) {
-  // Export for Vercel
-  module.exports = handler;
+  module.exports = app;
 } else {
-  const PORT = process.env.PORT || 5000;
-  httpServer.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-    console.log(`Socket.IO path: /socket.io`);
-  });
+  startServer();
 }
