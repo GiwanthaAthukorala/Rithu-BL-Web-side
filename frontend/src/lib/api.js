@@ -35,7 +35,7 @@ export const endpoints = {
   login: "/users/login",
   register: "/users/register",
   profile: "/users/profile",
-  submissions: "/submissions", // Note: Changed from /submissions to /api/submissions
+  submissions: "/api/submissions", // Note: Changed from /submissions to /api/submissions
   earnings: "/earnings",
 };
 

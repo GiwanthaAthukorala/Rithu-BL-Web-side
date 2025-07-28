@@ -2,6 +2,7 @@ import { io } from "socket.io-client";
 
 export default function useSocket(userId) {
   const socket = io(process.env.NEXT_PUBLIC_API_URL, {
+    path: "/socket.io",
     withCredentials: true,
     transports: ["websocket", "polling"],
     // Additional options for stability
