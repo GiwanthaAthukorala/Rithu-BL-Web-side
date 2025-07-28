@@ -16,33 +16,40 @@ const api = axios.create({
 // Add response interceptor to handle errors
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem("token");
+    // Get token from localStorage
+    let token = null;
+    if (typeof window !== "undefined") {
+      token = localStorage.getItem("token");
+    }
+
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
+
+    // Handle FormData
     if (config.data instanceof FormData) {
       delete config.headers["Content-Type"];
     }
+
+    console.log("Request config:", {
+      url: config.url,
+      method: config.method,
+      hasToken: !!token,
+      headers: config.headers,
+    });
+
     return config;
   },
-
   (error) => {
     return Promise.reject(error);
   }
 );
 
-export const endpoints = {
-  login: "/users/login",
-  register: "/users/register",
-  profile: "/users/profile",
-  submissions: "/api/submissions", // Note: Changed from /submissions to /api/submissions
-  earnings: "/earnings",
-};
-
 // Response interceptor
 api.interceptors.response.use(
   (response) => response,
   (error) => {
+    console.error("API Error:", error.response?.data || error.message);
     if (error.response) {
       // Handle 401 Unauthorized
       if (error.response.status === 401) {
@@ -60,6 +67,14 @@ api.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+
+export const endpoints = {
+  login: "/users/login",
+  register: "/users/register",
+  profile: "/users/profile",
+  submissions: "/submissions", // Note: Changed from /submissions to /api/submissions
+  earnings: "/earnings",
+};
 
 export const register = async (userData) => {
   try {

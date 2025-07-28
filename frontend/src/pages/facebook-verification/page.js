@@ -55,9 +55,17 @@ export default function FbVerificationTask() {
       formData.append("screenshot", file);
       formData.append("platform", "facebook");
 
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        throw new Error("No authentication token found. Please log in again.");
+      }
+
       const apiUrl =
         process.env.NEXT_PUBLIC_API_URL ||
         "https://rithu-business-sever-side-3gpc.vercel.app";
+      console.log("Submitting to:", `${apiUrl}/api/submissions`);
+      console.log("Token exists:", !!token);
       const response = await fetch(`${apiUrl}/api/submissions`, {
         method: "POST",
         body: formData,
@@ -67,12 +75,20 @@ export default function FbVerificationTask() {
         },
       });
 
+      console.log("Response status:", response.status);
+
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
         throw new Error(errorData.message || "Submission failed");
       }
 
+      const result = await response.json();
+      console.log("Success response : ", result);
+
       setIsSubmitted(true);
+      setTimeout(() => {
+        router.push("/Profile/page");
+      }, 1000);
       router.push("/Profile/page");
     } catch (error) {
       console.error("Submission error:", error);
