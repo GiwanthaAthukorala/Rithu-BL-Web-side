@@ -55,20 +55,17 @@ export default function FbVerificationTask() {
       formData.append("screenshot", file);
       formData.append("platform", "facebook");
 
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/submissions`,
-        {
-          method: "POST",
-          body: formData,
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
-      if (!res.ok) {
-        const errData = await res.json().catch(() => ({}));
-        throw new Error(errData.message || "Submission failed");
-      }
+      const apiUrl =
+        process.env.NEXT_PUBLIC_API_URL ||
+        "https://rithu-business-sever-side-3gpc.vercel.app";
+      const response = await fetch(`${apiUrl}/api/submissions`, {
+        method: "POST",
+        body: formData,
+        credentials: "include",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
