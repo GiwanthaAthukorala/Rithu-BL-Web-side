@@ -57,7 +57,7 @@ export default function FbVerificationTask() {
 
       const apiUrl =
         process.env.NEXT_PUBLIC_API_URL ||
-        "https://rithu-business-sever-side-3gpc.vercel.app/api";
+        "https://rithu-business-sever-side-3gpc.vercel.app";
       const response = await fetch(`${apiUrl}/api/submissions`, {
         method: "POST",
         body: formData,
