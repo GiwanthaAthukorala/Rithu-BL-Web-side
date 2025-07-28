@@ -16,30 +16,16 @@ const api = axios.create({
 // Add response interceptor to handle errors
 api.interceptors.request.use(
   (config) => {
-    // Get token from localStorage
-    let token = null;
-    if (typeof window !== "undefined") {
-      token = localStorage.getItem("token");
-    }
-
+    const token = localStorage.getItem("token");
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
-
-    // Handle FormData
     if (config.data instanceof FormData) {
       delete config.headers["Content-Type"];
     }
-
-    console.log("Request config:", {
-      url: config.url,
-      method: config.method,
-      hasToken: !!token,
-      headers: config.headers,
-    });
-
     return config;
   },
+
   (error) => {
     return Promise.reject(error);
   }
@@ -49,7 +35,6 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    console.error("API Error:", error.response?.data || error.message);
     if (error.response) {
       // Handle 401 Unauthorized
       if (error.response.status === 401) {
