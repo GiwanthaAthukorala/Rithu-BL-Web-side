@@ -55,7 +55,9 @@ export default function FbVerificationTask() {
       formData.append("screenshot", file);
       formData.append("platform", "facebook");
 
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+      const apiUrl =
+        process.env.NEXT_PUBLIC_API_URL ||
+        "https://rithu-business-sever-side-3gpc.vercel.app";
       const response = await fetch(`${apiUrl}/api/submissions`, {
         method: "POST",
         body: formData,
