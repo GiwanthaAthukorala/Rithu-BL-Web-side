@@ -9,7 +9,7 @@ const multer = require("multer");
 const storage = multer.diskStorage({
   destination: async (req, file, cb) => {
     try {
-      const uploadDir = path.join(__dirname, "../../public/uploads");
+      const uploadDir = path.join(__dirname, "../public/uploads");
       await fs.mkdir(uploadDir, { recursive: true });
       cb(null, uploadDir);
     } catch (err) {
@@ -110,7 +110,7 @@ const createSubmission = async (req, res) => {
     if (req.file) {
       try {
         await fs.unlink(
-          path.join(__dirname, "../../public/uploads", req.file.filename)
+          path.join(__dirname, "../public/uploads", req.file.filename)
         );
       } catch (cleanupError) {
         console.error("Failed to clean up file:", cleanupError);
