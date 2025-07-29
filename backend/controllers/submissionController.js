@@ -68,7 +68,7 @@ const createSubmission = async (req, res) => {
     const submission = await Submission.create({
       user: req.user._id,
       platform: req.body.platform || "facebook",
-      screenshot: `/uploads/${req.file.filename}`,
+      screenshot: req.file.path,
       status: "approved",
       amount: 0.8,
     });
