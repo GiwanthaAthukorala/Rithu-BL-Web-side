@@ -1,10 +1,10 @@
+require("dotenv").config();
 const express = require("express");
 const { createServer } = require("http");
 const { Server } = require("socket.io");
 const cors = require("cors");
 const path = require("path");
 const cloudinary = require("./utils/cloudinary");
-require("dotenv").config();
 
 const connectDB = require("./config/db");
 const app = express(); // ✅ Now declared before it's used
