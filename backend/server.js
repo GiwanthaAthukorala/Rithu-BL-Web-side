@@ -3,14 +3,11 @@ const { createServer } = require("http");
 const { Server } = require("socket.io");
 const cors = require("cors");
 const path = require("path");
-
-// Load env only in local development
-if (!process.env.VERCEL) {
-  require("dotenv").config();
-}
+const cloudinary = require("./utils/cloudinary");
+require("dotenv").config();
 
 const connectDB = require("./config/db");
-const app = express();
+const app = express(); // ✅ Now declared before it's used
 const httpServer = createServer(app);
 
 // === Socket.IO Configuration ===
@@ -83,10 +80,25 @@ app.get("/health", (req, res) => {
   res.status(200).json({ status: "ok" });
 });
 
+// ✅ Move this route **AFTER** app is initialized
+app.get("/api/test-cloudinary", async (req, res) => {
+  try {
+    const result = await cloudinary.api.resources({
+      type: "upload",
+      prefix: "submissions",
+    });
+    res.json({ success: true, result });
+  } catch (err) {
+    console.error("❌ Cloudinary Test Failed:", err.message);
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
 // Root route
 app.get("/", (req, res) => {
   res.status(200).json({ message: "Backend is running!" });
 });
+
 // === Error Handling ===
 app.use((err, req, res, next) => {
   console.error("Error:", err);
@@ -105,7 +117,7 @@ app.use((err, req, res, next) => {
   });
 });
 
-// === Export Handler for Vercel ===
+// === Export Handler for Vercel or Start Server Locally ===
 if (process.env.VERCEL) {
   module.exports = app;
 } else {

@@ -41,13 +41,17 @@ const fileFilter = (req, file, cb) => {
 });*/
 
 // Controller functions
-/*const createSubmission = async (req, res) => {
+const createSubmission = async (req, res) => {
+  console.log("==== SUBMISSION REQUEST RECEIVED ====");
+  console.log("User ID : ", req.user?._id);
   console.log("Uploaded file:", req.file);
+
   try {
-    if (!req.file) {
+    if (!req.file || !req.file.path) {
+      console.error("❌ File upload failed. req.file is missing or invalid.");
       return res.status(400).json({
         success: false,
-        message: "No file uploaded",
+        message: "File upload failed. No file received from client.",
       });
     }
 
@@ -63,7 +67,7 @@ const fileFilter = (req, file, cb) => {
       buffer: req.file.buffer,
       mimetype: req.file.mimetype,
       originalname: req.file.originalname,
-    };
+    };*/
 
     const submission = await Submission.create({
       user: req.user._id,
@@ -115,32 +119,13 @@ const fileFilter = (req, file, cb) => {
       } catch (cleanupError) {
         console.error("Failed to clean up file:", cleanupError);
       }
-    }
+    }*/
 
     res.status(500).json({
       success: false,
-      message: "Submission failed",
+      message: "Internal server error",
       error: error.message,
     });
-  }
-};*/
-const createSubmission = async (req, res) => {
-  try {
-    if (!req.file || !req.file.path) {
-      return res.status(400).json({ message: "No screenshot uploaded" });
-    }
-
-    const submission = new Submission({
-      user: req.user._id,
-      platform: req.body.platform,
-      screenshot: req.file.path, // Cloudinary URL
-    });
-
-    await submission.save();
-    res.status(201).json(submission);
-  } catch (error) {
-    console.error("Submission Error:", error);
-    res.status(500).json({ message: "Internal server error" });
   }
 };
 
