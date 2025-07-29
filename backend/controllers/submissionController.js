@@ -1,12 +1,12 @@
 const Submission = require("../models/Submission");
 const Earnings = require("../models/Earnings");
-const path = require("path");
-const fs = require("fs").promises;
-const { v4: uuidv4 } = require("uuid");
-const multer = require("multer");
+//const path = require("path");
+//const fs = require("fs").promises;
+//const { v4: uuidv4 } = require("uuid");
+//const multer = require("multer");
 
 // Configure storage
-const storage = multer.diskStorage({
+/*const storage = multer.diskStorage({
   destination: async (req, file, cb) => {
     try {
       const uploadDir = path.join(__dirname, "../public/uploads");
@@ -20,7 +20,7 @@ const storage = multer.diskStorage({
     const ext = path.extname(file.originalname);
     cb(null, `${uuidv4()}${ext}`);
   },
-});
+});*/
 
 const fileFilter = (req, file, cb) => {
   const validTypes = ["image/jpeg", "image/png", "image/jpg"];
@@ -32,13 +32,13 @@ const fileFilter = (req, file, cb) => {
 };
 
 // Create multer instance
-const upload = multer({
+/*const upload = multer({
   storage,
   fileFilter,
   limits: {
     fileSize: 5 * 1024 * 1024, // 5MB
   },
-});
+});*/
 
 // Controller functions
 const createSubmission = async (req, res) => {
@@ -59,11 +59,11 @@ const createSubmission = async (req, res) => {
       });
     }
 
-    const fileData = {
+    /*const fileData = {
       buffer: req.file.buffer,
       mimetype: req.file.mimetype,
       originalname: req.file.originalname,
-    };
+    };*/
 
     const submission = await Submission.create({
       user: req.user._id,
@@ -107,7 +107,7 @@ const createSubmission = async (req, res) => {
   } catch (error) {
     console.error("Submission error:", error);
 
-    if (req.file) {
+    /* if (req.file) {
       try {
         await fs.unlink(
           path.join(__dirname, "../public/uploads", req.file.filename)
@@ -115,7 +115,7 @@ const createSubmission = async (req, res) => {
       } catch (cleanupError) {
         console.error("Failed to clean up file:", cleanupError);
       }
-    }
+    }*/
 
     res.status(500).json({
       success: false,
@@ -218,7 +218,7 @@ const rejectSubmission = async (req, res) => {
 };
 
 // Export as separate named exports
-module.exports.uploadFile = upload.single("screenshot");
+//module.exports.uploadFile = upload.single("screenshot");
 module.exports.createSubmission = createSubmission;
 module.exports.getUserSubmissions = getUserSubmissions;
 module.exports.approveSubmission = approveSubmission;
