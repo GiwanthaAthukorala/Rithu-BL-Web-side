@@ -167,7 +167,7 @@ export default function FbVerificationTask() {
               Please visit this link and take a screenshot as proof:
             </p>
             <a
-              href="https://facebook.com/yourpage"
+              href="https://www.facebook.com/share/1Ase2KqzCT/"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium"

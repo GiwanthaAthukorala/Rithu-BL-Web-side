@@ -121,19 +121,19 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="w-full mx-auto bg-gray-50">
       {/* Header */}
       <LSNavBar />
 
       {/* Main Content */}
-      <div className="flex flex-col items-center justify-center px-4 py-12">
+      <div className="w-full sm:max-w-[480px]  md:max-w-[768px] lg:max-w-full h-full sm:max-h-[480px] md:max-h-[768px] lg:max-h-full   flex flex-col items-center justify-center px-4 py-12">
         {/* Logo/Title */}
-        <h1 className="text-3xl font-bold text-blue-600 mb-12">
+        <h1 className="text-4xl font-bold text-[#025beb] mb-6">
           Rithu Business Lanka
         </h1>
 
         {/* Signup Form */}
-        <div className="w-full max-w-md">
+        <div className="w-full sm:w-1/2 md:w-2xl lg-w-f max-w-7xl">
           <div className="bg-white rounded-lg shadow-lg p-8">
             <h2 className="text-2xl font-semibold text-gray-900 mb-2">
               Create your account
