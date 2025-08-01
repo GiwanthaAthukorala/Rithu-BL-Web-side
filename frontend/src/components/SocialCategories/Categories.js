@@ -24,16 +24,20 @@ const SupportedPlatforms = () => {
         <Link href="/facebook-verification/page">
           <div className="cursor-pointer bg-white shadow-md rounded-lg p-6 border hover:shadow-lg transition">
             <div className="flex items-center mb-4">
-              <div className="w-10 h-10 flex items-center justify-center rounded-full bg-blue-600 text-white font-bold mr-3">
-                F
+              <div className="w-16 h-16 flex items-center justify-center mr-3 overflow-hidden">
+                <img
+                  src="/facebook.png"
+                  alt="Facebook Icon"
+                  className="w-16 h-16 object-contain"
+                />
               </div>
               <h3 className="text-lg font-semibold text-gray-900">Facebook</h3>
             </div>
-            <p className="text-gray-700 mb-4">
+            <p className="text-[#000000] font-bold mb-4 text-[18px]">
               Connect your profile and pages to earn from likes on your posts.
             </p>
-            <div className="text-sm text-gray-500">
-              Rs 0.80 like or follwing • Instant payouts
+            <div className="text-sm text-[#000000] font-medium">
+              Rs 0.80 like or follwing • facebook In one screen shot
             </div>
           </div>
         </Link>
@@ -42,16 +46,20 @@ const SupportedPlatforms = () => {
         <Link href="/facebook-verification/page">
           <div className="cursor-pointer bg-white shadow-md rounded-lg p-6 border hover:shadow-lg transition">
             <div className="flex items-center mb-4">
-              <div className="w-10 h-10 flex items-center justify-center rounded-full bg-black text-white font-bold mr-3">
-                T
+              <div className="w-16 h-16 flex items-center justify-center mr-3 overflow-hidden">
+                <img
+                  src="/Tiktok.png"
+                  alt="Facebook Icon"
+                  className="w-16 h-16 object-contain"
+                />
               </div>
               <h3 className="text-lg font-semibold text-gray-900">TikTok</h3>
             </div>
-            <p className="text-gray-700 mb-4">
+            <p className="text-[#000000] font-bold mb-4 text-[18px]">
               Earn money from likes on your videos and trending content.
             </p>
-            <div className="text-sm text-gray-500">
-              80¢ per like • Instant payouts
+            <div className="text-sm text-[#000000] font-medium">
+              Rs 0.80 like • Tiktok In one screen shot
             </div>
           </div>
         </Link>
@@ -60,16 +68,20 @@ const SupportedPlatforms = () => {
         <Link href="/facebook-verification/page">
           <div className="cursor-pointer bg-white shadow-md rounded-lg p-6 border hover:shadow-lg transition">
             <div className="flex items-center mb-4">
-              <div className="w-10 h-10 flex items-center justify-center rounded-full bg-pink-500 text-white font-bold mr-3">
-                I
+              <div className="w-16 h-16 flex items-center justify-center mr-3 overflow-hidden">
+                <img
+                  src="/instragrma.png"
+                  alt="Facebook Icon"
+                  className="w-16 h-16 object-contain"
+                />
               </div>
               <h3 className="text-lg font-semibold text-gray-900">Instagram</h3>
             </div>
-            <p className="text-gray-700 mb-4">
+            <p className="text-[#000000] font-bold mb-4 text-[18px] ">
               Link your account and monetize likes on your photos and reels.
             </p>
-            <div className="text-sm text-gray-500">
-              80¢ per like • Instant payouts
+            <div className="text-sm text-[#000000] font-medium">
+              Rs 0.80 like • Instant payouts
             </div>
           </div>
         </Link>
@@ -78,16 +90,20 @@ const SupportedPlatforms = () => {
         <Link href="/facebook-verification/page">
           <div className="cursor-pointer bg-white shadow-md rounded-lg p-6 border hover:shadow-lg transition">
             <div className="flex items-center mb-4">
-              <div className="w-10 h-10 flex items-center justify-center rounded-full bg-red-600 text-white font-bold mr-3">
-                Y
+              <div className="w-16 h-16 flex items-center justify-center mr-3 overflow-hidden">
+                <img
+                  src="/youtube.png"
+                  alt="Facebook Icon"
+                  className="w-16 h-16 object-contain"
+                />
               </div>
-              <h3 className="text-lg font-semibold text-gray-900">YouTube</h3>
+              <h3 className="text-lg font-semibold text-gray-900"></h3>
             </div>
-            <p className="text-gray-700 mb-4">
-              Get paid for likes on your videos and community posts.
+            <p className="text-[#000000] font-bold mb-4 text-[18px]">
+              Get paid for likes on your videos and Subscribers.
             </p>
-            <div className="text-sm text-gray-500">
-              Rs 0.80 like or follwing • Instant payouts
+            <div className="text-sm text-[#000000] font-medium">
+              Rs 0.80 • Youtube payouts
             </div>
           </div>
         </Link>
@@ -96,16 +112,20 @@ const SupportedPlatforms = () => {
         <Link href="/facebook-verification/page">
           <div className="cursor-pointer bg-white shadow-md rounded-lg p-6 border hover:shadow-lg transition">
             <div className="flex items-center mb-4">
-              <div className="w-10 h-10 flex items-center justify-center rounded-full bg-green-600 text-white font-bold mr-3">
-                W
+              <div className="w-16 h-16 flex items-center justify-center mr-3 overflow-hidden">
+                <img
+                  src="/whatsapp.png"
+                  alt="Facebook Icon"
+                  className="w-16 h-16 object-contain"
+                />
               </div>
               <h3 className="text-lg font-semibold text-gray-900">WhatsApp</h3>
             </div>
-            <p className="text-gray-700 mb-4">
+            <p className="text-[#000000]  font-bold mb-4 text-[18px]">
               Monetize your business messages and group interactions.
             </p>
-            <div className="text-sm text-gray-500">
-              Rs 0.80 like • Instant payouts
+            <div className="text-sm text-[#000000] font-medium ">
+              Rs 0.80 like • Whatsapp payouts
             </div>
           </div>
         </Link>

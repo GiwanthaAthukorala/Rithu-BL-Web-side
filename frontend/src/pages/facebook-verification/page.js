@@ -140,8 +140,15 @@ export default function FbVerificationTask() {
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="bg-blue-600 text-white p-6 rounded-t-lg">
-          <h1 className="text-xl font-semibold mb-2">
-            Facebook Verification Task
+          <div className="w-20 h-20 flex items-center justify-center mr-3 overflow-hidden">
+            <img
+              src="/facebook.png"
+              alt="Facebook Icon"
+              className="w-20 h-20 object-contain"
+            />
+          </div>
+          <h1 className="text-xl text-[#000000]  font-bold mb-2">
+            Facebook Verification Section
           </h1>
           <p className="text-blue-100">Earn Rs 0.80 per valid screenshot</p>
         </div>
@@ -168,6 +175,38 @@ export default function FbVerificationTask() {
             </p>
             <a
               href="https://www.facebook.com/share/1Ase2KqzCT/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium"
+            >
+              Visit our Facebook page <ExternalLink className="w-4 h-4 ml-1" />
+            </a>
+            <a
+              href=""
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium"
+            >
+              Visit our Facebook page <ExternalLink className="w-4 h-4 ml-1" />
+            </a>
+            <a
+              href=""
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium"
+            >
+              Visit our Facebook page <ExternalLink className="w-4 h-4 ml-1" />
+            </a>
+            <a
+              href=""
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium"
+            >
+              Visit our Facebook page <ExternalLink className="w-4 h-4 ml-1" />
+            </a>
+            <a
+              href=""
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium"
