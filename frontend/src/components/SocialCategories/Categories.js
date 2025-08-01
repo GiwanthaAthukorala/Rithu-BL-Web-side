@@ -22,7 +22,7 @@ const SupportedPlatforms = () => {
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 max-w-6xl mx-auto mb-12">
         {/* Facebook */}
         <Link href="/facebook-verification/page">
-          <div className="cursor-pointer bg-white shadow-md rounded-lg p-6 border hover:shadow-lg transition">
+          <div className="cursor-pointer bg-white shadow-md rounded-lg p-6 border-0 hover:shadow-lg transition">
             <div className="flex items-center mb-4">
               <div className="w-16 h-16 flex items-center justify-center mr-3 overflow-hidden">
                 <img
@@ -37,19 +37,19 @@ const SupportedPlatforms = () => {
               Connect your profile and pages to earn from likes on your posts.
             </p>
             <div className="text-sm text-[#000000] font-medium">
-              Rs 0.80 like or follwing • facebook In one screen shot
+              Rs 0.80 like or follwing • In one screenshot
             </div>
           </div>
         </Link>
 
         {/* TikTok */}
         <Link href="/facebook-verification/page">
-          <div className="cursor-pointer bg-white shadow-md rounded-lg p-6 border hover:shadow-lg transition">
+          <div className="cursor-pointer bg-white shadow-md rounded-lg p-6 border-0 hover:shadow-lg transition">
             <div className="flex items-center mb-4">
               <div className="w-16 h-16 flex items-center justify-center mr-3 overflow-hidden">
                 <img
                   src="/Tiktok.png"
-                  alt="Facebook Icon"
+                  alt="Tiktok Icon"
                   className="w-16 h-16 object-contain"
                 />
               </div>
@@ -59,19 +59,19 @@ const SupportedPlatforms = () => {
               Earn money from likes on your videos and trending content.
             </p>
             <div className="text-sm text-[#000000] font-medium">
-              Rs 0.80 like • Tiktok In one screen shot
+              Rs 0.80 like • Tiktok In one screenshot
             </div>
           </div>
         </Link>
 
         {/* Instagram */}
         <Link href="/facebook-verification/page">
-          <div className="cursor-pointer bg-white shadow-md rounded-lg p-6 border hover:shadow-lg transition">
+          <div className="cursor-pointer bg-white shadow-md rounded-lg p-6 border-0 hover:shadow-lg transition">
             <div className="flex items-center mb-4">
               <div className="w-16 h-16 flex items-center justify-center mr-3 overflow-hidden">
                 <img
                   src="/instragrma.png"
-                  alt="Facebook Icon"
+                  alt="### Icon"
                   className="w-16 h-16 object-contain"
                 />
               </div>
@@ -88,12 +88,12 @@ const SupportedPlatforms = () => {
 
         {/* YouTube */}
         <Link href="/facebook-verification/page">
-          <div className="cursor-pointer bg-white shadow-md rounded-lg p-6 border hover:shadow-lg transition">
+          <div className="cursor-pointer bg-white shadow-md rounded-lg p-6 border-0 hover:shadow-lg transition">
             <div className="flex items-center mb-4">
               <div className="w-16 h-16 flex items-center justify-center mr-3 overflow-hidden">
                 <img
                   src="/youtube.png"
-                  alt="Facebook Icon"
+                  alt="youtube Icon"
                   className="w-16 h-16 object-contain"
                 />
               </div>
@@ -110,18 +110,18 @@ const SupportedPlatforms = () => {
 
         {/* WhatsApp */}
         <Link href="/facebook-verification/page">
-          <div className="cursor-pointer bg-white shadow-md rounded-lg p-6 border hover:shadow-lg transition">
+          <div className="cursor-pointer bg-white shadow-md rounded-lg p-6 border-0 hover:shadow-lg transition">
             <div className="flex items-center mb-4">
               <div className="w-16 h-16 flex items-center justify-center mr-3 overflow-hidden">
                 <img
                   src="/whatsapp.png"
-                  alt="Facebook Icon"
+                  alt="Whatsapp Icon"
                   className="w-16 h-16 object-contain"
                 />
               </div>
               <h3 className="text-lg font-semibold text-gray-900">WhatsApp</h3>
             </div>
-            <p className="text-[#000000]  font-bold mb-4 text-[18px]">
+            <p className="text-[#000000]  font-bold mb-4 text-[18px] ">
               Monetize your business messages and group interactions.
             </p>
             <div className="text-sm text-[#000000] font-medium ">
