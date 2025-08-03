@@ -61,21 +61,32 @@ const createSubmission = async (req, res) => {
     const cloudinaryUrl = req.file.path;
 
     // 1. Generate hash
-    const uploadedImageHash = await generateImageHash(cloudinaryUrl);
+    let uploadedImageHash;
+    try {
+      uploadedImageHash = await generateImageHash(cloudinaryUrl);
+    } catch (hashError) {
+      console.error("Hash generation failed:", hashError);
+      return res.status(400).json({
+        success: false,
+        message: "Could not process image. Please try a different file.",
+      });
+    }
 
-    // 2. Get all previous hashes for this user
+    // Check for duplicates with better error reporting
     const previousSubmissions = await Submission.find({
       user: userId,
       imageHash: { $ne: null },
-    });
+    }).limit(10); // Limit to recent submissions
 
-    // 3. Compare hashes
     for (const submission of previousSubmissions) {
       if (isSimilarHash(uploadedImageHash, submission.imageHash)) {
         return res.status(400).json({
           success: false,
-          message:
-            "Duplicate or similar image detected. Please upload a different screenshot.",
+          message: `This screenshot is too similar to one you submitted on ${new Date(
+            submission.createdAt
+          ).toLocaleDateString()}. Please upload a different screenshot.`,
+          errorType: "DUPLICATE_IMAGE",
+          previousDate: new Date(submission.createdAt).toLocaleDateString(),
         });
       }
     }

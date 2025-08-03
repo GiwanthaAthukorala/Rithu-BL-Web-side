@@ -5,6 +5,7 @@ import { Upload, ExternalLink, CheckCircle } from "lucide-react";
 import Header from "@/components/Header/Header";
 import api from "@/lib/api";
 import { useAuth } from "@/Context/AuthContext";
+import DuplicateWarningModal from "@/components/DuplicateWarningModal";
 
 export default function FbVerificationTask() {
   const [file, setFile] = useState(null);
@@ -14,6 +15,8 @@ export default function FbVerificationTask() {
   const [error, setError] = useState(null);
   const router = useRouter();
   const { user, isLoading: isAuthLoading } = useAuth();
+  const [showDuplicateModal, setShowDuplicateModal] = useState(false);
+  const [previousSubmissionDate, setPreviousSubmissionDate] = useState("");
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
@@ -61,9 +64,7 @@ export default function FbVerificationTask() {
         throw new Error("No authentication token found. Please log in again.");
       }
 
-      const apiUrl =
-        process.env.NEXT_PUBLIC_API_URL ||
-        "https://rithu-bl-web-side.vercel.app";
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
       console.log("Submitting to:", `${apiUrl}/api/submissions`);
       console.log("Token exists:", !!token);
       const response = await fetch(`${apiUrl}/api/submissions`, {
@@ -78,7 +79,16 @@ export default function FbVerificationTask() {
       console.log("Response status:", response.status);
 
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
+        const errorData = await response.json();
+
+        // Handle duplicate image case specifically
+        if (errorData.message.includes("too similar")) {
+          const dateMatch = errorData.message.match(/\d{1,2}\/\d{1,2}\/\d{4}/);
+          setPreviousSubmissionDate(dateMatch ? dateMatch[0] : "previously");
+          setShowDuplicateModal(true);
+          return;
+        }
+
         throw new Error(errorData.message || "Submission failed");
       }
 
@@ -92,7 +102,9 @@ export default function FbVerificationTask() {
       router.push("/Profile/page");
     } catch (error) {
       console.error("Submission error:", error);
-      setError(error.message || "Submission failed. Please try again.");
+      if (!error.message.includes("too similar")) {
+        setError(error.message || "Submission failed. Please try again.");
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -290,6 +302,17 @@ export default function FbVerificationTask() {
               >
                 {isSubmitting ? "Submitting..." : "Submit Screenshot"}
               </button>
+
+              {showDuplicateModal && (
+                <DuplicateWarningModal
+                  onClose={() => {
+                    setShowDuplicateModal(false);
+                    setFile(null);
+                    setPreview(null);
+                  }}
+                  previousDate={previousSubmissionDate}
+                />
+              )}
             </form>
           </div>
         </div>
