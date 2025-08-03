@@ -6,7 +6,7 @@ function hammingDistance(str1, str2) {
   return dist;
 }
 
-module.exports = function isSimilarHash(hash1, hash2, threshold = 5) {
+module.exports = function isSimilarHash(hash1, hash2, threshold = 2) {
   if (!hash1 || !hash2) return false;
   const distance = hammingDistance(hash1, hash2);
   return distance <= threshold;
