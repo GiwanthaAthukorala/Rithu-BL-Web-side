@@ -1,5 +1,7 @@
 const Submission = require("../models/Submission");
 const Earnings = require("../models/Earnings");
+const generateImageHash = require("../utils/generateImageHash");
+const isSimilarHash = require("../utils/isSimilarHash");
 //const path = require("path");
 //const fs = require("fs").promises;
 //const { v4: uuidv4 } = require("uuid");
@@ -55,6 +57,29 @@ const createSubmission = async (req, res) => {
       });
     }
 
+    const userId = req.user._id;
+    const cloudinaryUrl = req.file.path;
+
+    // 1. Generate hash
+    const uploadedImageHash = await generateImageHash(cloudinaryUrl);
+
+    // 2. Get all previous hashes for this user
+    const previousSubmissions = await Submission.find({
+      user: userId,
+      imageHash: { $ne: null },
+    });
+
+    // 3. Compare hashes
+    for (const submission of previousSubmissions) {
+      if (isSimilarHash(uploadedImageHash, submission.imageHash)) {
+        return res.status(400).json({
+          success: false,
+          message:
+            "Duplicate or similar image detected. Please upload a different screenshot.",
+        });
+      }
+    }
+
     // Validate required fields
     if (!req.user?._id) {
       return res.status(400).json({
@@ -72,7 +97,8 @@ const createSubmission = async (req, res) => {
     const submission = await Submission.create({
       user: req.user._id,
       platform: req.body.platform || "facebook",
-      screenshot: req.file.path,
+      screenshot: cloudinaryUrl,
+      imageHash: uploadedImageHash,
       status: "approved",
       amount: 0.8,
     });

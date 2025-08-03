@@ -17,6 +17,7 @@ const submissionSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    imageHash: { type: String },
     status: {
       type: String,
       enum: ["pending", "approved", "rejected"],
