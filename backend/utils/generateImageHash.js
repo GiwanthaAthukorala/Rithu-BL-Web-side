@@ -10,9 +10,11 @@ function downloadImage(url) {
     https
       .get(url, (response) => {
         response.pipe(file);
-        file.on("finish", () => file.close(() => resolve(filePath)));
+        file.on("finish", () => {
+          file.close(() => resolve(filePath));
+        });
       })
-      .on("error", reject);
+      .on("error", (err) => reject(err));
   });
 }
 
@@ -28,6 +30,6 @@ function getImageHash(filePath) {
 module.exports = async function generateImageHash(url) {
   const filePath = await downloadImage(url);
   const hash = await getImageHash(filePath);
-  fs.unlinkSync(filePath);
+  fs.unlinkSync(filePath); // Clean up temp image
   return hash;
 };
