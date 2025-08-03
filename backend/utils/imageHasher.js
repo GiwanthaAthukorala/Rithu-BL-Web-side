@@ -1,4 +1,4 @@
-const { imageHash } = require("image-hash");
+/*const { imageHash } = require("image-hash");
 const https = require("https");
 const fs = require("fs");
 const path = require("path");
@@ -40,4 +40,4 @@ module.exports = {
   downloadImage,
   generateImageHash,
   hammingDistance,
-};
+};*/
