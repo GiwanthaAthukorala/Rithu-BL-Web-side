@@ -72,7 +72,7 @@ export default function FbVerificationTask() {
       const response = await fetch(`${apiUrl}/api/submissions`, {
         method: "POST",
         body: formData,
-        credentials: "include",
+        credentials: "include", // Important for cookies/auth
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
