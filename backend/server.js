@@ -46,11 +46,12 @@ connectDB().catch((err) => {
   console.error("Database connection failed:", err.message);
 });
 
+// === Middleware ===
 app.use(
   cors({
     origin: [
-      "https://rithu-business-client-side-2131.vercel.app", // ✅ allow frontend
-      "http://localhost:3000", // ✅ allow local dev
+      process.env.FRONTEND_URL,
+      "https://rithu-business-client-side-2131.vercel.app",
     ],
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
