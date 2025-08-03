@@ -1,7 +1,13 @@
 const Submission = require("../models/Submission");
 const Earnings = require("../models/Earnings");
-const generateImageHash = require("../utils/generateImageHash");
-const isSimilarHash = require("../utils/isSimilarHash");
+const {
+  downloadImage,
+  generateImageHash,
+  hammingDistance,
+} = require("../utils/imageHasher");
+const fs = require("fs");
+const path = require("path");
+
 //const path = require("path");
 //const fs = require("fs").promises;
 //const { v4: uuidv4 } = require("uuid");
@@ -57,28 +63,39 @@ const createSubmission = async (req, res) => {
       });
     }
 
-    const userId = req.user._id;
-    const cloudinaryUrl = req.file.path;
+    const uploadedImageUrl = req.file.path;
 
-    // 1. Generate hash
-    const uploadedImageHash = await generateImageHash(cloudinaryUrl);
+    // Step 1: Download current image from Cloudinary
+    const tempPath = path.join(__dirname, "../temp", `${Date.now()}.jpg`);
+    await downloadImage(uploadedImageUrl, tempPath);
+    const newHash = await generateImageHash(tempPath);
 
-    // 2. Get all previous hashes for this user
-    const previousSubmissions = await Submission.find({
-      user: userId,
-      imageHash: { $ne: null },
-    });
+    // Step 2: Compare with previous submissions
+    const previousSubmissions = await Submission.find({});
+    for (let submission of previousSubmissions) {
+      const existingUrl = submission.screenshot;
+      const existingTempPath = path.join(
+        __dirname,
+        "../temp",
+        `${Date.now()}_compare.jpg`
+      );
+      await downloadImage(existingUrl, existingTempPath);
+      const existingHash = await generateImageHash(existingTempPath);
 
-    // 3. Compare hashes
-    for (const submission of previousSubmissions) {
-      if (isSimilarHash(uploadedImageHash, submission.imageHash)) {
+      const distance = hammingDistance(newHash, existingHash);
+      fs.unlinkSync(existingTempPath); // Clean up
+
+      if (distance <= 5) {
+        fs.unlinkSync(tempPath); // Clean up
         return res.status(400).json({
           success: false,
           message:
-            "Duplicate or similar image detected. Please upload a different screenshot.",
+            "Duplicate or similar screenshot detected. Submission rejected.",
         });
       }
     }
+
+    fs.unlinkSync(tempPath); // Clean up
 
     // Validate required fields
     if (!req.user?._id) {
@@ -97,8 +114,7 @@ const createSubmission = async (req, res) => {
     const submission = await Submission.create({
       user: req.user._id,
       platform: req.body.platform || "facebook",
-      screenshot: cloudinaryUrl,
-      imageHash: uploadedImageHash,
+      screenshot: uploadedImageUrl,
       status: "approved",
       amount: 0.8,
     });
