@@ -5,57 +5,18 @@ const { Server } = require("socket.io");
 const cors = require("cors");
 const path = require("path");
 const cloudinary = require("./utils/cloudinary");
-const connectDB = require("./config/db");
 
-const app = express();
+const connectDB = require("./config/db");
+const app = express(); // ✅ Now declared before it's used
 const httpServer = createServer(app);
 
-// --- Option 1: Using cors package with dynamic whitelist ---
-const allowedOrigins = [
-  process.env.FRONTEND_URL,
-  "https://rithu-business-client-side-2131.vercel.app",
-];
-
-const corsOptions = {
-  origin: function (origin, callback) {
-    // allow requests with no origin like mobile apps or curl requests
-    if (!origin) return callback(null, true);
-    if (allowedOrigins.indexOf(origin) !== -1) {
-      return callback(null, true);
-    } else {
-      return callback(new Error("CORS not allowed for this domain: " + origin));
-    }
-  },
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  credentials: true,
-};
-
-app.use(cors(corsOptions));
-
-// --- Option 2: Alternatively, set headers manually ---
-// Uncomment the following middleware block if you prefer to set CORS headers manually:
-
-/*
-app.use((req, res, next) => {
-  const allowedOrigins = [
-    process.env.FRONTEND_URL,
-    "https://rithu-business-client-side-2131.vercel.app",
-  ];
-  const origin = req.headers.origin;
-  if (allowedOrigins.includes(origin)) {
-    res.setHeader("Access-Control-Allow-Origin", origin);
-  }
-  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
-  res.header("Access-Control-Allow-Credentials", "true");
-  next();
-});
-*/
-
-// ----- Socket.IO Configuration -----
+// === Socket.IO Configuration ===
 const io = new Server(httpServer, {
   cors: {
-    origin: allowedOrigins,
+    origin: [
+      process.env.FRONTEND_URL,
+      "https://rithu-business-client-side-2131.vercel.app",
+    ],
     methods: ["GET", "POST"],
     credentials: true,
   },
@@ -67,10 +28,12 @@ const io = new Server(httpServer, {
 
 io.on("connection", (socket) => {
   console.log("Client connected:", socket.id);
+
   socket.on("register", (userId) => {
     socket.join(userId);
     console.log(`User ${userId} registered for updates`);
   });
+
   socket.on("disconnect", () => {
     console.log("Client disconnected:", socket.id);
   });
@@ -78,35 +41,58 @@ io.on("connection", (socket) => {
 
 app.set("io", io);
 
-// ----- MongoDB Connection -----
+// === MongoDB Connection ===
 connectDB().catch((err) => {
   console.error("Database connection failed:", err.message);
 });
 
-// ----- Other Middlewares -----
+// === Middleware ===
+const allowedOrigins = [
+  process.env.FRONTEND_URL,
+  "https://rithu-business-client-side-2131.vercel.app",
+];
+
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  if (allowedOrigins.includes(origin)) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
+    res.setHeader("Access-Control-Allow-Credentials", "true");
+    res.setHeader(
+      "Access-Control-Allow-Methods",
+      "GET,POST,PUT,DELETE,OPTIONS"
+    );
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type,Authorization");
+  }
+
+  if (req.method === "OPTIONS") {
+    return res.status(200).end();
+  }
+
+  next();
+});
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
 
-// Logging middleware (optional)
 app.use((req, res, next) => {
   console.log(`${req.method} ${req.path}`);
   console.log("Auth header:", req.headers.authorization);
   next();
 });
 
-// ----- Routes -----
+// === Routes ===
 app.use("/api/users", require("./routes/userRoutes"));
 app.use("/api/submissions", require("./routes/submissions"));
 app.use("/api/earnings", require("./routes/earnings"));
 app.use("/api/admin", require("./routes/adminRoutes"));
 
-// Health check route
+// === Health Check ===
 app.get("/health", (req, res) => {
   res.status(200).json({ status: "ok" });
 });
 
-// Test route for Cloudinary resources
+// ✅ Move this route **AFTER** app is initialized
 app.get("/api/test-cloudinary", async (req, res) => {
   try {
     const result = await cloudinary.api.resources({
@@ -125,24 +111,26 @@ app.get("/", (req, res) => {
   res.status(200).json({ message: "Backend is running!" });
 });
 
-// ----- Error Handling Middleware -----
+// === Error Handling ===
 app.use((err, req, res, next) => {
   console.error("Error:", err);
+
   if (err.name === "JsonWebTokenError") {
     return res.status(401).json({ success: false, message: "Invalid token" });
   }
+
   if (err.name === "ValidationError") {
     return res.status(400).json({ success: false, message: err.message });
   }
+
   res.status(500).json({
     success: false,
     message: err.message || "Internal server error",
   });
 });
 
-// ----- Start Server or Export for Serverless Platforms -----
+// === Export Handler for Vercel or Start Server Locally ===
 if (process.env.VERCEL) {
-  // When deploying on Vercel, export the app for serverless functions
   module.exports = app;
 } else {
   const PORT = process.env.PORT || 5000;
