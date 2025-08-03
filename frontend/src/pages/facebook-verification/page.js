@@ -64,7 +64,9 @@ export default function FbVerificationTask() {
         throw new Error("No authentication token found. Please log in again.");
       }
 
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+      const apiUrl =
+        process.env.NEXT_PUBLIC_API_URL ||
+        "https://rithu-bl-web-side.vercel.app";
       console.log("Submitting to:", `${apiUrl}/api/submissions`);
       console.log("Token exists:", !!token);
       const response = await fetch(`${apiUrl}/api/submissions`, {
