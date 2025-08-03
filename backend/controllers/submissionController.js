@@ -47,7 +47,6 @@ const createSubmission = async (req, res) => {
   console.log("==== SUBMISSION REQUEST RECEIVED ====");
   console.log("User ID : ", req.user?._id);
   console.log("Uploaded file:", req.file);
-  console.log("🔍 Cloudinary Image URL:", cloudinaryUrl);
 
   try {
     if (!req.file || !req.file.path) {
@@ -147,12 +146,6 @@ const createSubmission = async (req, res) => {
         console.error("Failed to clean up file:", cleanupError);
       }
     }*/
-    if (error.message.includes("Could not fetch image")) {
-      return res.status(500).json({
-        success: false,
-        message: "Failed to process uploaded image. Please try again.",
-      });
-    }
 
     res.status(500).json({
       success: false,

@@ -1,35 +1,35 @@
-const sharp = require("sharp");
-const axios = require("axios");
-const { blockhashData } = require("blockhash-core");
+const { imageHash } = require("image-hash");
+const https = require("https");
+const fs = require("fs");
+const path = require("path");
 
-async function fetchImageBuffer(imageUrl) {
-  try {
-    const response = await axios.get(imageUrl, {
-      responseType: "arraybuffer",
-      headers: {
-        "User-Agent": "Mozilla/5.0",
-        Accept: "image/avif,image/webp,image/apng,image/*,*/*;q=0.8",
-      },
+function downloadImage(url) {
+  return new Promise((resolve, reject) => {
+    const filePath = path.join(__dirname, "temp.jpg");
+    const file = fs.createWriteStream(filePath);
+    https
+      .get(url, (response) => {
+        response.pipe(file);
+        file.on("finish", () => {
+          file.close(() => resolve(filePath));
+        });
+      })
+      .on("error", (err) => reject(err));
+  });
+}
+
+function getImageHash(filePath) {
+  return new Promise((resolve, reject) => {
+    imageHash(filePath, 16, true, (error, data) => {
+      if (error) reject(error);
+      else resolve(data);
     });
-
-    return Buffer.from(response.data, "binary");
-  } catch (error) {
-    console.error("Failed to fetch image buffer:", error.message);
-    throw new Error("Could not fetch image for hashing");
-  }
+  });
 }
 
-async function generateImageHash(imageUrl) {
-  const imageBuffer = await fetchImageBuffer(imageUrl);
-
-  const raw = await sharp(imageBuffer)
-    .resize(256, 256, { fit: "cover" })
-    .ensureAlpha()
-    .raw()
-    .toBuffer({ resolveWithObject: true });
-
-  const hash = blockhashData(raw.data, 8, 2, raw.info.width, raw.info.height);
+module.exports = async function generateImageHash(url) {
+  const filePath = await downloadImage(url);
+  const hash = await getImageHash(filePath);
+  fs.unlinkSync(filePath); // Clean up temp image
   return hash;
-}
-
-module.exports = generateImageHash;
+};
