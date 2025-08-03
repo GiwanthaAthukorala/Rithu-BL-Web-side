@@ -56,13 +56,6 @@ const createSubmission = async (req, res) => {
         message: "File upload failed. No file received from client.",
       });
     }
-    // Add file validation
-    if (!req.file.mimetype.match(/^image\/(jpeg|png|jpg)$/)) {
-      return res.status(400).json({
-        success: false,
-        message: "Only JPEG, JPG, and PNG images are allowed",
-      });
-    }
 
     const userId = req.user._id;
     const cloudinaryUrl = req.file.path;

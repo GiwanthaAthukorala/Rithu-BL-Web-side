@@ -86,6 +86,9 @@ export default function FbVerificationTask() {
       console.log("Success response : ", result);
 
       setIsSubmitted(true);
+      setTimeout(() => {
+        router.push("/Profile/page");
+      }, 1000);
       router.push("/Profile/page");
     } catch (error) {
       console.error("Submission error:", error);

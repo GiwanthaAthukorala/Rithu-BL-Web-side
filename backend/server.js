@@ -16,11 +16,9 @@ const io = new Server(httpServer, {
     origin: [
       process.env.FRONTEND_URL,
       "https://rithu-business-client-side-2131.vercel.app",
-      "https://rithu-bl-web-side.vercel.app",
     ],
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    methods: ["GET", "POST"],
     credentials: true,
-    allowedHeaders: ["Content-Type", "Authorization"],
   },
   transports: ["websocket", "polling"],
   path: "/socket.io",
@@ -49,23 +47,18 @@ connectDB().catch((err) => {
 });
 
 // === Middleware ===
-// Replace your current CORS middleware with this:
+
 app.use(
   cors({
     origin: [
-      process.env.FRONTEND_URL,
-      "https://rithu-business-client-side-2131.vercel.app",
-      "https://rithu-bl-web-side.vercel.app",
+      "https://rithu-business-client-side-2131.vercel.app", // frontend
+      "http://localhost:3000", // local frontend
     ],
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
-    exposedHeaders: ["Content-Range", "X-Content-Range"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
-
-// Handle preflight requests
-app.options("*", cors());
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
