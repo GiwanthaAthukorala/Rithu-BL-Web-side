@@ -2,76 +2,35 @@ const Submission = require("../models/Submission");
 const Earnings = require("../models/Earnings");
 const generateImageHash = require("../utils/generateImageHash");
 const isSimilarHash = require("../utils/isSimilarHash");
-//const path = require("path");
-//const fs = require("fs").promises;
-//const { v4: uuidv4 } = require("uuid");
-//const multer = require("multer");
+const cloudinary = require("../utils/cloudinary");
 
-// Configure storage
-/*const storage = multer.diskStorage({
-  destination: async (req, file, cb) => {
-    try {
-      const uploadDir = path.join(__dirname, "../public/uploads");
-      await fs.mkdir(uploadDir, { recursive: true });
-      cb(null, uploadDir);
-    } catch (err) {
-      cb(err);
-    }
-  },
-  filename: (req, file, cb) => {
-    const ext = path.extname(file.originalname);
-    cb(null, `${uuidv4()}${ext}`);
-  },
-});*/
-
-const fileFilter = (req, file, cb) => {
-  const validTypes = ["image/jpeg", "image/png", "image/jpg"];
-  if (validTypes.includes(file.mimetype)) {
-    cb(null, true);
-  } else {
-    cb(new Error("Only JPEG/JPG/PNG images allowed"), false);
-  }
-};
-
-// Create multer instance
-/*const upload = multer({
-  storage,
-  fileFilter,
-  limits: {
-    fileSize: 5 * 1024 * 1024, // 5MB
-  },
-});*/
-
-// Controller functions
 const createSubmission = async (req, res) => {
   console.log("==== SUBMISSION REQUEST RECEIVED ====");
-  console.log("User ID : ", req.user?._id);
-  console.log("Uploaded file:", req.file);
 
   try {
     if (!req.file || !req.file.path) {
-      console.error("❌ File upload failed. req.file is missing or invalid.");
-      return res.status(400).json({
-        success: false,
-        message: "File upload failed. No file received from client.",
-      });
+      return res
+        .status(400)
+        .json({ success: false, message: "File upload failed" });
     }
 
     const userId = req.user._id;
     const cloudinaryUrl = req.file.path;
+    const publicId = req.file.filename; // Cloudinary public ID for deletion
 
-    // 1. Generate hash
+    // Generate perceptual hash
     const uploadedImageHash = await generateImageHash(cloudinaryUrl);
 
-    // 2. Get all previous hashes for this user
+    // Compare with previous hashes
     const previousSubmissions = await Submission.find({
       user: userId,
       imageHash: { $ne: null },
     });
 
-    // 3. Compare hashes
     for (const submission of previousSubmissions) {
       if (isSimilarHash(uploadedImageHash, submission.imageHash)) {
+        // Delete similar image from Cloudinary
+        await cloudinary.uploader.destroy(publicId);
         return res.status(400).json({
           success: false,
           message:
@@ -80,22 +39,9 @@ const createSubmission = async (req, res) => {
       }
     }
 
-    // Validate required fields
-    if (!req.user?._id) {
-      return res.status(400).json({
-        success: false,
-        message: "User not authenticated",
-      });
-    }
-
-    /*const fileData = {
-      buffer: req.file.buffer,
-      mimetype: req.file.mimetype,
-      originalname: req.file.originalname,
-    };*/
-
+    // Save to DB if unique
     const submission = await Submission.create({
-      user: req.user._id,
+      user: userId,
       platform: req.body.platform || "facebook",
       screenshot: cloudinaryUrl,
       imageHash: uploadedImageHash,
@@ -103,10 +49,11 @@ const createSubmission = async (req, res) => {
       amount: 0.8,
     });
 
-    let earnings = await Earnings.findOne({ user: req.user._id });
+    // Update earnings
+    let earnings = await Earnings.findOne({ user: userId });
     if (!earnings) {
       earnings = await Earnings.create({
-        user: req.user._id,
+        user: userId,
         totalEarned: 0.8,
         availableBalance: 0.8,
         pendingWithdrawal: 0,
@@ -118,36 +65,19 @@ const createSubmission = async (req, res) => {
       await earnings.save();
     }
 
-    // Update earnings (only when admin approves)
-    // We'll move this to the approveSubmission function
-
-    // Emit update to the user
+    // Emit real-time update
     const io = req.app.get("io");
-    io.to(req.user._id.toString()).emit("earningsUpdate", earnings);
-    console.log("Updated earnings:", earnings);
+    io.to(userId.toString()).emit("earningsUpdate", earnings);
 
-    // Debug logging
-
-    res.status(201).json({
+    return res.status(201).json({
       success: true,
       message: "Submission created successfully",
       data: submission,
       earnings,
     });
   } catch (error) {
-    console.error("Submission error:", error);
-
-    /* if (req.file) {
-      try {
-        await fs.unlink(
-          path.join(__dirname, "../public/uploads", req.file.filename)
-        );
-      } catch (cleanupError) {
-        console.error("Failed to clean up file:", cleanupError);
-      }
-    }*/
-
-    res.status(500).json({
+    console.error("❌ Submission Error:", error.message);
+    return res.status(500).json({
       success: false,
       message: "Internal server error",
       error: error.message,
