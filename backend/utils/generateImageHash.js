@@ -3,8 +3,20 @@ const axios = require("axios");
 const { blockhashData } = require("blockhash-core");
 
 async function fetchImageBuffer(imageUrl) {
-  const response = await axios.get(imageUrl, { responseType: "arraybuffer" });
-  return Buffer.from(response.data, "binary");
+  try {
+    const response = await axios.get(imageUrl, {
+      responseType: "arraybuffer",
+      headers: {
+        "User-Agent": "Mozilla/5.0",
+        Accept: "image/avif,image/webp,image/apng,image/*,*/*;q=0.8",
+      },
+    });
+
+    return Buffer.from(response.data, "binary");
+  } catch (error) {
+    console.error("Failed to fetch image buffer:", error.message);
+    throw new Error("Could not fetch image for hashing");
+  }
 }
 
 async function generateImageHash(imageUrl) {
