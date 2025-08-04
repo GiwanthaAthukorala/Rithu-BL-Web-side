@@ -103,10 +103,15 @@ export default function FbVerificationTask() {
       console.log("Success response : ", result);
 
       setIsSubmitted(true);
-      setTimeout(() => router.push("/Profile/page"), 1000);
+      setTimeout(() => {
+        router.push("/Profile/page");
+      }, 1000);
+      router.push("/Profile/page");
     } catch (error) {
       console.error("Submission error:", error);
-      setError(error.message || "Submission failed. Please try again.");
+      if (!error.message.includes("too similar")) {
+        setError(error.message || "Submission failed. Please try again.");
+      }
     } finally {
       setIsSubmitting(false);
     }

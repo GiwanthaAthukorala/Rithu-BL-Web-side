@@ -7,50 +7,16 @@ const path = require("path");
 const cloudinary = require("./utils/cloudinary");
 
 const connectDB = require("./config/db");
-const app = express();
+const app = express(); // ✅ Now declared before it's used
 const httpServer = createServer(app);
-
-// === Enhanced MongoDB Connection ===
-connectDB().catch((err) => {
-  console.error("Database connection failed:", err.message);
-  process.exit(1); // Exit if DB connection fails
-});
-
-// === CORS Configuration ===
-const allowedOrigins = [
-  "https://rithu-business-client-side-2131.vercel.app",
-  "http://localhost:3000",
-];
-
-// Middleware to handle CORS properly
-app.use((req, res, next) => {
-  const origin = req.headers.origin;
-
-  if (origin && allowedOrigins.includes(origin)) {
-    res.setHeader("Access-Control-Allow-Origin", origin);
-    res.setHeader("Access-Control-Allow-Credentials", "true");
-    res.setHeader(
-      "Access-Control-Allow-Methods",
-      "GET, POST, PUT, DELETE, OPTIONS"
-    );
-    res.setHeader(
-      "Access-Control-Allow-Headers",
-      "Content-Type, Authorization, X-Requested-With"
-    );
-  }
-
-  // Handle preflight requests
-  if (req.method === "OPTIONS") {
-    return res.status(200).end();
-  }
-
-  next();
-});
 
 // === Socket.IO Configuration ===
 const io = new Server(httpServer, {
   cors: {
-    origin: allowedOrigins,
+    origin: [
+      process.env.FRONTEND_URL,
+      "https://rithu-business-client-side-2131.vercel.app",
+    ],
     methods: ["GET", "POST"],
     credentials: true,
   },
@@ -58,21 +24,68 @@ const io = new Server(httpServer, {
   path: "/socket.io",
   pingTimeout: 60000,
   pingInterval: 25000,
-  connectionStateRecovery: {
-    maxDisconnectionDuration: 2 * 60 * 1000, // 2 minutes
-  },
 });
 
-// ... rest of your Socket.IO setup ...
+io.on("connection", (socket) => {
+  console.log("Client connected:", socket.id);
 
-// === Body Parsers ===
-app.use(express.json({ limit: "10mb" }));
-app.use(express.urlencoded({ extended: true, limit: "10mb" }));
+  socket.on("register", (userId) => {
+    socket.join(userId);
+    console.log(`User ${userId} registered for updates`);
+  });
+
+  socket.on("disconnect", () => {
+    console.log("Client disconnected:", socket.id);
+  });
+});
+
+app.set("io", io);
+
+// === MongoDB Connection ===
+connectDB().catch((err) => {
+  console.error("Database connection failed:", err.message);
+});
+
+// === Middleware ===
+const allowedOrigins = [
+  "https://rithu-business-client-side-2131.vercel.app",
+  "http://localhost:3000",
+];
+
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+
+  // Handle preflight requests
+  if (req.method === "OPTIONS") {
+    res.setHeader("Access-Control-Allow-Origin", origin || allowedOrigins[0]);
+    res.setHeader("Access-Control-Allow-Credentials", "true");
+    res.setHeader(
+      "Access-Control-Allow-Methods",
+      "GET,POST,PUT,DELETE,OPTIONS"
+    );
+    res.setHeader(
+      "Access-Control-Allow-Headers",
+      "Content-Type, Authorization, X-Requested-With"
+    );
+    return res.status(200).end();
+  }
+
+  // Handle regular requests
+  if (origin && allowedOrigins.includes(origin)) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
+    res.setHeader("Access-Control-Allow-Credentials", "true");
+  }
+
+  next();
+});
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
 
-// === Request Logging ===
 app.use((req, res, next) => {
   console.log(`${req.method} ${req.path}`);
+  console.log("Auth header:", req.headers.authorization);
   next();
 });
 
@@ -84,30 +97,53 @@ app.use("/api/admin", require("./routes/adminRoutes"));
 
 // === Health Check ===
 app.get("/health", (req, res) => {
-  res.status(200).json({
-    status: "ok",
-    dbState: mongoose.connection.readyState,
-    memoryUsage: process.memoryUsage(),
-  });
+  res.status(200).json({ status: "ok" });
+});
+
+// ✅ Move this route **AFTER** app is initialized
+app.get("/api/test-cloudinary", async (req, res) => {
+  try {
+    const result = await cloudinary.api.resources({
+      type: "upload",
+      prefix: "submissions",
+    });
+    res.json({ success: true, result });
+  } catch (err) {
+    console.error("❌ Cloudinary Test Failed:", err.message);
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// Root route
+app.get("/", (req, res) => {
+  res.status(200).json({ message: "Backend is running!" });
 });
 
 // === Error Handling ===
 app.use((err, req, res, next) => {
   console.error("Error:", err);
 
-  // Handle MongoDB timeout errors
-  if (err.message.includes("buffering timed out")) {
-    return res.status(503).json({
-      success: false,
-      message: "Database operation timed out. Please try again.",
-    });
+  if (err.name === "JsonWebTokenError") {
+    return res.status(401).json({ success: false, message: "Invalid token" });
   }
 
-  // Handle other errors...
+  if (err.name === "ValidationError") {
+    return res.status(400).json({ success: false, message: err.message });
+  }
+
+  res.status(500).json({
+    success: false,
+    message: err.message || "Internal server error",
+  });
 });
 
-// Start server
-const PORT = process.env.PORT || 5000;
-httpServer.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+// === Export Handler for Vercel or Start Server Locally ===
+if (process.env.VERCEL) {
+  module.exports = app;
+} else {
+  const PORT = process.env.PORT || 5000;
+  httpServer.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+    console.log(`Socket.IO path: /socket.io`);
+  });
+}
