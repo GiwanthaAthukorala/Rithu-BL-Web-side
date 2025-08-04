@@ -60,21 +60,15 @@ export default function FbVerificationTask() {
 
       const token = localStorage.getItem("token");
 
-      if (!token) {
-        throw new Error("No authentication token found. Please log in again.");
-      }
+      const apiUrl = "https://rithu-bl-web-side.vercel.app";
 
-      const apiUrl =
-        process.env.NEXT_PUBLIC_API_URL ||
-        "https://rithu-bl-web-side.vercel.app";
-      console.log("Submitting to:", `${apiUrl}/api/submissions`);
-      console.log("Token exists:", !!token);
       const response = await fetch(`${apiUrl}/api/submissions`, {
         method: "POST",
         body: formData,
-        credentials: "include", // Important for cookies/auth
+        credentials: "include",
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
+          Origin: "https://rithu-business-client-side-2131.vercel.app",
         },
       });
 

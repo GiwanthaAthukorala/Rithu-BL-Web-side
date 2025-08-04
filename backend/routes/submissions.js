@@ -10,7 +10,11 @@ const {
 const uploadFile = require("../middleware/uploadMiddleware");
 
 // User routes
-router.post("/", protect, uploadFile.single("screenshot"), createSubmission);
+router.post("/", protect, uploadFile.single("screenshot"), (req, res) => {
+  res.header("Access-Control-Allow-Origin", req.headers.origin);
+  res.header("Access-Control-Allow-Credentials", true);
+  // Your existing route logic
+});
 router.get("/my-submissions", protect, getUserSubmissions);
 
 // Admin routes

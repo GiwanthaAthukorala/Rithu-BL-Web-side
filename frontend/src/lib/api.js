@@ -8,6 +8,7 @@ const api = axios.create({
   baseURL: API_URL,
   headers: {
     "Content-Type": "application/json",
+    Origin: "https://rithu-business-client-side-2131.vercel.app",
   },
   withCredentials: true,
 });
