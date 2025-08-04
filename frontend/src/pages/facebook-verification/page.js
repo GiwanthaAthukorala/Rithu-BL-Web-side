@@ -200,6 +200,7 @@ export default function FbVerificationTask() {
             >
               Visit our Facebook page <ExternalLink className="w-4 h-4 ml-1" />
             </a>
+            <br />
             <a
               href=""
               target="_blank"
