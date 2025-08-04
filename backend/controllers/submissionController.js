@@ -2,6 +2,7 @@ const Submission = require("../models/Submission");
 const Earnings = require("../models/Earnings");
 const generateImageHash = require("../utils/generateImageHash");
 const isSimilarHash = require("../utils/isSimilarHash");
+
 //const path = require("path");
 //const fs = require("fs").promises;
 //const { v4: uuidv4 } = require("uuid");
