@@ -2,6 +2,9 @@ const { imageHash } = require("image-hash");
 const https = require("https");
 const fs = require("fs");
 const path = require("path");
+const axios = require("axios");
+const sharp = require("sharp");
+const crypto = require("crypto");
 
 function downloadImage(url) {
   return new Promise((resolve, reject) => {
@@ -39,19 +42,19 @@ module.exports = async function generateImageHash(url) {
     const buffer = Buffer.from(response.data);
     console.log("Buffer size:", buffer.length);
 
-    return new Promise((resolve, reject) => {
-      imageHash({ data: buffer }, 16, true, (error, hash) => {
-        if (error) {
-          console.error("Hash generation error:", error);
-          reject(error);
-        } else {
-          console.log("Generated image hash:", hash);
-          resolve(hash);
-        }
-      });
-    });
+    // Resize and convert to raw pixel data
+    const { data: rawBuffer } = await sharp(buffer)
+      .resize(64, 64)
+      .grayscale()
+      .raw()
+      .toBuffer({ resolveWithObject: true });
+
+    const hash = crypto.createHash("sha256").update(rawBuffer).digest("hex");
+
+    console.log("Generated image hash:", hash);
+    return hash;
   } catch (err) {
     console.error("Image hash generation failed:", err.message);
-    throw err;
+    throw new Error("Could not process image. Please try a different file.");
   }
 };
