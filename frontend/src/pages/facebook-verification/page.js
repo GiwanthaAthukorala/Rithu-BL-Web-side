@@ -192,47 +192,67 @@ export default function FbVerificationTask() {
             <p className="text-gray-700 mb-3">
               Please visit this link and take a screenshot as proof:
             </p>
-            <a
-              href="https://www.facebook.com/share/1Ase2KqzCT/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium"
-            >
-              Visit our Facebook page <ExternalLink className="w-4 h-4 ml-1" />
-            </a>
-            <br />
-            <a
-              href=""
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium"
-            >
-              Visit our Facebook page <ExternalLink className="w-4 h-4 ml-1" />
-            </a>
-            <a
-              href=""
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium"
-            >
-              Visit our Facebook page <ExternalLink className="w-4 h-4 ml-1" />
-            </a>
-            <a
-              href=""
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium"
-            >
-              Visit our Facebook page <ExternalLink className="w-4 h-4 ml-1" />
-            </a>
-            <a
-              href=""
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium"
-            >
-              Visit our Facebook page <ExternalLink className="w-4 h-4 ml-1" />
-            </a>
+            <li>
+              {" "}
+              <a
+                href="https://www.facebook.com/share/1Ase2KqzCT/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium"
+              >
+                Visit our Facebook page{" "}
+                <ExternalLink className="w-4 h-4 ml-1" />
+              </a>
+            </li>
+
+            <li>
+              {" "}
+              <a
+                href=""
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium"
+              >
+                Visit our Facebook page{" "}
+                <ExternalLink className="w-4 h-4 ml-1" />
+              </a>
+            </li>
+            <li>
+              {" "}
+              <a
+                href=""
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium"
+              >
+                Visit our Facebook page{" "}
+                <ExternalLink className="w-4 h-4 ml-1" />
+              </a>
+            </li>
+            <li>
+              {" "}
+              <a
+                href=""
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium"
+              >
+                Visit our Facebook page{" "}
+                <ExternalLink className="w-4 h-4 ml-1" />
+              </a>
+            </li>
+            <li>
+              {" "}
+              <a
+                href=""
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium"
+              >
+                Visit our Facebook page{" "}
+                <ExternalLink className="w-4 h-4 ml-1" />
+              </a>
+            </li>
           </div>
 
           <div className="mb-8 bg-yellow-50 p-4 rounded-lg border border-yellow-200">
