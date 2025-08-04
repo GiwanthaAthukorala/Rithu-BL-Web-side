@@ -29,17 +29,29 @@ function getImageHash(filePath) {
 
 module.exports = async function generateImageHash(url) {
   try {
+    console.log("Fetching image from:", url);
     const response = await axios.get(url, { responseType: "arraybuffer" });
+
+    if (!response.data || response.status !== 200) {
+      throw new Error("Failed to fetch image from Cloudinary");
+    }
+
     const buffer = Buffer.from(response.data);
+    console.log("Buffer size:", buffer.length);
 
     return new Promise((resolve, reject) => {
       imageHash({ data: buffer }, 16, true, (error, hash) => {
-        if (error) reject(error);
-        else resolve(hash);
+        if (error) {
+          console.error("Hash generation error:", error);
+          reject(error);
+        } else {
+          console.log("Generated image hash:", hash);
+          resolve(hash);
+        }
       });
     });
   } catch (err) {
-    console.error("Error generating image hash:", err);
+    console.error("Image hash generation failed:", err.message);
     throw err;
   }
 };
