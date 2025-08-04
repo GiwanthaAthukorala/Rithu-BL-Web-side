@@ -10,7 +10,8 @@
           "models/**",
           "config/**",
           "controllers/**",
-          "middleware/**"
+          "middleware/**",
+          "utils/**"
         ],
         "maxLambdaSize": "50mb"
       }
@@ -24,7 +25,7 @@
         "Access-Control-Allow-Origin": "https://rithu-business-client-side-2131.vercel.app",
         "Access-Control-Allow-Credentials": "true",
         "Access-Control-Allow-Methods": "GET,POST,PUT,DELETE,OPTIONS",
-        "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Requested-With, Origin"
+        "Access-Control-Allow-Headers": "Content-Type, Authorization"
       }
     },
     {

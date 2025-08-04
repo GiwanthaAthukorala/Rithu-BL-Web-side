@@ -75,11 +75,15 @@ export default function FbVerificationTask() {
         credentials: "include", // Important for cookies/auth
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
-          Origin: "https://rithu-business-client-side-2131.vercel.app",
         },
       });
 
       console.log("Response status:", response.status);
+
+      if (!response.headers.get("content-type")?.includes("application/json")) {
+        const text = await response.text();
+        throw new Error(text || "Invalid server response");
+      }
 
       if (!response.ok) {
         const errorData = await response.json();
@@ -99,15 +103,10 @@ export default function FbVerificationTask() {
       console.log("Success response : ", result);
 
       setIsSubmitted(true);
-      setTimeout(() => {
-        router.push("/Profile/page");
-      }, 1000);
-      router.push("/Profile/page");
+      setTimeout(() => router.push("/Profile/page"), 1000);
     } catch (error) {
       console.error("Submission error:", error);
-      if (!error.message.includes("too similar")) {
-        setError(error.message || "Submission failed. Please try again.");
-      }
+      setError(error.message || "Submission failed. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
