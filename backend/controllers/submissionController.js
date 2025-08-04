@@ -48,6 +48,8 @@ const createSubmission = async (req, res) => {
   console.log("User ID : ", req.user?._id);
   console.log("Uploaded file:", req.file);
 
+  const startTime = Date.now();
+
   try {
     if (!req.file || !req.file.path) {
       console.error("❌ File upload failed. req.file is missing or invalid.");
@@ -90,6 +92,8 @@ const createSubmission = async (req, res) => {
         });
       }
     }
+
+    console.log("Hashing took", Date.now() - startTime, "ms");
 
     // Validate required fields
     if (!req.user?._id) {

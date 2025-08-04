@@ -2,6 +2,7 @@ const { imageHash } = require("image-hash");
 const https = require("https");
 const fs = require("fs");
 const path = require("path");
+const axios = require("axios");
 
 function downloadImage(url) {
   return new Promise((resolve, reject) => {
@@ -28,8 +29,20 @@ function getImageHash(filePath) {
 }
 
 module.exports = async function generateImageHash(url) {
+  const response = await axios.get(url, { responseType: "arraybuffer" });
+  const buffer = Buffer.from(response.data);
+
+  return new Promise((resolve, reject) => {
+    imageHash({ data: buffer }, 16, true, (error, data) => {
+      if (error) reject(error);
+      else resolve(data);
+    });
+  });
+};
+
+module.exports = async function generateImageHash(url) {
   const filePath = await downloadImage(url);
   const hash = await getImageHash(filePath);
-  fs.unlinkSync(filePath); // Clean up temp image
+  fs.unlinkSync(filePath);
   return hash;
 };
