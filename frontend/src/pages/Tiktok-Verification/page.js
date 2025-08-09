@@ -158,16 +158,16 @@ export default function TikTokVerificationTask() {
       <Header />
       <div className="max-w-4xl mx-auto">
         {/* Header */}
-        <div className="bg-blue-600 text-white p-6 rounded-t-lg">
+        <div className="bg-[#00f2ea] text-white p-6 rounded-t-lg">
           <div className="w-20 h-20 flex items-center justify-center mr-3 overflow-hidden">
             <img
-              src="/facebook.png"
-              alt="Facebook Icon"
+              src="/Tiktok.png"
+              alt="Tiktok Icon"
               className="w-20 h-20 object-contain"
             />
           </div>
           <h1 className="text-xl text-[#000000]  font-bold mb-2">
-            Facebook Verification Section
+            Tiktok Verification Section
           </h1>
           <p className="text-blue-100">Earn Rs 0.80 per valid screenshot</p>
         </div>
@@ -195,12 +195,12 @@ export default function TikTokVerificationTask() {
             <li>
               {" "}
               <a
-                href="https://www.facebook.com/share/1Ase2KqzCT/"
+                href="https://www.tiktok.com/@rithubus?_t=ZS-8yjcQj9QBwl&_r=1"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium"
               >
-                Visit our Facebook page{" "}
+                Visit our Tiktok User @rithubus{" "}
                 <ExternalLink className="w-4 h-4 ml-1" />
               </a>
             </li>
@@ -213,8 +213,7 @@ export default function TikTokVerificationTask() {
                 rel="noopener noreferrer"
                 className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium"
               >
-                Visit our Facebook page{" "}
-                <ExternalLink className="w-4 h-4 ml-1" />
+                Visit our Tiktok User <ExternalLink className="w-4 h-4 ml-1" />
               </a>
             </li>
             <li>
@@ -225,8 +224,7 @@ export default function TikTokVerificationTask() {
                 rel="noopener noreferrer"
                 className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium"
               >
-                Visit our Facebook page{" "}
-                <ExternalLink className="w-4 h-4 ml-1" />
+                Visit our Tiktok User <ExternalLink className="w-4 h-4 ml-1" />
               </a>
             </li>
             <li>
@@ -237,8 +235,7 @@ export default function TikTokVerificationTask() {
                 rel="noopener noreferrer"
                 className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium"
               >
-                Visit our Facebook page{" "}
-                <ExternalLink className="w-4 h-4 ml-1" />
+                Visit our Tiktok User <ExternalLink className="w-4 h-4 ml-1" />
               </a>
             </li>
             <li>
@@ -249,8 +246,7 @@ export default function TikTokVerificationTask() {
                 rel="noopener noreferrer"
                 className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium"
               >
-                Visit our Facebook page{" "}
-                <ExternalLink className="w-4 h-4 ml-1" />
+                Visit our Tiktok User <ExternalLink className="w-4 h-4 ml-1" />
               </a>
             </li>
           </div>

@@ -43,7 +43,7 @@ const SupportedPlatforms = () => {
         </Link>
 
         {/* TikTok */}
-        <Link href="/facebook-verification/page">
+        <Link href="/Tiktok-Verification/page">
           <div className="cursor-pointer bg-white shadow-md rounded-lg p-6 border-0 hover:shadow-lg transition">
             <div className="flex items-center mb-4">
               <div className="w-16 h-16 flex items-center justify-center mr-3 overflow-hidden">
@@ -65,7 +65,7 @@ const SupportedPlatforms = () => {
         </Link>
 
         {/* Instagram */}
-        <Link href="/facebook-verification/page">
+        <Link href="/Instagram-Verification/page">
           <div className="cursor-pointer bg-white shadow-md rounded-lg p-6 border-0 hover:shadow-lg transition">
             <div className="flex items-center mb-4">
               <div className="w-16 h-16 flex items-center justify-center mr-3 overflow-hidden">
@@ -109,7 +109,7 @@ const SupportedPlatforms = () => {
         </Link>
 
         {/* WhatsApp */}
-        <Link href="/facebook-verification/page">
+        <Link href="">
           <div className="cursor-pointer bg-white shadow-md rounded-lg p-6 border-0 hover:shadow-lg transition">
             <div className="flex items-center mb-4">
               <div className="w-16 h-16 flex items-center justify-center mr-3 overflow-hidden">

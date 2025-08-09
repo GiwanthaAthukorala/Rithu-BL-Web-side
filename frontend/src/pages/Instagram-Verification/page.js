@@ -158,16 +158,16 @@ export default function InstagramVerificationTask() {
       <Header />
       <div className="max-w-4xl mx-auto">
         {/* Header */}
-        <div className="bg-blue-600 text-white p-6 rounded-t-lg">
+        <div className="bg-[#C13584] text-white p-6 rounded-t-lg">
           <div className="w-20 h-20 flex items-center justify-center mr-3 overflow-hidden">
             <img
-              src="/facebook.png"
-              alt="Facebook Icon"
+              src="/instragrma.png"
+              alt="instragrma Icon"
               className="w-20 h-20 object-contain"
             />
           </div>
           <h1 className="text-xl text-[#000000]  font-bold mb-2">
-            Facebook Verification Section
+            Instragrma Verification Section
           </h1>
           <p className="text-blue-100">Earn Rs 0.80 per valid screenshot</p>
         </div>
@@ -179,8 +179,8 @@ export default function InstagramVerificationTask() {
             <h2 className="text-lg font-medium mb-4">Instructions</h2>
             <ul className="space-y-2 text-gray-700">
               <ol className="list-decimal list-inside space-y-2 text-gray-700">
-                <li>Visit our Facebook page using the link below</li>
-                <li>Like or follow our page</li>
+                <li>Visit our Instagram page using the link below</li>
+                <li>Follow our Instagram Account</li>
                 <li>Take a clear screenshot showing your engagement</li>
                 <li>Upload the screenshot below</li>
               </ol>
@@ -195,12 +195,12 @@ export default function InstagramVerificationTask() {
             <li>
               {" "}
               <a
-                href="https://www.facebook.com/share/1Ase2KqzCT/"
+                href="https://www.instagram.com/uscazv2683/profilecard/?igsh=MXY1cGxzc3p2aDE5Zw=="
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium"
               >
-                Visit our Facebook page{" "}
+                Visit our Instagram Profile{" "}
                 <ExternalLink className="w-4 h-4 ml-1" />
               </a>
             </li>
@@ -213,7 +213,7 @@ export default function InstagramVerificationTask() {
                 rel="noopener noreferrer"
                 className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium"
               >
-                Visit our Facebook page{" "}
+                Visit our Instagram Profile{" "}
                 <ExternalLink className="w-4 h-4 ml-1" />
               </a>
             </li>
@@ -225,7 +225,7 @@ export default function InstagramVerificationTask() {
                 rel="noopener noreferrer"
                 className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium"
               >
-                Visit our Facebook page{" "}
+                Visit our Instagram Profile{" "}
                 <ExternalLink className="w-4 h-4 ml-1" />
               </a>
             </li>
@@ -237,7 +237,7 @@ export default function InstagramVerificationTask() {
                 rel="noopener noreferrer"
                 className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium"
               >
-                Visit our Facebook page{" "}
+                Visit our Instagram Profile{" "}
                 <ExternalLink className="w-4 h-4 ml-1" />
               </a>
             </li>
@@ -249,7 +249,7 @@ export default function InstagramVerificationTask() {
                 rel="noopener noreferrer"
                 className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium"
               >
-                Visit our Facebook page{" "}
+                Visit our Instagram Profile{" "}
                 <ExternalLink className="w-4 h-4 ml-1" />
               </a>
             </li>
@@ -260,7 +260,7 @@ export default function InstagramVerificationTask() {
               Screenshot Requirements
             </h3>
             <ul className="list-disc list-inside space-y-1 text-yellow-700">
-              <li>Must clearly show the liked/followed page</li>
+              <li>Must clearly show the followed Account</li>
               <li>Must show your profile or browser context</li>
               <li>No edited or cropped images</li>
               <li>File size under 5MB</li>
