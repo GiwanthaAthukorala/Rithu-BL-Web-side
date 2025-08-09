@@ -121,7 +121,7 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="w-full mx-auto bg-gray-50">
+    <div className="min-h-screen mx-auto bg-gray-50">
       {/* Header */}
       <LSNavBar />
 
