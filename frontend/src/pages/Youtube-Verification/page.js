@@ -158,18 +158,18 @@ export default function YouTubeVerificationTask() {
       <Header />
       <div className="max-w-4xl mx-auto">
         {/* Header */}
-        <div className="bg-blue-600 text-white p-6 rounded-t-lg">
+        <div className="bg-[#FFFFFF] text-white p-6 rounded-t-lg">
           <div className="w-20 h-20 flex items-center justify-center mr-3 overflow-hidden">
             <img
-              src="/facebook.png"
+              src="/youtube.png"
               alt="Facebook Icon"
               className="w-20 h-20 object-contain"
             />
           </div>
           <h1 className="text-xl text-[#000000]  font-bold mb-2">
-            Facebook Verification Section
+            Youtube Verification Section
           </h1>
-          <p className="text-blue-100">Earn Rs 0.80 per valid screenshot</p>
+          <p className="text-[#282828]">Earn Rs 0.80 per valid screenshot</p>
         </div>
 
         {/* Main Content */}
@@ -179,8 +179,8 @@ export default function YouTubeVerificationTask() {
             <h2 className="text-lg font-medium mb-4">Instructions</h2>
             <ul className="space-y-2 text-gray-700">
               <ol className="list-decimal list-inside space-y-2 text-gray-700">
-                <li>Visit our Facebook page using the link below</li>
-                <li>Like or follow our page</li>
+                <li>Visit our Youtube channel</li>
+                <li>Subscribers our channel</li>
                 <li>Take a clear screenshot showing your engagement</li>
                 <li>Upload the screenshot below</li>
               </ol>
@@ -195,13 +195,12 @@ export default function YouTubeVerificationTask() {
             <li>
               {" "}
               <a
-                href="https://www.facebook.com/share/1Ase2KqzCT/"
+                href="https://youtube.com/@rithu-i5h?si=0TzN9J1idFT-QVn4"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium"
               >
-                Visit our Facebook page{" "}
-                <ExternalLink className="w-4 h-4 ml-1" />
+                Rithu Art <ExternalLink className="w-4 h-4 ml-1" />
               </a>
             </li>
 
@@ -213,7 +212,7 @@ export default function YouTubeVerificationTask() {
                 rel="noopener noreferrer"
                 className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium"
               >
-                Visit our Facebook page{" "}
+                Visit our Youtube Subscribers{" "}
                 <ExternalLink className="w-4 h-4 ml-1" />
               </a>
             </li>
@@ -225,7 +224,7 @@ export default function YouTubeVerificationTask() {
                 rel="noopener noreferrer"
                 className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium"
               >
-                Visit our Facebook page{" "}
+                Visit our Youtube Subscribers{" "}
                 <ExternalLink className="w-4 h-4 ml-1" />
               </a>
             </li>
@@ -237,7 +236,7 @@ export default function YouTubeVerificationTask() {
                 rel="noopener noreferrer"
                 className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium"
               >
-                Visit our Facebook page{" "}
+                Visit our Youtube Subscribers{" "}
                 <ExternalLink className="w-4 h-4 ml-1" />
               </a>
             </li>
@@ -249,7 +248,7 @@ export default function YouTubeVerificationTask() {
                 rel="noopener noreferrer"
                 className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium"
               >
-                Visit our Facebook page{" "}
+                Visit our Youtube Subscribers{" "}
                 <ExternalLink className="w-4 h-4 ml-1" />
               </a>
             </li>
@@ -260,7 +259,7 @@ export default function YouTubeVerificationTask() {
               Screenshot Requirements
             </h3>
             <ul className="list-disc list-inside space-y-1 text-yellow-700">
-              <li>Must clearly show the liked/followed page</li>
+              <li>Must clearly show the Subscribers page</li>
               <li>Must show your profile or browser context</li>
               <li>No edited or cropped images</li>
               <li>File size under 5MB</li>

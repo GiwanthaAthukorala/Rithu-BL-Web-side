@@ -87,7 +87,7 @@ const SupportedPlatforms = () => {
         </Link>
 
         {/* YouTube */}
-        <Link href="/facebook-verification/page">
+        <Link href="/Youtube-Verification/page">
           <div className="cursor-pointer bg-white shadow-md rounded-lg p-6 border-0 hover:shadow-lg transition">
             <div className="flex items-center mb-4">
               <div className="w-16 h-16 flex items-center justify-center mr-3 overflow-hidden">
