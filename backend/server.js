@@ -49,7 +49,6 @@ connectDB().catch((err) => {
 // === Middleware ===
 const allowedOrigins = [
   "https://rithu-business-client-side-2131.vercel.app",
-  "http://localhost:3000",
 ];
 
 app.use((req, res, next) => {
