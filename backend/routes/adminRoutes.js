@@ -1,10 +1,13 @@
 const express = require("express");
 const router = express.Router();
-const { protect, admin } = require("../middleware/authMiddleware");
+const { adminProtect, checkPermission } = require("../middleware/adminAuth");
 const VerificationLink = require("../models/VerificationLink");
 
 // Get all verification links
-router.get("/links", protect, admin, async (req, res) => {
+router.use(adminProtect);
+
+// Get all verification links
+router.get("/links", checkPermission("manage_links"), async (req, res) => {
   try {
     const links = await VerificationLink.find();
     res.json({ success: true, data: links });

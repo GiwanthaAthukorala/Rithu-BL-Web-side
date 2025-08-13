@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
 import api from "@/lib/api";
-import Link from "next/link";
 
 export default function AdminLogin() {
   const [email, setEmail] = useState("");
@@ -16,14 +15,14 @@ export default function AdminLogin() {
     setLoading(true);
 
     try {
-      const response = await api.post("/api/admin/login", {
+      const response = await api.post("/api/admin/auth/login", {
         email,
         password,
       });
 
       if (response.data.success) {
-        localStorage.setItem("token", response.data.token);
-        router.push("/admin/links");
+        localStorage.setItem("adminToken", response.data.token);
+        router.push("/admin/dashboard");
       } else {
         setError(response.data.message || "Login failed");
       }

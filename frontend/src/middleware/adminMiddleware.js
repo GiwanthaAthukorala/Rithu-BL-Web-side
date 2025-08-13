@@ -1,31 +1,34 @@
 import { NextResponse } from "next/server";
-import { cookies } from "next/headers";
+import { verify } from "jsonwebtoken";
 
-export async function withAdminAuth() {
-  const token = cookies().get("token")?.value;
+const secret = process.env.ADMIN_JWT_SECRET;
+
+export default async function middleware(req) {
+  const { pathname } = req.nextUrl;
+
+  // Only protect admin routes
+  if (!pathname.startsWith("/admin")) {
+    return NextResponse.next();
+  }
+
+  // Allow login page
+  if (pathname === "/admin/login") {
+    return NextResponse.next();
+  }
+
+  const token = req.cookies.get("adminToken")?.value;
 
   if (!token) {
-    return NextResponse.redirect(new URL("/Admin/page", request.url));
+    return NextResponse.redirect(new URL("/admin/login", req.url));
   }
 
   try {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/users/profile`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-
-    const user = await response.json();
-
-    if (!["admin", "superadmin"].includes(user.role)) {
-      return NextResponse.redirect(new URL("/", request.url));
-    }
-
-    return user;
+    await verify(token, secret);
+    return NextResponse.next();
   } catch (error) {
-    return NextResponse.redirect(new URL("/Admin/login", request.url));
+    console.error("Admin auth error:", error);
+    const response = NextResponse.redirect(new URL("/admin/login", req.url));
+    response.cookies.delete("adminToken");
+    return response;
   }
 }

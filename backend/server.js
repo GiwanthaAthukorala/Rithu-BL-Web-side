@@ -47,9 +47,7 @@ connectDB().catch((err) => {
 });
 
 // === Middleware ===
-const allowedOrigins = [
-  "https://rithu-business-client-side-2131.vercel.app",
-];
+const allowedOrigins = ["https://rithu-business-client-side-2131.vercel.app"];
 
 app.use((req, res, next) => {
   const origin = req.headers.origin;
@@ -93,6 +91,7 @@ app.use("/api/users", require("./routes/userRoutes"));
 app.use("/api/submissions", require("./routes/submissions"));
 app.use("/api/earnings", require("./routes/earnings"));
 app.use("/api/admin", require("./routes/adminRoutes"));
+app.use("/api/admin/auth", require("./routes/adminAuthRoutes"));
 
 // === Health Check ===
 app.get("/health", (req, res) => {
