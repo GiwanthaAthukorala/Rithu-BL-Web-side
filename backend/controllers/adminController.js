@@ -1,93 +1,102 @@
-const Submission = require("../models/Submission");
+/*const Submission = require("../models/Submission");
 const Earnings = require("../models/Earnings");
-const Transaction = require("../models/Transaction");
+const Transaction = require("../models/Transaction");*/
+const VerificationLink = require("../models/VerificationLink");
 
-const getPendingSubmissions = async (req, res) => {
+exports.getVerificationLinks = async (req, res) => {
   try {
-    const submissions = await Submission.find({ status: "pending" })
-      .populate("user", "firstName lastName email")
-      .sort({ createdAt: -1 });
-
-    res.json({
-      success: true,
-      count: submissions.length,
-      data: submissions,
-    });
+    const links = await VerificationLink.find();
+    res.json({ success: true, data: links });
   } catch (error) {
-    res.status(500).json({
-      message: "Failed to get submissions",
-      error: error.message,
-    });
+    res.status(500).json({ success: false, message: error.message });
   }
 };
 
-const getPendingWithdrawals = async (req, res) => {
+// Update verification links for a platform
+exports.updateVerificationLinks = async (req, res) => {
   try {
-    const withdrawals = await Transaction.find({
-      type: "debit",
-      status: "pending",
-    })
-      .populate("user", "firstName lastName email")
-      .sort({ createdAt: -1 });
+    const { platform } = req.params;
+    const { links } = req.body;
 
-    res.json({
-      success: true,
-      count: withdrawals.length,
-      data: withdrawals,
-    });
+    // Validate platform
+    if (!["facebook", "instagram", "youtube", "tiktok"].includes(platform)) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid platform" });
+    }
+
+    // Find or create the platform entry
+    let verificationLink = await VerificationLink.findOne({ platform });
+
+    if (!verificationLink) {
+      verificationLink = new VerificationLink({ platform, links });
+    } else {
+      verificationLink.links = links;
+    }
+
+    await verificationLink.save();
+
+    res.json({ success: true, data: verificationLink });
   } catch (error) {
-    res.status(500).json({
-      message: "Failed to get pending withdrawals",
-      error: error.message,
-    });
+    res.status(500).json({ success: false, message: error.message });
   }
 };
 
-const processWithdrawal = async (req, res) => {
+// Add a single link to a platform
+exports.addVerificationLink = async (req, res) => {
   try {
-    const { action } = req.body;
-    const withdrawal = await Transaction.findById(req.params.id);
+    const { platform } = req.params;
+    const { title, url } = req.body;
 
-    if (!withdrawal) {
-      return res.status(404).json({ message: "Withdrawal not found" });
+    if (!["facebook", "instagram", "youtube", "tiktok"].includes(platform)) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid platform" });
     }
 
-    if (withdrawal.status !== "pending") {
-      return res.status(400).json({ message: "Withdrawal already processed" });
+    let verificationLink = await VerificationLink.findOne({ platform });
+
+    if (!verificationLink) {
+      verificationLink = new VerificationLink({
+        platform,
+        links: [{ title, url }],
+      });
+    } else {
+      verificationLink.links.push({ title, url });
     }
 
-    const earnings = await Earnings.findOne({ user: withdrawal.user });
+    await verificationLink.save();
 
-    if (action === "approve") {
-      earnings.availableBalance -= withdrawal.amount;
-      earnings.withdrawnAmount += withdrawal.amount;
-      earnings.pendingWithdrawal -= withdrawal.amount;
-      withdrawal.status = "completed";
-    } else if (action === "reject") {
-      earnings.availableBalance += withdrawal.amount;
-      earnings.pendingWithdrawal -= withdrawal.amount;
-      withdrawal.status = "failed";
-      withdrawal.rejectionReason = req.body.reason || "Withdrawal rejected";
-    }
-
-    await earnings.save();
-    await withdrawal.save();
-
-    res.json({
-      success: true,
-      message: `Withdrawal ${action}d successfully`,
-      data: withdrawal,
-    });
+    res.json({ success: true, data: verificationLink });
   } catch (error) {
-    res.status(500).json({
-      message: "Withdrawal processing failed",
-      error: error.message,
-    });
+    res.status(500).json({ success: false, message: error.message });
   }
 };
 
-module.exports = {
-  getPendingSubmissions,
-  getPendingWithdrawals,
-  processWithdrawal,
+// Toggle link status (active/inactive)
+exports.toggleLinkStatus = async (req, res) => {
+  try {
+    const { platform, linkId } = req.params;
+
+    const verificationLink = await VerificationLink.findOne({ platform });
+    if (!verificationLink) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Platform not found" });
+    }
+
+    const link = verificationLink.links.id(linkId);
+    if (!link) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Link not found" });
+    }
+
+    link.active = !link.active;
+    await verificationLink.save();
+
+    res.json({ success: true, data: verificationLink });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
 };

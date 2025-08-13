@@ -1,3 +1,4 @@
+const { admin } = require("../middleware/authMiddleware");
 const User = require("../models/userModel");
 const jwt = require("jsonwebtoken");
 
@@ -158,4 +159,51 @@ const getUserProfile = async (req, res) => {
   }
 };
 
-module.exports = { registerUser, loginUser, getUserProfile };
+// Admin login
+const adminLogin = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    // Check for email and password
+    if (!email || !password) {
+      return res.status(400).json({
+        message: "Please provide both email and password",
+      });
+    }
+
+    // Check if user exists and is admin
+    const user = await User.findOne({ email }).select("+password");
+
+    if (!user || !(await user.matchPassword(password))) {
+      return res.status(401).json({
+        message: "Invalid email or password",
+      });
+    }
+
+    // Check if user has admin privileges
+    if (!["admin", "superadmin"].includes(user.role)) {
+      return res.status(403).json({
+        message: "Access denied. Admin privileges required.",
+      });
+    }
+
+    // Generate token
+    const token = generateToken(user._id);
+
+    res.json({
+      _id: user._id,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+      role: user.role,
+      token,
+    });
+  } catch (error) {
+    console.error("Admin login error:", error);
+    res.status(500).json({
+      message: "Admin login failed. Please try again.",
+    });
+  }
+};
+
+module.exports = { registerUser, loginUser, getUserProfile, adminLogin };

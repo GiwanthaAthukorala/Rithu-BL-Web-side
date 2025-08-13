@@ -15,15 +15,6 @@ const userSchema = new mongoose.Schema(
         "Please fill a valid email address",
       ],
     },
-    username: { type: String, unique: true, sparse: true },
-    phoneNumber: {
-      type: String,
-      required: true,
-      match: [/^[0-9]{10}$/, "Please enter a valid 10-digit phone number"],
-    },
-    bankName: { type: String, required: true },
-    bankBranch: { type: String, required: true },
-    bankAccountNo: { type: String, required: true },
     password: {
       type: String,
       required: true,
@@ -35,6 +26,15 @@ const userSchema = new mongoose.Schema(
       enum: ["user", "admin", "superadmin"],
       default: "user",
     },
+    isVerified: {
+      type: Boolean,
+      default: false,
+    },
+    isAdmin: {
+      type: Boolean,
+      default: false,
+    },
+    lastLogin: Date,
   },
   { timestamps: true }
 );
@@ -50,6 +50,11 @@ userSchema.pre("save", async function (next) {
     this.username = this.email.split("@")[0];
   }
 
+  // Automatically verify admin users
+  if (this.role === "admin" || this.role === "superadmin") {
+    this.isVerified = true;
+    this.isAdmin = true;
+  }
   next();
 });
 
