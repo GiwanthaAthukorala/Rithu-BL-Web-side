@@ -5,12 +5,12 @@ export async function withAdminAuth() {
   const token = cookies().get("token")?.value;
 
   if (!token) {
-    return NextResponse.redirect(new URL("/admin/login", request.url));
+    return NextResponse.redirect(new URL("/Admin/page", request.url));
   }
 
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/users/profile`,
+      `${process.env.NEXT_PUBLIC_API_URL}/users/profile`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -26,6 +26,6 @@ export async function withAdminAuth() {
 
     return user;
   } catch (error) {
-    return NextResponse.redirect(new URL("/Admin/Login/login", request.url));
+    return NextResponse.redirect(new URL("/Admin/login", request.url));
   }
 }
