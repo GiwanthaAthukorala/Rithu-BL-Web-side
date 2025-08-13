@@ -16,7 +16,7 @@ export default function AdminLogin() {
     setLoading(true);
 
     try {
-      const response = await api.post("/admin/login", {
+      const response = await api.post("/api/admin/login", {
         email,
         password,
       });

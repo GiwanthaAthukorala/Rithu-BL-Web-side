@@ -57,8 +57,10 @@ api.interceptors.response.use(
   (error) => {
     if (error.response?.status === 401) {
       // Handle unauthorized access
-      localStorage.removeItem("token");
-      window.location.href = "/admin/login";
+      if (typeof window !== "undefined") {
+        localStorage.removeItem("token");
+        window.location.href = "/admin/login";
+      }
     }
     return Promise.reject(error);
   }

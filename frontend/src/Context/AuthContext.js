@@ -90,6 +90,7 @@ export const AuthProvider = ({ children }) => {
       setUser(response.data.user);
       return response.data;
     } catch (error) {
+      console.error("Admin login error:", error);
       throw error;
     }
   };
