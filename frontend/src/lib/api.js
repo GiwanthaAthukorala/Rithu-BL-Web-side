@@ -52,20 +52,6 @@ api.interceptors.response.use(
   }
 );
 
-api.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    if (error.response?.status === 401) {
-      // Handle unauthorized access
-      if (typeof window !== "undefined") {
-        localStorage.removeItem("token");
-        window.location.href = "/admin/login";
-      }
-    }
-    return Promise.reject(error);
-  }
-);
-
 export const endpoints = {
   login: "/users/login",
   register: "/users/register",
