@@ -1,7 +1,9 @@
+"user client";
+
 import React, { useState, useEffect } from "react";
 import api from "@/lib/api";
 import { useAuth } from "@/Context/AuthContext";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import Header from "@/components/Header/Header";
 
 const platforms = ["facebook", "instagram", "youtube", "tiktok"];

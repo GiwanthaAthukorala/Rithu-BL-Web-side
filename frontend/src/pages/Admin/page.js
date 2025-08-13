@@ -1,6 +1,6 @@
 import AdminLinkManagement from "@/components/Admin/AdminLinkManagement";
 import { useAuth } from "@/Context/AuthContext";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
 export default function AdminLinksPage() {
