@@ -37,7 +37,7 @@ const SupportedPlatforms = () => {
               Connect your profile and pages to earn from likes on your posts.
             </p>
             <div className="text-sm text-[#000000] font-medium">
-              Rs 0.80 like or follwing • In one screenshot
+              Rs 1/= like or follwing • In one screenshot
             </div>
           </div>
         </Link>

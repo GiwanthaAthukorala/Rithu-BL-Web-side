@@ -116,21 +116,21 @@ const createSubmission = async (req, res) => {
       screenshot: cloudinaryUrl,
       imageHash: uploadedImageHash,
       status: "approved",
-      amount: 0.8,
+      amount: 1.0,
     });
 
     let earnings = await Earnings.findOne({ user: req.user._id });
     if (!earnings) {
       earnings = await Earnings.create({
         user: req.user._id,
-        totalEarned: 0.8,
-        availableBalance: 0.8,
+        totalEarned: 1.0,
+        availableBalance: 1.0,
         pendingWithdrawal: 0,
         withdrawnAmount: 0,
       });
     } else {
-      earnings.totalEarned += 0.8;
-      earnings.availableBalance += 0.8;
+      earnings.totalEarned += 1.0;
+      earnings.availableBalance += 1.0;
       await earnings.save();
     }
 

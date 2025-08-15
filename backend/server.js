@@ -90,8 +90,6 @@ app.use((req, res, next) => {
 app.use("/api/users", require("./routes/userRoutes"));
 app.use("/api/submissions", require("./routes/submissions"));
 app.use("/api/earnings", require("./routes/earnings"));
-//app.use("/api/admin", require("./routes/adminRoutes"));
-//app.use("/api/admin/auth", require("./routes/adminAuthRoutes"));
 
 // === Health Check ===
 app.get("/health", (req, res) => {

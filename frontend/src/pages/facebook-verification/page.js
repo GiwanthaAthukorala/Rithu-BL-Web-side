@@ -139,7 +139,7 @@ export default function FbVerificationTask() {
             </div>
             <h2 className="text-2xl font-bold mb-2">Submission Successful!</h2>
             <p className="text-gray-600 mb-6">
-              You've earned Rs 0.80. Your balance has been updated.
+              You've earned Rs 1.00/= Your balance has been updated.
             </p>
             <button
               onClick={() => router.push("/Profile/page")}
@@ -169,7 +169,7 @@ export default function FbVerificationTask() {
           <h1 className="text-xl text-[#000000]  font-bold mb-2">
             Facebook Verification Section
           </h1>
-          <p className="text-blue-100">Earn Rs 0.80 per valid screenshot</p>
+          <p className="text-blue-100">Earn Rs 1/= per valid screenshot</p>
         </div>
 
         {/* Main Content */}
@@ -200,8 +200,8 @@ export default function FbVerificationTask() {
                 rel="noopener noreferrer"
                 className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium"
               >
-                Future Starts Education Hub Pvt Ltd{" "}
-                <ExternalLink className="w-4 h-4 ml-1" />
+                Future Starts Education Hub Pvt Ltd - Only Like or Following
+                This Page <ExternalLink className="w-4 h-4 ml-1" />
               </a>
             </li>
 
@@ -213,8 +213,8 @@ export default function FbVerificationTask() {
                 rel="noopener noreferrer"
                 className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium"
               >
-                Jantha Foreign Employment Facebook Page{" "}
-                <ExternalLink className="w-4 h-4 ml-1" />
+                Jantha Foreign Employment Facebook Page - Only Like or Following
+                This Page <ExternalLink className="w-4 h-4 ml-1" />
               </a>
             </li>
             <li>
@@ -225,7 +225,7 @@ export default function FbVerificationTask() {
                 rel="noopener noreferrer"
                 className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium"
               >
-                Oushada With Green Investment{" "}
+                Oushada With Green Investment - Only Like or Following This Page{" "}
                 <ExternalLink className="w-4 h-4 ml-1" />
               </a>
             </li>
@@ -237,7 +237,7 @@ export default function FbVerificationTask() {
                 rel="noopener noreferrer"
                 className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium"
               >
-                Suwa Piyasa Home Nursing{" "}
+                Suwa Piyasa Home Nursing - Only Like or Following This Page{" "}
                 <ExternalLink className="w-4 h-4 ml-1" />
               </a>
             </li>
@@ -249,7 +249,7 @@ export default function FbVerificationTask() {
                 rel="noopener noreferrer"
                 className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium"
               >
-                Mobi House Import Mobiles{" "}
+                Mobi House Import Mobiles - Only Like or Following This Page{" "}
                 <ExternalLink className="w-4 h-4 ml-1" />
               </a>
             </li>
