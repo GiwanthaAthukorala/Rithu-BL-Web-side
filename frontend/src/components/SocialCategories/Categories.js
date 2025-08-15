@@ -59,7 +59,7 @@ const SupportedPlatforms = () => {
               Earn money from likes on your videos and trending content.
             </p>
             <div className="text-sm text-[#000000] font-medium">
-              Rs 0.80 like • Tiktok In one screenshot
+              Rs 1/= like • Tiktok In one screenshot
             </div>
           </div>
         </Link>
@@ -81,7 +81,7 @@ const SupportedPlatforms = () => {
               Link your account and monetize likes on your photos and reels.
             </p>
             <div className="text-sm text-[#000000] font-medium">
-              Rs 0.80 like • Instant payouts
+              Rs 1/= like • Instant payouts
             </div>
           </div>
         </Link>
@@ -103,7 +103,7 @@ const SupportedPlatforms = () => {
               Get paid for likes on your videos and Subscribers.
             </p>
             <div className="text-sm text-[#000000] font-medium">
-              Rs 0.80 • Youtube payouts
+              Rs 2/= • Youtube payouts
             </div>
           </div>
         </Link>

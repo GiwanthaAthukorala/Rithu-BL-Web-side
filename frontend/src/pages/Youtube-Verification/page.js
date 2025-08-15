@@ -56,7 +56,7 @@ export default function YouTubeVerificationTask() {
     try {
       const formData = new FormData();
       formData.append("screenshot", file);
-      formData.append("platform", "facebook");
+      formData.append("platform", "youtube");
 
       const token = localStorage.getItem("token");
 
@@ -67,9 +67,9 @@ export default function YouTubeVerificationTask() {
       const apiUrl =
         process.env.NEXT_PUBLIC_API_URL ||
         "https://rithu-bl-web-side.vercel.app";
-      console.log("Submitting to:", `${apiUrl}/api/submissions`);
+      console.log("Submitting to:", `${apiUrl}/api/youtubeSubmissions`);
       console.log("Token exists:", !!token);
-      const response = await fetch(`${apiUrl}/api/submissions`, {
+      const response = await fetch(`${apiUrl}/api/youtubeSubmissions`, {
         method: "POST",
         body: formData,
         credentials: "include", // Important for cookies/auth
@@ -139,7 +139,7 @@ export default function YouTubeVerificationTask() {
             </div>
             <h2 className="text-2xl font-bold mb-2">Submission Successful!</h2>
             <p className="text-gray-600 mb-6">
-              You've earned Rs 0.80. Your balance has been updated.
+              You've earned Rs 2/= Your balance has been updated.
             </p>
             <button
               onClick={() => router.push("/Profile/page")}
@@ -169,7 +169,7 @@ export default function YouTubeVerificationTask() {
           <h1 className="text-xl text-[#000000]  font-bold mb-2">
             Youtube Verification Section
           </h1>
-          <p className="text-[#282828]">Earn Rs 0.80 per valid screenshot</p>
+          <p className="text-[#282828]">Earn Rs 2.00/= per valid screenshot</p>
         </div>
 
         {/* Main Content */}

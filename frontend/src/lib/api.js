@@ -58,6 +58,7 @@ export const endpoints = {
   profile: "/users/profile",
   submissions: "/submissions", // Note: Changed from /submissions to /api/submissions
   earnings: "/earnings",
+  youtubeSubmission: "/youtubeSubmissions",
 };
 
 export const register = async (userData) => {
