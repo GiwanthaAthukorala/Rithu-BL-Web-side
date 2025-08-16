@@ -1,4 +1,4 @@
-const youtubeSubmission = require("../models/youTube");
+const Submission = require("../models/youTube");
 const Earnings = require("../models/Earnings");
 const generateImageHash = require("../utils/generateImageHash");
 const isSimilarHash = require("../utils/isSimilarHash");
@@ -76,12 +76,10 @@ const createYoutubeSubmission = async (req, res) => {
     }
 
     // Check for duplicates with better error reporting
-    const previousSubmissions = await youtubeSubmission
-      .find({
-        user: userId,
-        imageHash: { $ne: null },
-      })
-      .limit(10); // Limit to recent submissions
+    const previousSubmissions = await Submission.find({
+      user: userId,
+      imageHash: { $ne: null },
+    }).limit(10); // Limit to recent submissions
 
     for (const submission of previousSubmissions) {
       if (isSimilarHash(uploadedImageHash, submission.imageHash)) {
@@ -112,7 +110,7 @@ const createYoutubeSubmission = async (req, res) => {
       originalname: req.file.originalname,
     };*/
 
-    const submission = await youtubeSubmission.create({
+    const submission = await Submission.create({
       user: req.user._id,
       platform: req.body.platform || "youtube",
       screenshot: cloudinaryUrl,

@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 
-const submissionSchema = new mongoose.Schema(
+const YoutubesubmissionSchema = new mongoose.Schema(
   {
     user: {
       type: mongoose.Schema.Types.ObjectId,
@@ -31,4 +31,4 @@ const submissionSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model("Submission", submissionSchema);
+module.exports = mongoose.model("YoutubeSubmission", YoutubesubmissionSchema);
