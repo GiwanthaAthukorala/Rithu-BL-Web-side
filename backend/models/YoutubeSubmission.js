@@ -1,17 +1,11 @@
 const mongoose = require("mongoose");
-const bcrypt = require("bcryptjs");
 
-const YoutubesubmissionSchema = new mongoose.Schema(
+const youtubeSubmissionSchema = new mongoose.Schema(
   {
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
-    },
-    platform: {
-      type: String,
-      required: true,
-      enum: ["facebook", "instagram", "tiktok", "youtube", "whatsapp"],
     },
     screenshot: {
       type: String,
@@ -25,10 +19,10 @@ const YoutubesubmissionSchema = new mongoose.Schema(
     },
     amount: {
       type: Number,
-      default: 2.0,
+      default: 2.0, // Rs. 2 per submission
     },
   },
   { timestamps: true }
 );
 
-module.exports = mongoose.model("YoutubeSubmission", YoutubesubmissionSchema);
+module.exports = mongoose.model("YoutubeSubmission", youtubeSubmissionSchema);
