@@ -3,32 +3,67 @@ const Earnings = require("../models/Earnings");
 const generateImageHash = require("../utils/generateImageHash");
 const isSimilarHash = require("../utils/isSimilarHash");
 
-const createYoutubeSubmission = async (req, res) => {
-  console.log("==== YOUTUBE SUBMISSION REQUEST ====");
-  console.log("User ID:", req.user?._id);
-  console.log("File received:", !!req.file);
+//const path = require("path");
+//const fs = require("fs").promises;
+//const { v4: uuidv4 } = require("uuid");
+//const multer = require("multer");
+
+// Configure storage
+/*const storage = multer.diskStorage({
+  destination: async (req, file, cb) => {
+    try {
+      const uploadDir = path.join(__dirname, "../public/uploads");
+      await fs.mkdir(uploadDir, { recursive: true });
+      cb(null, uploadDir);
+    } catch (err) {
+      cb(err);
+    }
+  },
+  filename: (req, file, cb) => {
+    const ext = path.extname(file.originalname);
+    cb(null, `${uuidv4()}${ext}`);
+  },
+});*/
+
+const fileFilter = (req, file, cb) => {
+  const validTypes = ["image/jpeg", "image/png", "image/jpg"];
+  if (validTypes.includes(file.mimetype)) {
+    cb(null, true);
+  } else {
+    cb(new Error("Only JPEG/JPG/PNG images allowed"), false);
+  }
+};
+
+// Create multer instance
+/*const upload = multer({
+  storage,
+  fileFilter,
+  limits: {
+    fileSize: 5 * 1024 * 1024, // 5MB
+  },
+});*/
+
+// Controller functions
+const createSubmission = async (req, res) => {
+  console.log("==== SUBMISSION REQUEST RECEIVED ====");
+  console.log("User ID : ", req.user?._id);
+  console.log("Uploaded file:", req.file);
+
+  const startTime = Date.now();
 
   try {
-    // Validate authentication
-    if (!req.user?._id) {
-      return res.status(401).json({
-        success: false,
-        message: "User not authenticated",
-      });
-    }
-
-    // Validate file upload
     if (!req.file || !req.file.path) {
+      console.error("❌ File upload failed. req.file is missing or invalid.");
       return res.status(400).json({
         success: false,
-        message: "No screenshot file provided",
+        message: "File upload failed. No file received from client.",
       });
     }
 
     const userId = req.user._id;
     const cloudinaryUrl = req.file.path;
 
-    // Generate image hash for duplicate detection
+    // 1. Generate hash
     let uploadedImageHash;
     try {
       uploadedImageHash = await generateImageHash(cloudinaryUrl);
@@ -40,15 +75,13 @@ const createYoutubeSubmission = async (req, res) => {
       });
     }
 
-    // Check for duplicate submissions
-    const recentSubmissions = await Submission.find({
+    // Check for duplicates with better error reporting
+    const previousSubmissions = await Submission.find({
       user: userId,
-      imageHash: { $exists: true, $ne: null },
-    })
-      .sort({ createdAt: -1 })
-      .limit(20);
+      imageHash: { $ne: null },
+    }).limit(10); // Limit to recent submissions
 
-    for (const submission of recentSubmissions) {
+    for (const submission of previousSubmissions) {
       if (isSimilarHash(uploadedImageHash, submission.imageHash)) {
         return res.status(400).json({
           success: false,
@@ -56,26 +89,40 @@ const createYoutubeSubmission = async (req, res) => {
             submission.createdAt
           ).toLocaleDateString()}. Please upload a different screenshot.`,
           errorType: "DUPLICATE_IMAGE",
-          previousDate: submission.createdAt,
+          previousDate: new Date(submission.createdAt).toLocaleDateString(),
         });
       }
     }
 
-    // Create submission
+    console.log("Hashing took", Date.now() - startTime, "ms");
+
+    // Validate required fields
+    if (!req.user?._id) {
+      return res.status(400).json({
+        success: false,
+        message: "User not authenticated",
+      });
+    }
+
+    /*const fileData = {
+      buffer: req.file.buffer,
+      mimetype: req.file.mimetype,
+      originalname: req.file.originalname,
+    };*/
+
     const submission = await Submission.create({
-      user: userId,
-      platform: req.body.platform || "youtube",
+      user: req.user._id,
+      platform: req.body.platform || "facebook",
       screenshot: cloudinaryUrl,
       imageHash: uploadedImageHash,
-      status: "approved", // Auto-approve for now
+      status: "approved",
       amount: 2.0,
     });
 
-    // Update user earnings
-    let earnings = await Earnings.findOne({ user: userId });
+    let earnings = await Earnings.findOne({ user: req.user._id });
     if (!earnings) {
       earnings = await Earnings.create({
-        user: userId,
+        user: req.user._id,
         totalEarned: 2.0,
         availableBalance: 2.0,
         pendingWithdrawal: 0,
@@ -87,74 +134,64 @@ const createYoutubeSubmission = async (req, res) => {
       await earnings.save();
     }
 
-    // Emit real-time update
+    // Update earnings (only when admin approves)
+    // We'll move this to the approveSubmission function
+
+    // Emit update to the user
     const io = req.app.get("io");
-    if (io) {
-      io.to(userId.toString()).emit("earningsUpdate", {
-        totalEarned: earnings.totalEarned,
-        availableBalance: earnings.availableBalance,
-        pendingWithdrawal: earnings.pendingWithdrawal,
-        withdrawnAmount: earnings.withdrawnAmount,
-      });
-    }
+    io.to(req.user._id.toString()).emit("earningsUpdate", earnings);
+    console.log("Updated earnings:", earnings);
+
+    // Debug logging
 
     res.status(201).json({
       success: true,
-      message: "YouTube submission created successfully",
-      data: {
-        submission,
-        earnings: {
-          totalEarned: earnings.totalEarned,
-          availableBalance: earnings.availableBalance,
-          pendingWithdrawal: earnings.pendingWithdrawal,
-          withdrawnAmount: earnings.withdrawnAmount,
-        },
-      },
+      message: "Submission created successfully",
+      data: submission,
+      earnings,
     });
   } catch (error) {
-    console.error("YouTube submission error:", error);
+    console.error("Submission error:", error);
+
+    /* if (req.file) {
+      try {
+        await fs.unlink(
+          path.join(__dirname, "../public/uploads", req.file.filename)
+        );
+      } catch (cleanupError) {
+        console.error("Failed to clean up file:", cleanupError);
+      }
+    }*/
+
     res.status(500).json({
       success: false,
-      message: "Failed to create submission",
-      error: process.env.NODE_ENV === "development" ? error.message : undefined,
+      message: "Internal server error",
+      error: error.message,
     });
   }
 };
 
-const getUserYoutubeSubmissions = async (req, res) => {
+const getUserSubmissions = async (req, res) => {
   try {
-    const submissions = await Submission.find({ user: req.user._id })
-      .sort({ createdAt: -1 })
-      .select("-imageHash"); // Don't send hash to client
-
-    res.status(200).json({
-      success: true,
-      data: submissions,
-    });
+    const submissions = await Submission.find({ user: req.user._id });
+    res.status(200).json({ success: true, data: submissions });
   } catch (error) {
-    console.error("Get submissions error:", error);
     res.status(500).json({
       success: false,
-      message: "Failed to fetch submissions",
+      message: "Failed to get user submissions",
+      error: error.message,
     });
   }
 };
 
-const approveYoutubeSubmission = async (req, res) => {
+const approveSubmission = async (req, res) => {
   try {
     const submission = await Submission.findById(req.params.id);
     if (!submission) {
-      return res.status(404).json({
-        success: false,
-        message: "Submission not found",
-      });
+      return res.status(404).json({ message: "Submission not found" });
     }
-
     if (submission.status !== "pending") {
-      return res.status(400).json({
-        success: false,
-        message: "Submission already processed",
-      });
+      return res.status(400).json({ message: "Already processed" });
     }
 
     submission.status = "approved";
@@ -176,46 +213,37 @@ const approveYoutubeSubmission = async (req, res) => {
       await earnings.save();
     }
 
-    // Emit real-time update
+    // Emit update to the user
     const io = req.app.get("io");
-    if (io) {
-      io.to(submission.user.toString()).emit("earningsUpdate", {
-        totalEarned: earnings.totalEarned,
-        availableBalance: earnings.availableBalance,
-        pendingWithdrawal: earnings.pendingWithdrawal,
-        withdrawnAmount: earnings.withdrawnAmount,
-      });
-    }
+    io.to(submission.user.toString()).emit("earningsUpdate", {
+      totalEarned: earnings.totalEarned,
+      availableBalance: earnings.availableBalance,
+      pendingWithdrawal: earnings.pendingWithdrawal,
+      withdrawnAmount: earnings.withdrawnAmount,
+    });
 
     res.json({
       success: true,
-      message: "Submission approved successfully",
-      data: { submission, earnings },
+      message: "Submission approved and earnings updated",
+      data: {
+        submission,
+        earnings,
+      },
     });
   } catch (error) {
-    console.error("Approval error:", error);
-    res.status(500).json({
-      success: false,
-      message: "Failed to approve submission",
-    });
+    res.status(500).json({ message: "Approval failed", error: error.message });
   }
 };
 
-const rejectYoutubeSubmission = async (req, res) => {
+const rejectSubmission = async (req, res) => {
   try {
     const submission = await Submission.findById(req.params.id);
     if (!submission) {
-      return res.status(404).json({
-        success: false,
-        message: "Submission not found",
-      });
+      return res.status(404).json({ message: "Submission not found" });
     }
 
     if (submission.status !== "pending") {
-      return res.status(400).json({
-        success: false,
-        message: "Submission already processed",
-      });
+      return res.status(400).json({ message: "Already processed" });
     }
 
     submission.status = "rejected";
@@ -224,20 +252,20 @@ const rejectYoutubeSubmission = async (req, res) => {
     res.json({
       success: true,
       message: "Submission rejected",
-      data: { submission },
+      data: {
+        submission,
+        earnings,
+      },
     });
   } catch (error) {
-    console.error("Rejection error:", error);
-    res.status(500).json({
-      success: false,
-      message: "Failed to reject submission",
-    });
+    console.error("Approval Error : ", error);
+    res.status(500).json({ message: "Rejection failed", error: error.message });
   }
 };
 
-module.exports = {
-  createYoutubeSubmission,
-  getUserYoutubeSubmissions,
-  approveYoutubeSubmission,
-  rejectYoutubeSubmission,
-};
+// Export as separate named exports
+//module.exports.uploadFile = upload.single("screenshot");
+module.exports.createSubmission = createSubmission;
+module.exports.getUserSubmissions = getUserSubmissions;
+module.exports.approveSubmission = approveSubmission;
+module.exports.rejectSubmission = rejectSubmission;
