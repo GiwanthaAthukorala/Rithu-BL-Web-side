@@ -1,24 +1,54 @@
 const Earnings = require("../models/Earnings");
 const Transaction = require("../models/Transaction");
+const Submission = require("../models/Submission");
+const YoutubeSubmission = require("../models/YoutubeSubmission");
 
 exports.getUserEarnings = async (req, res) => {
   try {
-    const earnings = await Earnings.findOne({ user: req.user._id });
-    const transactions = await Transaction.find({ user: req.user._id })
-      .sort({ createdAt: -1 })
-      .limit(10);
+    const [earnings, transactions, fbSubmissions, ytSubmissions] =
+      await Promise.all([
+        Earnings.findOne({ user: req.user._id }),
+        Transaction.find({ user: req.user._id })
+          .sort({ createdAt: -1 })
+          .limit(10),
+        Submission.find({ user: req.user._id, status: "approved" }),
+        YoutubeSubmission.find({ user: req.user._id, status: "approved" }),
+      ]);
+
+    // Calculate total from both submission types
+    const fbTotal = fbSubmissions.reduce(
+      (sum, sub) => sum + (sub.amount || 1),
+      0
+    );
+    const ytTotal = ytSubmissions.reduce(
+      (sum, sub) => sum + (sub.amount || 2),
+      0
+    );
+    const calculatedTotal = fbTotal + ytTotal;
+
+    // Create earnings record if doesn't exist
+    let earningsData = earnings;
+    if (!earningsData) {
+      earningsData = await Earnings.create({
+        user: req.user._id,
+        totalEarned: calculatedTotal,
+        availableBalance: calculatedTotal,
+        pendingWithdrawal: 0,
+        withdrawnAmount: 0,
+      });
+    } else if (earningsData.totalEarned !== calculatedTotal) {
+      // Update if calculation differs
+      earningsData.totalEarned = calculatedTotal;
+      earningsData.availableBalance =
+        calculatedTotal -
+        (earningsData.withdrawnAmount + earningsData.pendingWithdrawal);
+      await earningsData.save();
+    }
 
     res.json({
       success: true,
       data: {
-        ...(earnings
-          ? earnings.toObject()
-          : {
-              totalEarned: 0,
-              availableBalance: 0,
-              withdrawnAmount: 0,
-              pendingWithdrawal: 0,
-            }),
+        ...earningsData.toObject(),
         transactions: transactions || [],
       },
     });

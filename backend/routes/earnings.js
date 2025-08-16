@@ -3,6 +3,7 @@ const router = express.Router();
 const Earnings = require("../models/Earnings");
 const Submission = require("../models/Submission");
 const { protect } = require("../middleware/authMiddleware");
+const YoutubeSubmission = require("../models/YoutubeSubmission");
 
 router.get("/", protect, async (req, res) => {
   try {
@@ -28,16 +29,25 @@ router.get("/", protect, async (req, res) => {
     }
 
     // Get approved submissions
-    const submissions = await Submission.find({
-      user: req.user._id,
-      status: "approved",
-    });
-
-    // Calculate total from approved submissions
-    const calculatedTotal = submissions.reduce(
-      (sum, sub) => sum + (sub.amount || 0),
+    const [fbSubmissions, ytSubmissions] = await Promise.all([
+      Submission.find({
+        user: req.user._id,
+        status: "approved",
+      }),
+      YoutubeSubmission.find({
+        user: req.user._id,
+        status: "approved",
+      }),
+    ]);
+    const fbTotal = fbSubmissions.reduce(
+      (sum, sub) => sum + (sub.amount || 1),
       0
     );
+    const ytTotal = ytSubmissions.reduce(
+      (sum, sub) => sum + (sub.amount || 2),
+      0
+    );
+    const calculatedTotal = fbTotal + ytTotal;
 
     // Update earnings if needed
     if (earnings.totalEarned !== calculatedTotal) {
