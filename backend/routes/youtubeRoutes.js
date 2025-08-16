@@ -2,24 +2,19 @@ const express = require("express");
 const router = express.Router();
 const { protect, admin } = require("../middleware/authMiddleware");
 const {
-  createYoutubeSubmission,
-  getUserYoutubeSubmissions,
-  approveYoutubeSubmission,
-  rejectYoutubeSubmission,
+  createSubmission,
+  getUserSubmissions,
+  approveSubmission,
+  rejectSubmission,
 } = require("../controllers/YoutubeSubmission");
 const uploadFile = require("../middleware/uploadMiddleware");
 
 // User routes
-router.post(
-  "/",
-  protect,
-  uploadFile.single("screenshot"),
-  createYoutubeSubmission
-);
-router.get("/my-youtubeSubmissions", protect, getUserYoutubeSubmissions);
+router.post("/", protect, uploadFile.single("screenshot"), createSubmission);
+router.get("/my-youtubeSubmissions", protect, getUserSubmissions);
 
 // Admin routes
-router.put("/:id/approve", protect, admin, approveYoutubeSubmission);
-router.put("/:id/reject", protect, admin, rejectYoutubeSubmission);
+router.put("/:id/approve", protect, admin, approveSubmission);
+router.put("/:id/reject", protect, admin, rejectSubmission);
 
 module.exports = router;
