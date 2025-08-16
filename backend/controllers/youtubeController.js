@@ -1,52 +1,11 @@
-const Submission = require("../models/youTube");
+const YoutubeSubmission = require("../models/YoutubeSubmission");
 const Earnings = require("../models/Earnings");
 const generateImageHash = require("../utils/generateImageHash");
 const isSimilarHash = require("../utils/isSimilarHash");
 
-//const path = require("path");
-//const fs = require("fs").promises;
-//const { v4: uuidv4 } = require("uuid");
-//const multer = require("multer");
-
-// Configure storage
-/*const storage = multer.diskStorage({
-  destination: async (req, file, cb) => {
-    try {
-      const uploadDir = path.join(__dirname, "../public/uploads");
-      await fs.mkdir(uploadDir, { recursive: true });
-      cb(null, uploadDir);
-    } catch (err) {
-      cb(err);
-    }
-  },
-  filename: (req, file, cb) => {
-    const ext = path.extname(file.originalname);
-    cb(null, `${uuidv4()}${ext}`);
-  },
-});*/
-
-const fileFilter = (req, file, cb) => {
-  const validTypes = ["image/jpeg", "image/png", "image/jpg"];
-  if (validTypes.includes(file.mimetype)) {
-    cb(null, true);
-  } else {
-    cb(new Error("Only JPEG/JPG/PNG images allowed"), false);
-  }
-};
-
-// Create multer instance
-/*const upload = multer({
-  storage,
-  fileFilter,
-  limits: {
-    fileSize: 5 * 1024 * 1024, // 5MB
-  },
-});*/
-
-// Controller functions
-const createSubmission = async (req, res) => {
-  console.log("==== SUBMISSION REQUEST RECEIVED ====");
-  console.log("User ID : ", req.user?._id);
+const createYoutubeSubmission = async (req, res) => {
+  console.log("==== YOUTUBE SUBMISSION REQUEST RECEIVED ====");
+  console.log("User ID:", req.user?._id);
   console.log("Uploaded file:", req.file);
 
   const startTime = Date.now();
@@ -75,11 +34,11 @@ const createSubmission = async (req, res) => {
       });
     }
 
-    // Check for duplicates with better error reporting
-    const previousSubmissions = await Submission.find({
+    // Check for duplicates
+    const previousSubmissions = await YoutubeSubmission.find({
       user: userId,
       imageHash: { $ne: null },
-    }).limit(10); // Limit to recent submissions
+    }).limit(10);
 
     for (const submission of previousSubmissions) {
       if (isSimilarHash(uploadedImageHash, submission.imageHash)) {
@@ -96,27 +55,12 @@ const createSubmission = async (req, res) => {
 
     console.log("Hashing took", Date.now() - startTime, "ms");
 
-    // Validate required fields
-    if (!req.user?._id) {
-      return res.status(400).json({
-        success: false,
-        message: "User not authenticated",
-      });
-    }
-
-    /*const fileData = {
-      buffer: req.file.buffer,
-      mimetype: req.file.mimetype,
-      originalname: req.file.originalname,
-    };*/
-
-    const submission = await Submission.create({
+    const submission = await YoutubeSubmission.create({
       user: req.user._id,
-      platform: req.body.platform || "facebook",
       screenshot: cloudinaryUrl,
       imageHash: uploadedImageHash,
       status: "approved",
-      amount: 2.0,
+      amount: 2.0, // Rs. 2 per submission
     });
 
     let earnings = await Earnings.findOne({ user: req.user._id });
@@ -134,35 +78,19 @@ const createSubmission = async (req, res) => {
       await earnings.save();
     }
 
-    // Update earnings (only when admin approves)
-    // We'll move this to the approveSubmission function
-
     // Emit update to the user
     const io = req.app.get("io");
     io.to(req.user._id.toString()).emit("earningsUpdate", earnings);
     console.log("Updated earnings:", earnings);
 
-    // Debug logging
-
     res.status(201).json({
       success: true,
-      message: "Submission created successfully",
+      message: "YouTube submission created successfully",
       data: submission,
       earnings,
     });
   } catch (error) {
-    console.error("Submission error:", error);
-
-    /* if (req.file) {
-      try {
-        await fs.unlink(
-          path.join(__dirname, "../public/uploads", req.file.filename)
-        );
-      } catch (cleanupError) {
-        console.error("Failed to clean up file:", cleanupError);
-      }
-    }*/
-
+    console.error("YouTube submission error:", error);
     res.status(500).json({
       success: false,
       message: "Internal server error",
@@ -171,24 +99,24 @@ const createSubmission = async (req, res) => {
   }
 };
 
-const getUserSubmissions = async (req, res) => {
+const getUserYoutubeSubmissions = async (req, res) => {
   try {
-    const submissions = await Submission.find({ user: req.user._id });
+    const submissions = await YoutubeSubmission.find({ user: req.user._id });
     res.status(200).json({ success: true, data: submissions });
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: "Failed to get user submissions",
+      message: "Failed to get YouTube submissions",
       error: error.message,
     });
   }
 };
 
-const approveSubmission = async (req, res) => {
+const approveYoutubeSubmission = async (req, res) => {
   try {
-    const submission = await Submission.findById(req.params.id);
+    const submission = await YoutubeSubmission.findById(req.params.id);
     if (!submission) {
-      return res.status(404).json({ message: "Submission not found" });
+      return res.status(404).json({ message: "YouTube submission not found" });
     }
     if (submission.status !== "pending") {
       return res.status(400).json({ message: "Already processed" });
@@ -202,14 +130,14 @@ const approveSubmission = async (req, res) => {
     if (!earnings) {
       earnings = await Earnings.create({
         user: submission.user,
-        totalEarned: submission.amount,
-        availableBalance: submission.amount,
+        totalEarned: 2.0,
+        availableBalance: 2.0,
         pendingWithdrawal: 0,
         withdrawnAmount: 0,
       });
     } else {
-      earnings.totalEarned += submission.amount;
-      earnings.availableBalance += submission.amount;
+      earnings.totalEarned += 2.0;
+      earnings.availableBalance += 2.0;
       await earnings.save();
     }
 
@@ -224,7 +152,7 @@ const approveSubmission = async (req, res) => {
 
     res.json({
       success: true,
-      message: "Submission approved and earnings updated",
+      message: "YouTube submission approved and earnings updated",
       data: {
         submission,
         earnings,
@@ -235,11 +163,11 @@ const approveSubmission = async (req, res) => {
   }
 };
 
-const rejectSubmission = async (req, res) => {
+const rejectYoutubeSubmission = async (req, res) => {
   try {
-    const submission = await Submission.findById(req.params.id);
+    const submission = await YoutubeSubmission.findById(req.params.id);
     if (!submission) {
-      return res.status(404).json({ message: "Submission not found" });
+      return res.status(404).json({ message: "YouTube submission not found" });
     }
 
     if (submission.status !== "pending") {
@@ -251,21 +179,18 @@ const rejectSubmission = async (req, res) => {
 
     res.json({
       success: true,
-      message: "Submission rejected",
-      data: {
-        submission,
-        earnings,
-      },
+      message: "YouTube submission rejected",
+      data: submission,
     });
   } catch (error) {
-    console.error("Approval Error : ", error);
+    console.error("Rejection Error:", error);
     res.status(500).json({ message: "Rejection failed", error: error.message });
   }
 };
 
-// Export as separate named exports
-//module.exports.uploadFile = upload.single("screenshot");
-module.exports.createSubmission = createSubmission;
-module.exports.getUserSubmissions = getUserSubmissions;
-module.exports.approveSubmission = approveSubmission;
-module.exports.rejectSubmission = rejectSubmission;
+module.exports = {
+  createYoutubeSubmission,
+  getUserYoutubeSubmissions,
+  approveYoutubeSubmission,
+  rejectYoutubeSubmission,
+};
