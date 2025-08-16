@@ -91,7 +91,6 @@ app.use("/api/users", require("./routes/userRoutes"));
 app.use("/api/submissions", require("./routes/submissions"));
 app.use("/api/earnings", require("./routes/earnings"));
 app.use("/api/youtubeSubmissions", require("./routes/youtubeRoutes"));
-app.use("/api/youtubeearnings", require("./routes/youTubeEarnings"));
 
 // === Health Check ===
 app.get("/health", (req, res) => {
