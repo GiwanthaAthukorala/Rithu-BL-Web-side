@@ -1,5 +1,5 @@
 const Submission = require("../models/youTube");
-const Earnings = require("../models/Earnings");
+const Earnings = require("../models/youtubeEarning");
 const generateImageHash = require("../utils/generateImageHash");
 const isSimilarHash = require("../utils/isSimilarHash");
 
