@@ -1,4 +1,4 @@
-const Submission = require("../models/youTube");
+const youtubeSubmission = require("../models/youTube");
 const Earnings = require("../models/Earnings");
 const generateImageHash = require("../utils/generateImageHash");
 const isSimilarHash = require("../utils/isSimilarHash");
@@ -44,7 +44,7 @@ const fileFilter = (req, file, cb) => {
 });*/
 
 // Controller functions
-const createSubmission = async (req, res) => {
+const createYoutubeSubmission = async (req, res) => {
   console.log("==== SUBMISSION REQUEST RECEIVED ====");
   console.log("User ID : ", req.user?._id);
   console.log("Uploaded file:", req.file);
@@ -76,10 +76,12 @@ const createSubmission = async (req, res) => {
     }
 
     // Check for duplicates with better error reporting
-    const previousSubmissions = await Submission.find({
-      user: userId,
-      imageHash: { $ne: null },
-    }).limit(10); // Limit to recent submissions
+    const previousSubmissions = await youtubeSubmission
+      .find({
+        user: userId,
+        imageHash: { $ne: null },
+      })
+      .limit(10); // Limit to recent submissions
 
     for (const submission of previousSubmissions) {
       if (isSimilarHash(uploadedImageHash, submission.imageHash)) {
@@ -110,7 +112,7 @@ const createSubmission = async (req, res) => {
       originalname: req.file.originalname,
     };*/
 
-    const submission = await Submission.create({
+    const submission = await youtubeSubmission.create({
       user: req.user._id,
       platform: req.body.platform || "youtube",
       screenshot: cloudinaryUrl,
@@ -171,7 +173,7 @@ const createSubmission = async (req, res) => {
   }
 };
 
-const getUserSubmissions = async (req, res) => {
+const getUserYoutubeSubmissions = async (req, res) => {
   try {
     const submissions = await Submission.find({ user: req.user._id });
     res.status(200).json({ success: true, data: submissions });
@@ -184,7 +186,7 @@ const getUserSubmissions = async (req, res) => {
   }
 };
 
-const approveSubmission = async (req, res) => {
+const approveYoutubeSubmission = async (req, res) => {
   try {
     const submission = await Submission.findById(req.params.id);
     if (!submission) {
@@ -235,7 +237,7 @@ const approveSubmission = async (req, res) => {
   }
 };
 
-const rejectSubmission = async (req, res) => {
+const rejectYoutubeSubmission = async (req, res) => {
   try {
     const submission = await Submission.findById(req.params.id);
     if (!submission) {
@@ -265,7 +267,7 @@ const rejectSubmission = async (req, res) => {
 
 // Export as separate named exports
 //module.exports.uploadFile = upload.single("screenshot");
-module.exports.createSubmission = createSubmission;
-module.exports.getUserSubmissions = getUserSubmissions;
-module.exports.approveSubmission = approveSubmission;
-module.exports.rejectSubmission = rejectSubmission;
+module.exports.createYoutubeSubmission = createYoutubeSubmission;
+module.exports.getUserYoutubeSubmissions = getUserYoutubeSubmissions;
+module.exports.approveYoutubeSubmission = approveYoutubeSubmission;
+module.exports.rejectYoutubeSubmission = rejectYoutubeSubmission;
