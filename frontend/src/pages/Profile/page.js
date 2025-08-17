@@ -168,14 +168,14 @@ export default function Profile() {
               {/* Desktop Navigation */}
               <nav className="hidden md:flex items-center space-x-8">
                 <a
-                  href="#"
+                  href="/"
                   className="flex items-center space-x-2 text-gray-700 hover:text-blue-600 transition-all duration-200 font-medium"
                 >
                   <Home size={18} />
                   <span>Dashboard</span>
                 </a>
                 <a
-                  href="#"
+                  href="/Profile/page"
                   className="flex items-center space-x-2 text-blue-600 font-semibold bg-blue-50 px-3 py-2 rounded-lg"
                 >
                   <User size={18} />
@@ -240,7 +240,7 @@ export default function Profile() {
             <div className="md:hidden bg-white border-t border-gray-100 px-6 py-4 shadow-lg">
               <nav className="space-y-4">
                 <a
-                  href="https://rithu-business-client-side-2131.vercel.app/"
+                  href="/"
                   className="flex items-center space-x-3 text-gray-700 hover:text-blue-600 transition-colors p-2 rounded-lg hover:bg-blue-50"
                 >
                   <Home size={20} />
@@ -254,7 +254,7 @@ export default function Profile() {
                   <span>Profile</span>
                 </a>
                 <a
-                  href="#"
+                  href="/Profile/page"
                   className="flex items-center space-x-3 text-gray-700 hover:text-blue-600 transition-colors p-2 rounded-lg hover:bg-blue-50"
                 >
                   <TrendingUp size={20} />
