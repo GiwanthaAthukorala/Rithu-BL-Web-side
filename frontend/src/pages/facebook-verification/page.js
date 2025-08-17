@@ -7,26 +7,9 @@ import {
   Clock,
   Facebook,
 } from "lucide-react";
+import Header from "@/components/Header/Header";
 
 // Mock components and hooks for demonstration
-const Header = () => (
-  <div className="bg-gradient-to-r from-blue-600 to-blue-800 shadow-lg">
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div className="flex justify-between items-center py-4">
-        <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center">
-            <Facebook className="w-6 h-6 text-blue-600" />
-          </div>
-          <h1 className="text-xl font-bold text-white">Verification Portal</h1>
-        </div>
-        <div className="flex items-center space-x-4">
-          <span className="text-blue-100">Welcome back!</span>
-          <div className="w-8 h-8 bg-blue-500 rounded-full"></div>
-        </div>
-      </div>
-    </div>
-  </div>
-);
 
 const DuplicateWarningModal = ({ onClose, previousDate }) => (
   <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
@@ -259,7 +242,11 @@ export default function FbVerificationTask() {
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-6">
                   <div className="w-24 h-24 bg-white bg-opacity-20 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-xl">
-                    <Facebook className="w-12 h-12 text-white" />
+                    <img
+                      src="/facebook.png"
+                      alt="Facebook Icon"
+                      className="w-20 h-20 object-contain"
+                    />
                   </div>
                   <div>
                     <h1 className="text-3xl font-bold mb-2">
