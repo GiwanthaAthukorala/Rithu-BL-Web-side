@@ -286,7 +286,9 @@ export default function FbVerificationTask() {
             <ul className="space-y-2 text-gray-700">
               <ol className="list-decimal list-inside space-y-2 text-gray-700">
                 <li>Visit our Facebook page using the link below</li>
-                <li>Like or follow our page</li>
+                <li>
+                  Like or follow This page(ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න)
+                </li>
                 <li>Take a clear screenshot showing your engagement</li>
                 <li>Upload the screenshot below</li>
               </ol>
@@ -301,38 +303,39 @@ export default function FbVerificationTask() {
             <li>
               {" "}
               <a
-                href="https://www.facebook.com/share/1Ase2KqzCT/"
+                href="https://www.facebook.com/share/1CVEp1bSgv/?mibextid=wwXIfr"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium"
               >
-                Future Starts Education Hub Pvt Ltd - Only Like or Following
-                This Page <ExternalLink className="w-4 h-4 ml-1" />
+                CS Studio and Communication - ෆෙස්බුක් පෙජ් එක ලයික්
+                ෆලෝ කරන්න.(This Page Like or Following){" "}
+                <ExternalLink className="w-4 h-4 ml-1" />
               </a>
             </li>
 
             <li>
               {" "}
               <a
-                href="https://www.facebook.com/share/16j4v3ugy6/"
+                href="https://www.facebook.com/profile.php?id=61579385003718"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium"
               >
-                Jantha Foreign Employment Facebook Page - Only Like or Following
-                This Page <ExternalLink className="w-4 h-4 ml-1" />
+                හෙළ වෙදකම - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න.(This Page Like or
+                Following) <ExternalLink className="w-4 h-4 ml-1" />
               </a>
             </li>
             <li>
               {" "}
               <a
-                href="https://web.facebook.com/profile.php?id=61578843232009"
+                href="https://www.facebook.com/profile.php?id=61574553219898&mibextid=wwXIfr&mibextid=wwXIfr"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium"
               >
-                Oushada With Green Investment - Only Like or Following This Page{" "}
-                <ExternalLink className="w-4 h-4 ml-1" />
+                SHILA - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න.(This Page Like or
+                Following) <ExternalLink className="w-4 h-4 ml-1" />
               </a>
             </li>
             <li>
@@ -343,31 +346,59 @@ export default function FbVerificationTask() {
                 rel="noopener noreferrer"
                 className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium"
               >
-                Suwa Piyasa Home Nursing - Only Like or Following This Page{" "}
+                Minu Korean Language Center(Erandi Nanayakkara) - ෆෙස්බුක් පෙජ්
+                එක ලයික් ෆලෝ කරන්න.(This Page Like or Following){" "}
                 <ExternalLink className="w-4 h-4 ml-1" />
               </a>
             </li>
             <li>
               {" "}
               <a
-                href="https://www.facebook.com/profile.php?id=61578016952503&mibextid=ZbWKwL"
+                href="https://www.facebook.com/share/17ftfCoqE4/?mibextid=wwXIfr"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium"
               >
-                Mobi House Import Mobiles - Only Like or Following This Page{" "}
+                TMR Travels & Tours Private Ltd - ෆෙස්බුක් පෙජ් එක ලයික්
+                ෆලෝ කරන්න.(This Page Like or Following){" "}
                 <ExternalLink className="w-4 h-4 ml-1" />
               </a>
             </li>
             <li>
               {" "}
               <a
-                href="https://www.facebook.com/share/1Pi9iVcoYa/"
+                href="https://www.facebook.com/share/16Ms5EmWDc/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium"
               >
-                Ceylon Prestige <ExternalLink className="w-4 h-4 ml-1" />
+                CS Studio and Communication - ෆෙස්බුක් පෙජ් එක ලයික්
+                ෆලෝ කරන්න.(This Page Like or Following){" "}
+                <ExternalLink className="w-4 h-4 ml-1" />
+              </a>
+            </li>
+            <li>
+              {" "}
+              <a
+                href="https://www.facebook.com/share/178gYEzVBS/?mibextid=wwXIfr"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium"
+              >
+                NOIRELLE - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න.(This Page Like or
+                Following) <ExternalLink className="w-4 h-4 ml-1" />
+              </a>
+            </li>
+            <li>
+              {" "}
+              <a
+                href="https://www.facebook.com/share/1ChgcGPsKX/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium"
+              >
+                𝐌 𝐢 𝐧 𝐝 - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න.(This Page Like or
+                Following) <ExternalLink className="w-4 h-4 ml-1" />
               </a>
             </li>
           </div>
