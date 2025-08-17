@@ -240,7 +240,7 @@ export default function Profile() {
             <div className="md:hidden bg-white border-t border-gray-100 px-6 py-4 shadow-lg">
               <nav className="space-y-4">
                 <a
-                  href="#"
+                  href="https://rithu-business-client-side-2131.vercel.app/"
                   className="flex items-center space-x-3 text-gray-700 hover:text-blue-600 transition-colors p-2 rounded-lg hover:bg-blue-50"
                 >
                   <Home size={20} />
