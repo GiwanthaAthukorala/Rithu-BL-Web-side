@@ -192,16 +192,15 @@ export default function TikTokVerificationTask() {
             <p className="text-gray-700 mb-3">
               Please visit this link and take a screenshot as proof:
             </p>
-            <li>
+            {/*<li>
               {" "}
               <a
-                href="https://www.tiktok.com/@rithubus?_t=ZS-8yjcQj9QBwl&_r=1"
+                href=""
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium"
               >
-                Visit our Tiktok User @rithubus{" "}
-                <ExternalLink className="w-4 h-4 ml-1" />
+                Visit our Tiktok User <ExternalLink className="w-4 h-4 ml-1" />
               </a>
             </li>
 
@@ -249,6 +248,7 @@ export default function TikTokVerificationTask() {
                 Visit our Tiktok User <ExternalLink className="w-4 h-4 ml-1" />
               </a>
             </li>
+            */}
           </div>
 
           <div className="mb-8 bg-yellow-50 p-4 rounded-lg border border-yellow-200">
