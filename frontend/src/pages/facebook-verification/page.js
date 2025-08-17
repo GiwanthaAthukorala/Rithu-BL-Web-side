@@ -1,11 +1,12 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Upload, ExternalLink, CheckCircle } from "lucide-react";
 import Header from "@/components/Header/Header";
 import api from "@/lib/api";
 import { useAuth } from "@/Context/AuthContext";
 import DuplicateWarningModal from "@/components/DuplicateWarningModal";
+import Countdown from "react-countdown";
 
 export default function FbVerificationTask() {
   const [file, setFile] = useState(null);
@@ -17,6 +18,57 @@ export default function FbVerificationTask() {
   const { user, isLoading: isAuthLoading } = useAuth();
   const [showDuplicateModal, setShowDuplicateModal] = useState(false);
   const [previousSubmissionDate, setPreviousSubmissionDate] = useState("");
+  const [submissionLimit, setSubmissionLimit] = useState({
+    remainig: 20,
+    nextSubmissionTime: null,
+  });
+
+  // Fetch submission limit info when component mounts
+  useEffect(() => {
+    if (user?._id) {
+      fetchSubmissionLimit();
+    }
+  }, [user?._id]);
+
+  const fetchSubmissionLimit = async () => {
+    try {
+      const response = await api.get("/submissions/my-submissions");
+      if (response.data?.success) {
+        const now = new Date();
+        const twentyFourHoursAgo = new Date(
+          now.getTime() - 24 * 60 * 60 * 1000
+        );
+
+        // Filter submissions in last 24 hours
+        const recentSubmissions = response.data.data.filter(
+          (sub) =>
+            new Date(sub.createdAt) >= twentyFourHoursAgo &&
+            ["pending", "approved"].includes(sub.status)
+        );
+
+        const remaining = Math.max(0, 20 - recentSubmissions.length);
+
+        let nextSubmissionTime = null;
+        if (recentSubmissions.length >= 20) {
+          const oldestSubmission = recentSubmissions.reduce((oldest, current) =>
+            new Date(current.createdAt) < new Date(oldest.createdAt)
+              ? current
+              : oldest
+          );
+          nextSubmissionTime = new Date(
+            new Date(oldestSubmission.createdAt).getTime() + 24 * 60 * 60 * 1000
+          );
+        }
+
+        setSubmissionLimit({
+          remaining,
+          nextSubmissionTime,
+        });
+      }
+    } catch (error) {
+      console.error("Failed to fetch submission limit:", error);
+    }
+  };
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
@@ -96,11 +148,25 @@ export default function FbVerificationTask() {
           return;
         }
 
+        if (response.status === 429) {
+          setSubmissionLimit({
+            remainig: 0,
+            nextSubmissionTime: new Date(errorData.nextSubmissionTime),
+          });
+          setError(errorData.message);
+          return;
+        }
+
         throw new Error(errorData.message || "Submission failed");
       }
 
       const result = await response.json();
       console.log("Success response : ", result);
+
+      setSubmissionLimit({
+        remaining: result.limitInfo.remaining,
+        nextSubmissionTime: result.limitInfo.nextSubmissionTime,
+      });
 
       setIsSubmitted(true);
       setTimeout(() => {
@@ -114,6 +180,19 @@ export default function FbVerificationTask() {
       }
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  // Countdown renderer
+  const countdownRenderer = ({ hours, minutes, seconds, completed }) => {
+    if (completed) {
+      return <span>You can submit now!</span>;
+    } else {
+      return (
+        <span>
+          {hours}h {minutes}m {seconds}s
+        </span>
+      );
     }
   };
 
@@ -176,6 +255,33 @@ export default function FbVerificationTask() {
         <div className="bg-white p-6 rounded-b-lg shadow-sm">
           {/* Instructions Section */}
           <div className="mb-8">
+            {/* Submission Limit Info */}
+            <div className="mb-4 bg-blue-50 p-4 rounded-lg">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="font-medium">Daily Submission Limit</h3>
+                  <p className="text-sm text-gray-600">
+                    {submissionLimit.remaining > 0 ? (
+                      <span>
+                        You can submit {submissionLimit.remaining} more
+                        screenshots today
+                      </span>
+                    ) : (
+                      <span>You've reached today's limit</span>
+                    )}
+                  </p>
+                </div>
+                {submissionLimit.nextSubmissionTime && (
+                  <div className="flex items-center text-sm text-gray-600">
+                    <Clock className="w-4 h-4 mr-1" />
+                    <Countdown
+                      date={submissionLimit.nextSubmissionTime}
+                      renderer={countdownRenderer}
+                    />
+                  </div>
+                )}
+              </div>
+            </div>
             <h2 className="text-lg font-medium mb-4">Instructions</h2>
             <ul className="space-y-2 text-gray-700">
               <ol className="list-decimal list-inside space-y-2 text-gray-700">
@@ -332,14 +438,20 @@ export default function FbVerificationTask() {
 
               <button
                 type="submit"
-                disabled={!file || isSubmitting}
+                disabled={
+                  !file || isSubmitting || submissionLimit.remaining <= 0
+                }
                 className={`w-full py-3 rounded-lg font-semibold ${
-                  file
+                  file && submissionLimit.remainig > 0
                     ? "bg-green-600 hover:bg-green-700 text-white"
                     : "bg-gray-300 text-gray-500 cursor-not-allowed"
                 }`}
               >
-                {isSubmitting ? "Submitting..." : "Submit Screenshot"}
+                {isSubmitting
+                  ? "Submitting..."
+                  : submissionLimit.remainig <= 0
+                  ? "Daily Limit Reached"
+                  : "Submit Screenshot"}
               </button>
 
               {showDuplicateModal && (
