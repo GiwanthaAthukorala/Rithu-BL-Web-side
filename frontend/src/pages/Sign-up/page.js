@@ -242,7 +242,7 @@ export default function SignupPage() {
                         ? "border-red-500 focus:ring-red-500"
                         : "border-gray-300 focus:ring-blue-500"
                     }`}
-                    placeholder="+94 71 234 5678"
+                    placeholder="071 234 5678"
                     required
                   />
                   {fieldErrors.phoneNumber && (
