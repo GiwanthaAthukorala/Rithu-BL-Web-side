@@ -19,7 +19,7 @@ export default function FbVerificationTask() {
   const [showDuplicateModal, setShowDuplicateModal] = useState(false);
   const [previousSubmissionDate, setPreviousSubmissionDate] = useState("");
   const [submissionLimit, setSubmissionLimit] = useState({
-    remainig: 20,
+    remainig: 10,
     nextSubmissionTime: null,
   });
 
@@ -46,10 +46,10 @@ export default function FbVerificationTask() {
             ["pending", "approved"].includes(sub.status)
         );
 
-        const remaining = Math.max(0, 20 - recentSubmissions.length);
+        const remaining = Math.max(0, 10 - recentSubmissions.length);
 
         let nextSubmissionTime = null;
-        if (recentSubmissions.length >= 20) {
+        if (recentSubmissions.length >= 10) {
           const oldestSubmission = recentSubmissions.reduce((oldest, current) =>
             new Date(current.createdAt) < new Date(oldest.createdAt)
               ? current
