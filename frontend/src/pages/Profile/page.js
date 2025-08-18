@@ -399,7 +399,7 @@ export default function Profile() {
                           </div>
                         </div>
                         <p className="text-3xl font-bold text-blue-900">
-                          {Math.round(earnings.totalEarned / 0.8)}
+                          {Math.round(earnings.totalEarned / 1.0)}
                         </p>
                         <p className="text-xs text-blue-600 mt-1">
                           Tasks completed
