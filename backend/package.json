@@ -44,8 +44,10 @@
     "@types/cors": "^2.8.19",
     "@types/express-fileupload": "^1.5.1",
     "@types/page": "^1.11.9",
+    "@types/prop-types": "^15.7.15",
     "@types/react": "^19.1.10",
     "@types/react-dom": "^19.1.7",
+    "@types/react-is": "^19.0.0",
     "nodemon": "^3.1.10"
   },
   "description": ""

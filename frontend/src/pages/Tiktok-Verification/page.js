@@ -155,7 +155,7 @@ export default function TikTokVerificationTask() {
             </h2>
             <p className="text-gray-600 mb-6 text-lg">
               🎉 You've earned{" "}
-              <span className="font-bold text-green-600">Rs 0.80</span>
+              <span className="font-bold text-green-600">Rs 1/=</span>
               <br />
               Your balance has been updated.
             </p>
@@ -532,7 +532,7 @@ export default function TikTokVerificationTask() {
                   ) : (
                     <div className="flex items-center justify-center space-x-2">
                       <CheckCircle className="w-5 h-5" />
-                      <span>Submit Screenshot & Earn Rs 0.80</span>
+                      <span>Submit Screenshot & Earn Rs 1/=</span>
                     </div>
                   )}
                 </button>
