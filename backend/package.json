@@ -29,8 +29,11 @@
     "mongoose": "^8.16.4",
     "multer": "^2.0.2",
     "multer-storage-cloudinary": "^4.0.0",
+    "page": "^1.11.6",
     "path-to-regexp": "^3.2.0",
     "phash-im": "^1.0.1",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
     "sharp": "^0.34.3",
     "socket.io": "^4.8.1",
     "tesseract.js": "^6.0.1",
@@ -38,6 +41,11 @@
     "vercel": "^44.4.2"
   },
   "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express-fileupload": "^1.5.1",
+    "@types/page": "^1.11.9",
+    "@types/react": "^19.1.10",
+    "@types/react-dom": "^19.1.7",
     "nodemon": "^3.1.10"
   },
   "description": ""
