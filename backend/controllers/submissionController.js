@@ -149,14 +149,14 @@ const createSubmission = async (req, res) => {
       status: { $in: ["pending", "approved"] },
     });
 
-    const remainingSubmissions = Math.max(0, 10 - submissionCount);
+    const remainingSubmissions = Math.max(0, 18 - submissionCount);
     const oldestSubmission = await Submission.findOne({
       user: userId,
       createdAt: { $gte: twentyFourHoursAgo },
     }).sort({ createdAt: 1 });
 
     let nextSubmissionTime = null;
-    if (submissionCount >= 10) {
+    if (submissionCount >= 18) {
       nextSubmissionTime = new Date(
         oldestSubmission.createdAt.getTime() + 24 * 60 * 60 * 1000
       );
@@ -171,7 +171,7 @@ const createSubmission = async (req, res) => {
       data: submission,
       earnings,
       limitInfo: {
-        limit: 10,
+        limit: 18,
         remaining: remainingSubmissions,
         nextSubmissionTime,
       },

@@ -1,6 +1,6 @@
 const Submission = require("../models/Submission");
 
-const MAX_SUBMISSIONS_PER_DAY = 20;
+const MAX_SUBMISSIONS_PER_DAY = 18;
 const HOURS_LIMIT = 24;
 
 const submissionRateLimiter = async (req, res, next) => {

@@ -10,7 +10,7 @@ exports.getUserEarnings = async (req, res) => {
         Earnings.findOne({ user: req.user._id }),
         Transaction.find({ user: req.user._id })
           .sort({ createdAt: -1 })
-          .limit(10),
+          .limit(18),
         Submission.find({ user: req.user._id, status: "approved" }),
         YoutubeSubmission.find({ user: req.user._id, status: "approved" }),
       ]);

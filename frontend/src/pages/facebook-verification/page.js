@@ -19,7 +19,7 @@ export default function FbVerificationTask() {
   const [showDuplicateModal, setShowDuplicateModal] = useState(false);
   const [previousSubmissionDate, setPreviousSubmissionDate] = useState("");
   const [submissionLimit, setSubmissionLimit] = useState({
-    remainig: 10,
+    remainig: 18,
     nextSubmissionTime: null,
   });
 
@@ -46,10 +46,10 @@ export default function FbVerificationTask() {
             ["pending", "approved"].includes(sub.status)
         );
 
-        const remaining = Math.max(0, 10 - recentSubmissions.length);
+        const remaining = Math.max(0, 18 - recentSubmissions.length);
 
         let nextSubmissionTime = null;
-        if (recentSubmissions.length >= 10) {
+        if (recentSubmissions.length >= 18) {
           const oldestSubmission = recentSubmissions.reduce((oldest, current) =>
             new Date(current.createdAt) < new Date(oldest.createdAt)
               ? current
@@ -675,10 +675,10 @@ export default function FbVerificationTask() {
                 <button
                   type="submit"
                   disabled={
-                    !file || isSubmitting || submissionLimit.remaining <= 0
+                    !file || isSubmitting || submissionLimit.remainig <= 0
                   }
                   className={`w-full py-4 rounded-xl font-bold text-lg transition-all duration-300 transform hover:scale-[1.02] ${
-                    file && submissionLimit.remaining > 0
+                    file && submissionLimit.remainig > 0
                       ? "bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white shadow-lg hover:shadow-xl"
                       : "bg-gray-300 text-gray-500 cursor-not-allowed"
                   }`}
@@ -688,7 +688,7 @@ export default function FbVerificationTask() {
                       <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white"></div>
                       <span>Submitting...</span>
                     </div>
-                  ) : submissionLimit.remaining <= 0 ? (
+                  ) : submissionLimit.remainig <= 0 ? (
                     "Daily Limit Reached"
                   ) : (
                     <div className="flex items-center justify-center space-x-2">
