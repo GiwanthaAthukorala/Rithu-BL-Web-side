@@ -155,7 +155,7 @@ export default function TikTokVerificationTask() {
             </h2>
             <p className="text-gray-600 mb-6 text-lg">
               🎉 You've earned{" "}
-              <span className="font-bold text-green-600">Rs 1/=</span>
+              <span className="font-bold text-green-600">Rs 0.80</span>
               <br />
               Your balance has been updated.
             </p>
@@ -310,7 +310,7 @@ export default function TikTokVerificationTask() {
                 <div className="flex items-center justify-between">
                   <div>
                     <h4 className="font-semibold text-white mb-1">
-                      Follow Our Main Account -ටික් ටොක් එකව්න්ට් එක ෆලෝ කරන්න
+                      Follow Our Main Account
                     </h4>
                     <p className="text-gray-300 text-sm">
                       @wisdom.weave.netw - Join our community
@@ -322,8 +322,7 @@ export default function TikTokVerificationTask() {
                     rel="noopener noreferrer"
                     className="flex items-center bg-gradient-to-r from-pink-500 to-red-500 text-white px-6 py-2 rounded-lg hover:from-pink-600 hover:to-red-600 transition-all duration-200 font-medium group-hover:scale-105"
                   >
-                    Follow Now - ටික් ටොක් එකව්න්ට් එක ෆලෝ කරන්න
-                    <ExternalLink className="w-4 h-4 ml-2" />
+                    Follow Now <ExternalLink className="w-4 h-4 ml-2" />
                   </a>
                 </div>
               </div>
@@ -332,7 +331,7 @@ export default function TikTokVerificationTask() {
               <div className="grid md:grid-cols-2 gap-4">
                 <div className="bg-gradient-to-br from-purple-50 to-pink-50 p-4 rounded-xl border border-purple-200 hover:shadow-md transition-all duration-300 group">
                   <h4 className="font-semibold text-gray-800 mb-2">
-                    Like Video #1 - ටික් ටොක් විඩියෝ එකට ලයික් කරන්න
+                    Like Video #1
                   </h4>
                   <a
                     href="https://www.tiktok.com/@mishacarpetcleaning/video/7429593942150122759?is_from_webapp=1&sender_device=pc&web_id=7382005154315388417"
@@ -340,14 +339,13 @@ export default function TikTokVerificationTask() {
                     rel="noopener noreferrer"
                     className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium group-hover:underline"
                   >
-                    Watch & Like - ටික් ටොක් විඩියෝ එකට ලයික් කරන්න
-                    <ExternalLink className="w-4 h-4 ml-1" />
+                    Watch & Like <ExternalLink className="w-4 h-4 ml-1" />
                   </a>
                 </div>
 
                 <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-4 rounded-xl border border-blue-200 hover:shadow-md transition-all duration-300 group">
                   <h4 className="font-semibold text-gray-800 mb-2">
-                    Like Video #2 - ටික් ටොක් විඩියෝ එකට ලයික් කරන්න
+                    Like Video #2
                   </h4>
                   <a
                     href="https://www.tiktok.com/@mishacarpetcleaning/video/7412519246145572104?is_from_webapp=1&sender_device=pc&web_id=7382005154315388417"
@@ -355,14 +353,13 @@ export default function TikTokVerificationTask() {
                     rel="noopener noreferrer"
                     className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium group-hover:underline"
                   >
-                    Watch & Like -ටික් ටොක් විඩියෝ එකට ලයික් කරන්න
-                    <ExternalLink className="w-4 h-4 ml-1" />
+                    Watch & Like <ExternalLink className="w-4 h-4 ml-1" />
                   </a>
                 </div>
 
                 <div className="bg-gradient-to-br from-green-50 to-emerald-50 p-4 rounded-xl border border-green-200 hover:shadow-md transition-all duration-300 group">
                   <h4 className="font-semibold text-gray-800 mb-2">
-                    Like Video #3 - ටික් ටොක් විඩියෝ එකට ලයික් කරන්න
+                    Like Video #3
                   </h4>
                   <a
                     href="https://vt.tiktok.com/ZSAeMax1c/"
@@ -376,7 +373,7 @@ export default function TikTokVerificationTask() {
 
                 <div className="bg-gradient-to-br from-yellow-50 to-orange-50 p-4 rounded-xl border border-yellow-200 hover:shadow-md transition-all duration-300 group">
                   <h4 className="font-semibold text-gray-800 mb-2">
-                    Like Video #4 - ටික් ටොක් විඩියෝ එකට ලයික් කරන්න
+                    Like Video #4
                   </h4>
                   <a
                     href="https://vt.tiktok.com/ZSAeMgWDq/"
@@ -532,7 +529,7 @@ export default function TikTokVerificationTask() {
                   ) : (
                     <div className="flex items-center justify-center space-x-2">
                       <CheckCircle className="w-5 h-5" />
-                      <span>Submit Screenshot & Earn Rs 1/=</span>
+                      <span>Submit Screenshot & Earn Rs 0.80</span>
                     </div>
                   )}
                 </button>

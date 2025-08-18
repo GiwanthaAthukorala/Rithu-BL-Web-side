@@ -576,6 +576,17 @@ export default function FbVerificationTask() {
                   </span>
                   <ExternalLink className="w-4 h-4 text-blue-600 group-hover:scale-110 transition-transform" />
                 </a>
+                <a
+                  href="https://www.facebook.com/share/1JgK3WSNU3/?mibextid=wwXIfr"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-between p-4 bg-white rounded-lg hover:bg-blue-50 transition-colors duration-200 border border-gray-200 hover:border-blue-300 group"
+                >
+                  <span className="text-gray-700 group-hover:text-blue-700">
+                    පුන්සර විතානගේ (පුන්සර මල්ලී) - ෆෙස්බුක් profile ෆලෝ කරන්න
+                  </span>
+                  <ExternalLink className="w-4 h-4 text-blue-600 group-hover:scale-110 transition-transform" />
+                </a>
               </div>
             </div>
 
