@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Upload, ExternalLink, CheckCircle } from "lucide-react";
+import { Upload, ExternalLink, CheckCircle, Clock } from "lucide-react";
 import Header from "@/components/Header/Header";
 import api from "@/lib/api";
 import { useAuth } from "@/Context/AuthContext";
@@ -233,282 +233,483 @@ export default function FbVerificationTask() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
       <Header />
-      <div className="max-w-4xl mx-auto">
-        {/* Header */}
-        <div className="bg-blue-600 text-white p-6 rounded-t-lg">
-          <div className="w-20 h-20 flex items-center justify-center mr-3 overflow-hidden">
-            <img
-              src="/facebook.png"
-              alt="Facebook Icon"
-              className="w-20 h-20 object-contain"
-            />
+      <div className="max-w-4xl mx-auto p-4">
+        {/* Enhanced Header */}
+        <div className="relative overflow-hidden bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-600 rounded-t-2xl shadow-lg">
+          {/* Background Pattern */}
+          <div className="absolute inset-0 opacity-10">
+            <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent transform -skew-y-6 origin-top-left"></div>
+            <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full transform translate-x-16 -translate-y-16"></div>
+            <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full transform -translate-x-12 translate-y-12"></div>
           </div>
-          <h1 className="text-xl text-[#000000]  font-bold mb-2">
-            Facebook Verification Section
-          </h1>
-          <p className="text-blue-100">Earn Rs 1/= per valid screenshot</p>
+
+          {/* Content */}
+          <div className="relative z-10 p-8">
+            <div className="flex items-center space-x-6">
+              {/* Facebook Icon with Animated Border */}
+              <div className="relative">
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-400 to-blue-300 rounded-2xl blur-sm opacity-60 animate-pulse"></div>
+                <div className="relative w-20 h-20 bg-white rounded-2xl flex items-center justify-center shadow-lg transform hover:scale-105 transition-transform duration-300">
+                  <img
+                    src="/facebook.png"
+                    alt="Facebook Icon"
+                    className="w-16 h-16 object-contain"
+                  />
+                </div>
+              </div>
+
+              {/* Title Section */}
+              <div className="flex-1">
+                <div className="flex items-center space-x-3 mb-2">
+                  <h1 className="text-3xl font-bold text-white tracking-tight">
+                    Facebook Verification
+                  </h1>
+                  <div className="px-3 py-1 bg-green-500 text-white text-sm font-semibold rounded-full shadow-md animate-bounce">
+                    Rs 1.00
+                  </div>
+                </div>
+                <p className="text-blue-100 text-lg font-medium">
+                  Earn money by engaging with Facebook pages
+                </p>
+                <div className="flex items-center space-x-4 mt-3">
+                  <div className="flex items-center space-x-2 text-blue-200">
+                    <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                    <span className="text-sm">Active Task</span>
+                  </div>
+                  <div className="flex items-center space-x-2 text-blue-200">
+                    <CheckCircle className="w-4 h-4" />
+                    <span className="text-sm">Instant Payout</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Bottom Wave */}
+          <div className="absolute bottom-0 left-0 right-0">
+            <svg
+              className="w-full h-4 text-white"
+              viewBox="0 0 1200 120"
+              preserveAspectRatio="none"
+            >
+              <path
+                d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z"
+                opacity=".25"
+                fill="currentColor"
+              ></path>
+              <path
+                d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z"
+                opacity=".5"
+                fill="currentColor"
+              ></path>
+              <path
+                d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z"
+                fill="currentColor"
+              ></path>
+            </svg>
+          </div>
         </div>
 
         {/* Main Content */}
-        <div className="bg-white p-6 rounded-b-lg shadow-sm">
-          {/* Instructions Section */}
-          <div className="mb-8">
-            {/* Submission Limit Info */}
-            <div className="mb-4 bg-blue-50 p-4 rounded-lg">
+        <div className="bg-white rounded-b-2xl shadow-xl border-t-0">
+          {/* Submission Limit Info - Enhanced */}
+          <div className="p-6 border-b border-gray-100">
+            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-6 rounded-xl border border-blue-200">
               <div className="flex items-center justify-between">
-                <div>
-                  <h3 className="font-medium">Daily Submission Limit</h3>
-                  <p className="text-sm text-gray-600">
-                    {submissionLimit.remaining > 0 ? (
-                      <span>
-                        You can submit {submissionLimit.remaining} more
-                        screenshots today
-                      </span>
-                    ) : (
-                      <span>You've reached today's limit</span>
-                    )}
-                  </p>
+                <div className="flex items-center space-x-4">
+                  <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center">
+                    <span className="text-white font-bold text-lg">
+                      {submissionLimit.remaining}
+                    </span>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-gray-800 text-lg">
+                      Daily Submission Limit
+                    </h3>
+                    <p className="text-gray-600">
+                      {submissionLimit.remaining > 0 ? (
+                        <span className="text-green-600 font-medium">
+                          {submissionLimit.remaining} screenshots remaining
+                          today
+                        </span>
+                      ) : (
+                        <span className="text-red-600 font-medium">
+                          Daily limit reached
+                        </span>
+                      )}
+                    </p>
+                  </div>
                 </div>
                 {submissionLimit.nextSubmissionTime && (
-                  <div className="flex items-center text-sm text-gray-600">
-                    <Clock className="w-4 h-4 mr-1" />
-                    <Countdown
-                      date={submissionLimit.nextSubmissionTime}
-                      renderer={countdownRenderer}
-                    />
+                  <div className="flex items-center space-x-2 bg-white px-4 py-2 rounded-lg shadow-sm">
+                    <Clock className="w-5 h-5 text-blue-600" />
+                    <div className="text-center">
+                      <div className="text-sm text-gray-500">
+                        Next submission in
+                      </div>
+                      <div className="font-mono font-semibold text-blue-600">
+                        <Countdown
+                          date={submissionLimit.nextSubmissionTime}
+                          renderer={countdownRenderer}
+                        />
+                      </div>
+                    </div>
                   </div>
                 )}
               </div>
             </div>
-            <h2 className="text-lg font-medium mb-4">Instructions</h2>
-            <ul className="space-y-2 text-gray-700">
-              <ol className="list-decimal list-inside space-y-2 text-gray-700">
-                <li>Visit our Facebook page using the link below</li>
-                <li>
-                  Like or follow This page(ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න)
-                </li>
-                <li>Take a clear screenshot showing your engagement</li>
-                <li>Upload the screenshot below</li>
-              </ol>
-            </ul>
           </div>
 
-          {/* Admin Message */}
-          <div className="mb-8 bg-blue-50 p-4 rounded-lg">
-            <p className="text-gray-700 mb-3">
-              Please visit this link and take a screenshot as proof:
-            </p>
-            <li>
-              {" "}
-              <a
-                href="https://www.facebook.com/share/1CVEp1bSgv/?mibextid=wwXIfr"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium"
-              >
-                CS Studio and Communication - ෆෙස්බුක් පෙජ් එක ලයික්
-                ෆලෝ කරන්න.(This Page Like or Following){" "}
-                <ExternalLink className="w-4 h-4 ml-1" />
-              </a>
-            </li>
-
-            <li>
-              {" "}
-              <a
-                href="https://www.facebook.com/profile.php?id=61579385003718"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium"
-              >
-                හෙළ වෙදකම - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න.(This Page Like or
-                Following) <ExternalLink className="w-4 h-4 ml-1" />
-              </a>
-            </li>
-            <li>
-              {" "}
-              <a
-                href="https://www.facebook.com/profile.php?id=61574553219898&mibextid=wwXIfr&mibextid=wwXIfr"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium"
-              >
-                SHILA - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න.(This Page Like or
-                Following) <ExternalLink className="w-4 h-4 ml-1" />
-              </a>
-            </li>
-            <li>
-              {" "}
-              <a
-                href="https://www.facebook.com/SuwaPiyasaHomeNursing"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium"
-              >
-                Suwa Piyasa Home Nursing - ෆෙස්බුක් පෙජ් එක ලයික්
-                ෆලෝ කරන්න.(This Page Like or Following){" "}
-                <ExternalLink className="w-4 h-4 ml-1" />
-              </a>
-            </li>
-            <li>
-              {" "}
-              <a
-                href="https://www.facebook.com/minukoreanlanguagecenter/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium"
-              >
-                Minu Korean Language Center(Erandi Nanayakkara) - ෆෙස්බුක් පෙජ්
-                එක ලයික් ෆලෝ කරන්න.(This Page Like or Following){" "}
-                <ExternalLink className="w-4 h-4 ml-1" />
-              </a>
-            </li>
-            <li>
-              {" "}
-              <a
-                href="https://www.facebook.com/share/17ftfCoqE4/?mibextid=wwXIfr"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium"
-              >
-                TMR Travels & Tours Private Ltd - ෆෙස්බුක් පෙජ් එක ලයික්
-                ෆලෝ කරන්න.(This Page Like or Following){" "}
-                <ExternalLink className="w-4 h-4 ml-1" />
-              </a>
-            </li>
-            <li>
-              {" "}
-              <a
-                href="https://www.facebook.com/share/16Ms5EmWDc/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium"
-              >
-                Various Technologies - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න.(This
-                Page Like or Following){" "}
-                <ExternalLink className="w-4 h-4 ml-1" />
-              </a>
-            </li>
-            <li>
-              {" "}
-              <a
-                href="https://www.facebook.com/share/178gYEzVBS/?mibextid=wwXIfr"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium"
-              >
-                NOIRELLE - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න.(This Page Like or
-                Following) <ExternalLink className="w-4 h-4 ml-1" />
-              </a>
-            </li>
-            <li>
-              {" "}
-              <a
-                href="https://www.facebook.com/share/1ChgcGPsKX/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium"
-              >
-                𝐌 𝐢 𝐧 𝐝 - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න.(This Page Like or
-                Following) <ExternalLink className="w-4 h-4 ml-1" />
-              </a>
-            </li>
-          </div>
-
-          <div className="mb-8 bg-yellow-50 p-4 rounded-lg border border-yellow-200">
-            <h3 className="text-md font-medium mb-2 text-yellow-800">
-              Screenshot Requirements
-            </h3>
-            <ul className="list-disc list-inside space-y-1 text-yellow-700">
-              <li>Must clearly show the liked/followed page</li>
-              <li>Must show your profile or browser context</li>
-              <li>No edited or cropped images</li>
-              <li>File size under 5MB</li>
-            </ul>
-          </div>
-
-          {/* Upload Section */}
-          <div>
-            <h3 className="text-lg font-medium mb-4">Upload Screenshot</h3>
-            <form onSubmit={handleSubmit}>
-              <div className="mb-6">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Screenshot File
-                </label>
-
-                {preview ? (
-                  <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center">
-                    <img
-                      src={preview}
-                      alt="Screenshot preview"
-                      className="max-h-64 mx-auto mb-4 rounded"
-                    />
-                    <p className="text-green-600 font-medium">{file.name}</p>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setFile(null);
-                        setPreview(null);
-                      }}
-                      className="mt-3 text-sm text-red-600 hover:text-red-800"
-                    >
-                      Remove file
-                    </button>
-                  </div>
-                ) : (
-                  <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
-                    <Upload className="w-12 h-12 text-gray-400 mx-auto mb-3" />
-                    <p className="text-gray-600 mb-2">
-                      Drag and drop your screenshot here or click to browse
-                    </p>
-                    <p className="text-sm text-gray-500 mb-4">
-                      Supported formats: PNG, JPG, JPEG (max 5MB)
-                    </p>
-                    <label className="inline-block bg-blue-600 text-white px-4 py-2 rounded-md cursor-pointer hover:bg-blue-700">
-                      Choose File
-                      <input
-                        type="file"
-                        accept=".png,.jpg,.jpeg"
-                        onChange={handleFileChange}
-                        className="hidden"
-                      />
-                    </label>
-                  </div>
-                )}
-
-                {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
+          {/* Instructions Section */}
+          <div className="p-6">
+            <div className="mb-8">
+              <h2 className="text-xl font-bold text-gray-800 mb-6 flex items-center space-x-2">
+                <div className="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold">
+                  !
+                </div>
+                <span>Instructions</span>
+              </h2>
+              <div className="bg-gray-50 p-6 rounded-xl">
+                <ol className="list-decimal list-inside space-y-3 text-gray-700">
+                  <li className="flex items-start space-x-3">
+                    <span className="flex-shrink-0 w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-bold">
+                      1
+                    </span>
+                    <span>Visit our Facebook page using the link below</span>
+                  </li>
+                  <li className="flex items-start space-x-3">
+                    <span className="flex-shrink-0 w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-bold">
+                      2
+                    </span>
+                    <span>
+                      Like or follow the page (ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න)
+                    </span>
+                  </li>
+                  <li className="flex items-start space-x-3">
+                    <span className="flex-shrink-0 w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-bold">
+                      3
+                    </span>
+                    <span>Take a clear screenshot showing your engagement</span>
+                  </li>
+                  <li className="flex items-start space-x-3">
+                    <span className="flex-shrink-0 w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-bold">
+                      4
+                    </span>
+                    <span>Upload the screenshot below</span>
+                  </li>
+                </ol>
               </div>
+            </div>
 
-              <button
-                type="submit"
-                disabled={
-                  !file || isSubmitting || submissionLimit.remaining <= 0
-                }
-                className={`w-full py-3 rounded-lg font-semibold ${
-                  file && submissionLimit.remainig > 0
-                    ? "bg-green-600 hover:bg-green-700 text-white"
-                    : "bg-gray-300 text-gray-500 cursor-not-allowed"
-                }`}
-              >
-                {isSubmitting
-                  ? "Submitting..."
-                  : submissionLimit.remainig <= 0
-                  ? "Daily Limit Reached"
-                  : "Submit Screenshot"}
-              </button>
+            {/* Facebook Pages Links */}
+            <div className="mb-8 bg-gradient-to-r from-blue-50 to-indigo-50 p-6 rounded-xl border border-blue-200">
+              <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center space-x-2">
+                <ExternalLink className="w-5 h-5 text-blue-600" />
+                <span>Facebook Pages to Follow</span>
+              </h3>
+              <div className="grid gap-3">
+                <a
+                  href="https://www.facebook.com/share/1CVEp1bSgv/?mibextid=wwXIfr"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-between p-4 bg-white rounded-lg hover:bg-blue-50 transition-colors duration-200 border border-gray-200 hover:border-blue-300 group"
+                >
+                  <span className="text-gray-700 group-hover:text-blue-700">
+                    CS Studio and Communication - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ
+                    කරන්න
+                  </span>
+                  <ExternalLink className="w-4 h-4 text-blue-600 group-hover:scale-110 transition-transform" />
+                </a>
 
-              {showDuplicateModal && (
-                <DuplicateWarningModal
-                  onClose={() => {
-                    setShowDuplicateModal(false);
-                    setFile(null);
-                    setPreview(null);
-                  }}
-                  previousDate={previousSubmissionDate}
-                />
-              )}
-            </form>
+                <a
+                  href="https://www.facebook.com/profile.php?id=61579385003718"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-between p-4 bg-white rounded-lg hover:bg-blue-50 transition-colors duration-200 border border-gray-200 hover:border-blue-300 group"
+                >
+                  <span className="text-gray-700 group-hover:text-blue-700">
+                    හෙළ වෙදකම - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න
+                  </span>
+                  <ExternalLink className="w-4 h-4 text-blue-600 group-hover:scale-110 transition-transform" />
+                </a>
+
+                <a
+                  href="https://www.facebook.com/profile.php?id=61574553219898&mibextid=wwXIfr&mibextid=wwXIfr"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-between p-4 bg-white rounded-lg hover:bg-blue-50 transition-colors duration-200 border border-gray-200 hover:border-blue-300 group"
+                >
+                  <span className="text-gray-700 group-hover:text-blue-700">
+                    SHILA - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න
+                  </span>
+                  <ExternalLink className="w-4 h-4 text-blue-600 group-hover:scale-110 transition-transform" />
+                </a>
+
+                <a
+                  href="https://www.facebook.com/SuwaPiyasaHomeNursing"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-between p-4 bg-white rounded-lg hover:bg-blue-50 transition-colors duration-200 border border-gray-200 hover:border-blue-300 group"
+                >
+                  <span className="text-gray-700 group-hover:text-blue-700">
+                    Suwa Piyasa Home Nursing - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න
+                  </span>
+                  <ExternalLink className="w-4 h-4 text-blue-600 group-hover:scale-110 transition-transform" />
+                </a>
+
+                <a
+                  href="https://www.facebook.com/minukoreanlanguagecenter/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-between p-4 bg-white rounded-lg hover:bg-blue-50 transition-colors duration-200 border border-gray-200 hover:border-blue-300 group"
+                >
+                  <span className="text-gray-700 group-hover:text-blue-700">
+                    Minu Korean Language Center - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ
+                    කරන්න
+                  </span>
+                  <ExternalLink className="w-4 h-4 text-blue-600 group-hover:scale-110 transition-transform" />
+                </a>
+
+                <a
+                  href="https://www.facebook.com/share/17ftfCoqE4/?mibextid=wwXIfr"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-between p-4 bg-white rounded-lg hover:bg-blue-50 transition-colors duration-200 border border-gray-200 hover:border-blue-300 group"
+                >
+                  <span className="text-gray-700 group-hover:text-blue-700">
+                    TMR Travels & Tours Private Ltd - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ
+                    කරන්න
+                  </span>
+                  <ExternalLink className="w-4 h-4 text-blue-600 group-hover:scale-110 transition-transform" />
+                </a>
+
+                <a
+                  href="https://www.facebook.com/share/16Ms5EmWDc/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-between p-4 bg-white rounded-lg hover:bg-blue-50 transition-colors duration-200 border border-gray-200 hover:border-blue-300 group"
+                >
+                  <span className="text-gray-700 group-hover:text-blue-700">
+                    Various Technologies - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න
+                  </span>
+                  <ExternalLink className="w-4 h-4 text-blue-600 group-hover:scale-110 transition-transform" />
+                </a>
+
+                <a
+                  href="https://www.facebook.com/share/178gYEzVBS/?mibextid=wwXIfr"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-between p-4 bg-white rounded-lg hover:bg-blue-50 transition-colors duration-200 border border-gray-200 hover:border-blue-300 group"
+                >
+                  <span className="text-gray-700 group-hover:text-blue-700">
+                    NOIRELLE - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න
+                  </span>
+                  <ExternalLink className="w-4 h-4 text-blue-600 group-hover:scale-110 transition-transform" />
+                </a>
+
+                <a
+                  href="https://www.facebook.com/share/1ChgcGPsKX/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-between p-4 bg-white rounded-lg hover:bg-blue-50 transition-colors duration-200 border border-gray-200 hover:border-blue-300 group"
+                >
+                  <span className="text-gray-700 group-hover:text-blue-700">
+                    𝐌 𝐢 𝐧 𝐝 - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න
+                  </span>
+                  <ExternalLink className="w-4 h-4 text-blue-600 group-hover:scale-110 transition-transform" />
+                </a>
+
+                <a
+                  href="https://www.facebook.com/SantaDoraHospital"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-between p-4 bg-white rounded-lg hover:bg-blue-50 transition-colors duration-200 border border-gray-200 hover:border-blue-300 group"
+                >
+                  <span className="text-gray-700 group-hover:text-blue-700">
+                    Santa Dora Hospital - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න
+                  </span>
+                  <ExternalLink className="w-4 h-4 text-blue-600 group-hover:scale-110 transition-transform" />
+                </a>
+                <a
+                  href="https://www.facebook.com/share/1B5ySJ3hEQ/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-between p-4 bg-white rounded-lg hover:bg-blue-50 transition-colors duration-200 border border-gray-200 hover:border-blue-300 group"
+                >
+                  <span className="text-gray-700 group-hover:text-blue-700">
+                    Blue Cross Hospital - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න
+                  </span>
+                  <ExternalLink className="w-4 h-4 text-blue-600 group-hover:scale-110 transition-transform" />
+                </a>
+                <a
+                  href="https://www.facebook.com/share/14GRFoHwkjx/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-between p-4 bg-white rounded-lg hover:bg-blue-50 transition-colors duration-200 border border-gray-200 hover:border-blue-300 group"
+                >
+                  <span className="text-gray-700 group-hover:text-blue-700">
+                    CDEM Hospital - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න
+                  </span>
+                  <ExternalLink className="w-4 h-4 text-blue-600 group-hover:scale-110 transition-transform" />
+                </a>
+                <a
+                  href="https://www.facebook.com/share/16RRjrSB6z/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-between p-4 bg-white rounded-lg hover:bg-blue-50 transition-colors duration-200 border border-gray-200 hover:border-blue-300 group"
+                >
+                  <span className="text-gray-700 group-hover:text-blue-700">
+                    Sunway Motors - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න
+                  </span>
+                  <ExternalLink className="w-4 h-4 text-blue-600 group-hover:scale-110 transition-transform" />
+                </a>
+              </div>
+            </div>
+
+            {/* Screenshot Requirements */}
+            <div className="mb-8 bg-gradient-to-r from-yellow-50 to-orange-50 p-6 rounded-xl border border-yellow-200">
+              <h3 className="text-lg font-semibold text-yellow-800 mb-4 flex items-center space-x-2">
+                <div className="w-6 h-6 bg-yellow-600 text-white rounded-full flex items-center justify-center text-sm">
+                  !
+                </div>
+                <span>Screenshot Requirements</span>
+              </h3>
+              <div className="grid md:grid-cols-2 gap-4">
+                <div className="flex items-center space-x-3">
+                  <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0" />
+                  <span className="text-yellow-800">
+                    Must clearly show the liked/followed page
+                  </span>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0" />
+                  <span className="text-yellow-800">
+                    Must show your profile or browser context
+                  </span>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0" />
+                  <span className="text-yellow-800">
+                    No edited or cropped images
+                  </span>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0" />
+                  <span className="text-yellow-800">File size under 5MB</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Upload Section */}
+            <div>
+              <h3 className="text-xl font-bold text-gray-800 mb-6 flex items-center space-x-2">
+                <Upload className="w-6 h-6 text-blue-600" />
+                <span>Upload Screenshot</span>
+              </h3>
+              <form onSubmit={handleSubmit}>
+                <div className="mb-6">
+                  <label className="block text-sm font-medium text-gray-700 mb-4">
+                    Screenshot File
+                  </label>
+
+                  {preview ? (
+                    <div className="border-2 border-dashed border-green-300 bg-green-50 rounded-xl p-6 text-center">
+                      <img
+                        src={preview}
+                        alt="Screenshot preview"
+                        className="max-h-64 mx-auto mb-4 rounded-lg shadow-md"
+                      />
+                      <div className="bg-white p-4 rounded-lg inline-block shadow-sm">
+                        <p className="text-green-700 font-semibold mb-2">
+                          {file.name}
+                        </p>
+                        <p className="text-sm text-gray-600 mb-3">
+                          File size: {(file.size / (1024 * 1024)).toFixed(2)} MB
+                        </p>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setFile(null);
+                            setPreview(null);
+                          }}
+                          className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
+                        >
+                          Remove file
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center hover:border-blue-400 hover:bg-blue-50 transition-all duration-300">
+                      <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <Upload className="w-8 h-8 text-blue-600" />
+                      </div>
+                      <p className="text-gray-600 mb-2 text-lg font-medium">
+                        Drag and drop your screenshot here or click to browse
+                      </p>
+                      <p className="text-sm text-gray-500 mb-6">
+                        Supported formats: PNG, JPG, JPEG (max 5MB)
+                      </p>
+                      <label className="inline-block bg-gradient-to-r from-blue-600 to-blue-700 text-white px-8 py-3 rounded-xl cursor-pointer hover:from-blue-700 hover:to-blue-800 transition-all duration-300 transform hover:scale-105 shadow-lg font-semibold">
+                        Choose File
+                        <input
+                          type="file"
+                          accept=".png,.jpg,.jpeg"
+                          onChange={handleFileChange}
+                          className="hidden"
+                        />
+                      </label>
+                    </div>
+                  )}
+
+                  {error && (
+                    <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+                      <p className="text-sm text-red-600 font-medium">
+                        {error}
+                      </p>
+                    </div>
+                  )}
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={
+                    !file || isSubmitting || submissionLimit.remaining <= 0
+                  }
+                  className={`w-full py-4 rounded-xl font-bold text-lg transition-all duration-300 transform hover:scale-[1.02] ${
+                    file && submissionLimit.remaining > 0
+                      ? "bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white shadow-lg hover:shadow-xl"
+                      : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                  }`}
+                >
+                  {isSubmitting ? (
+                    <div className="flex items-center justify-center space-x-2">
+                      <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white"></div>
+                      <span>Submitting...</span>
+                    </div>
+                  ) : submissionLimit.remaining <= 0 ? (
+                    "Daily Limit Reached"
+                  ) : (
+                    <div className="flex items-center justify-center space-x-2">
+                      <Upload className="w-5 h-5" />
+                      <span>Submit Screenshot & Earn Rs 1.00</span>
+                    </div>
+                  )}
+                </button>
+
+                {showDuplicateModal && (
+                  <DuplicateWarningModal
+                    onClose={() => {
+                      setShowDuplicateModal(false);
+                      setFile(null);
+                      setPreview(null);
+                    }}
+                    previousDate={previousSubmissionDate}
+                  />
+                )}
+              </form>
+            </div>
           </div>
         </div>
       </div>
