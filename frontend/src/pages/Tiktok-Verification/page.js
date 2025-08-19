@@ -335,7 +335,7 @@ export default function TikTokVerificationTask() {
                     Like Video #1 - ටික් ටොක් විඩියෝ එකට ලයික් කරන්න
                   </h4>
                   <a
-                    href="https://www.tiktok.com/@mishacarpetcleaning/video/7429593942150122759?is_from_webapp=1&sender_device=pc&web_id=7382005154315388417"
+                    href="https://vt.tiktok.com/ZSALp8R9J/"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium group-hover:underline"
@@ -350,41 +350,13 @@ export default function TikTokVerificationTask() {
                     Like Video #2 - ටික් ටොක් විඩියෝ එකට ලයික් කරන්න
                   </h4>
                   <a
-                    href="https://www.tiktok.com/@mishacarpetcleaning/video/7412519246145572104?is_from_webapp=1&sender_device=pc&web_id=7382005154315388417"
+                    href="https://vt.tiktok.com/ZSALgoYhm/"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium group-hover:underline"
                   >
                     Watch & Like -ටික් ටොක් විඩියෝ එකට ලයික් කරන්න
                     <ExternalLink className="w-4 h-4 ml-1" />
-                  </a>
-                </div>
-
-                <div className="bg-gradient-to-br from-green-50 to-emerald-50 p-4 rounded-xl border border-green-200 hover:shadow-md transition-all duration-300 group">
-                  <h4 className="font-semibold text-gray-800 mb-2">
-                    Like Video #3 - ටික් ටොක් විඩියෝ එකට ලයික් කරන්න
-                  </h4>
-                  <a
-                    href="https://vt.tiktok.com/ZSAeMax1c/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium group-hover:underline"
-                  >
-                    Watch & Like <ExternalLink className="w-4 h-4 ml-1" />
-                  </a>
-                </div>
-
-                <div className="bg-gradient-to-br from-yellow-50 to-orange-50 p-4 rounded-xl border border-yellow-200 hover:shadow-md transition-all duration-300 group">
-                  <h4 className="font-semibold text-gray-800 mb-2">
-                    Like Video #4 - ටික් ටොක් විඩියෝ එකට ලයික් කරන්න
-                  </h4>
-                  <a
-                    href="https://vt.tiktok.com/ZSAeMgWDq/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium group-hover:underline"
-                  >
-                    Watch & Like <ExternalLink className="w-4 h-4 ml-1" />
                   </a>
                 </div>
               </div>
