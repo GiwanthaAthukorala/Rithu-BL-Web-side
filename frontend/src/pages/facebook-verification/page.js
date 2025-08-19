@@ -26,11 +26,11 @@ export default function FbVerificationTask() {
   //});
 
   // Fetch submission limit info when component mounts
-  useEffect(() => {
+  /*  useEffect(() => {
     if (user?._id) {
       fetchSubmissionLimit();
     }
-  }, [user?._id]);
+  }, [user?._id]);*/
 
   {
     /** const fetchSubmissionLimit = async () => {
@@ -189,7 +189,8 @@ export default function FbVerificationTask() {
   };
 
   // Countdown renderer
-  const countdownRenderer = ({ hours, minutes, seconds, completed }) => {
+  {
+    /** const countdownRenderer = ({ hours, minutes, seconds, completed }) => {
     if (completed) {
       return <span>You can submit now!</span>;
     } else {
@@ -199,7 +200,8 @@ export default function FbVerificationTask() {
         </span>
       );
     }
-  };
+  };*/
+  }
 
   if (isAuthLoading || !user) {
     return (
