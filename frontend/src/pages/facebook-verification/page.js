@@ -6,7 +6,8 @@ import Header from "@/components/Header/Header";
 import api from "@/lib/api";
 import { useAuth } from "@/Context/AuthContext";
 import DuplicateWarningModal from "@/components/DuplicateWarningModal";
-import Countdown from "react-countdown";
+//import Countdown from "react-countdown";
+import TaskLinks from "@/components/TaskLinks/TaskLinks";
 
 export default function FbVerificationTask() {
   const [file, setFile] = useState(null);
@@ -18,10 +19,11 @@ export default function FbVerificationTask() {
   const { user, isLoading: isAuthLoading } = useAuth();
   const [showDuplicateModal, setShowDuplicateModal] = useState(false);
   const [previousSubmissionDate, setPreviousSubmissionDate] = useState("");
-  const [submissionLimit, setSubmissionLimit] = useState({
-    remainig: 18,
-    nextSubmissionTime: null,
-  });
+  const [selectedLinkId, setSelectedLinkId] = useState(null);
+  //const [submissionLimit, setSubmissionLimit] = useState({
+  //remainig: 18,
+  // nextSubmissionTime: null,
+  //});
 
   // Fetch submission limit info when component mounts
   useEffect(() => {
@@ -30,7 +32,8 @@ export default function FbVerificationTask() {
     }
   }, [user?._id]);
 
-  const fetchSubmissionLimit = async () => {
+  {
+    /** const fetchSubmissionLimit = async () => {
     try {
       const response = await api.get("/submissions/my-submissions");
       if (response.data?.success) {
@@ -68,7 +71,8 @@ export default function FbVerificationTask() {
     } catch (error) {
       console.error("Failed to fetch submission limit:", error);
     }
-  };
+  };*/
+  }
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
@@ -109,6 +113,7 @@ export default function FbVerificationTask() {
       const formData = new FormData();
       formData.append("screenshot", file);
       formData.append("platform", "facebook");
+      formData.append("linkId", selectedLinkId);
 
       const token = localStorage.getItem("token");
 
@@ -317,7 +322,7 @@ export default function FbVerificationTask() {
           {/* Submission Limit Info - Enhanced */}
           <div className="p-6 border-b border-gray-100">
             <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-6 rounded-xl border border-blue-200">
-              <div className="flex items-center justify-between">
+              {/**  <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-4">
                   <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center">
                     <span className="text-white font-bold text-lg">
@@ -358,7 +363,7 @@ export default function FbVerificationTask() {
                     </div>
                   </div>
                 )}
-              </div>
+              </div>*/}
             </div>
           </div>
 
@@ -410,216 +415,19 @@ export default function FbVerificationTask() {
                 <span>Facebook Pages to Follow</span>
               </h3>
               <div className="grid gap-3">
-                <a
-                  href="https://www.facebook.com/share/1CVEp1bSgv/?mibextid=wwXIfr"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-between p-4 bg-white rounded-lg hover:bg-blue-50 transition-colors duration-200 border border-gray-200 hover:border-blue-300 group"
-                >
-                  <span className="text-gray-700 group-hover:text-blue-700">
-                    CS Studio and Communication - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ
-                    කරන්න
-                  </span>
-                  <ExternalLink className="w-4 h-4 text-blue-600 group-hover:scale-110 transition-transform" />
-                </a>
-
-                <a
-                  href="https://www.facebook.com/profile.php?id=61579385003718"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-between p-4 bg-white rounded-lg hover:bg-blue-50 transition-colors duration-200 border border-gray-200 hover:border-blue-300 group"
-                >
-                  <span className="text-gray-700 group-hover:text-blue-700">
-                    හෙළ වෙදකම - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න
-                  </span>
-                  <ExternalLink className="w-4 h-4 text-blue-600 group-hover:scale-110 transition-transform" />
-                </a>
-
-                <a
-                  href="https://www.facebook.com/profile.php?id=61574553219898&mibextid=wwXIfr&mibextid=wwXIfr"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-between p-4 bg-white rounded-lg hover:bg-blue-50 transition-colors duration-200 border border-gray-200 hover:border-blue-300 group"
-                >
-                  <span className="text-gray-700 group-hover:text-blue-700">
-                    SHILA - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න
-                  </span>
-                  <ExternalLink className="w-4 h-4 text-blue-600 group-hover:scale-110 transition-transform" />
-                </a>
-
-                <a
-                  href="https://www.facebook.com/SuwaPiyasaHomeNursing"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-between p-4 bg-white rounded-lg hover:bg-blue-50 transition-colors duration-200 border border-gray-200 hover:border-blue-300 group"
-                >
-                  <span className="text-gray-700 group-hover:text-blue-700">
-                    Suwa Piyasa Home Nursing - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න
-                  </span>
-                  <ExternalLink className="w-4 h-4 text-blue-600 group-hover:scale-110 transition-transform" />
-                </a>
-
-                <a
-                  href="https://www.facebook.com/minukoreanlanguagecenter/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-between p-4 bg-white rounded-lg hover:bg-blue-50 transition-colors duration-200 border border-gray-200 hover:border-blue-300 group"
-                >
-                  <span className="text-gray-700 group-hover:text-blue-700">
-                    Minu Korean Language Center - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ
-                    කරන්න
-                  </span>
-                  <ExternalLink className="w-4 h-4 text-blue-600 group-hover:scale-110 transition-transform" />
-                </a>
-
-                <a
-                  href="https://www.facebook.com/share/17ftfCoqE4/?mibextid=wwXIfr"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-between p-4 bg-white rounded-lg hover:bg-blue-50 transition-colors duration-200 border border-gray-200 hover:border-blue-300 group"
-                >
-                  <span className="text-gray-700 group-hover:text-blue-700">
-                    TMR Travels & Tours Private Ltd - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ
-                    කරන්න
-                  </span>
-                  <ExternalLink className="w-4 h-4 text-blue-600 group-hover:scale-110 transition-transform" />
-                </a>
-
-                <a
-                  href="https://www.facebook.com/share/16Ms5EmWDc/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-between p-4 bg-white rounded-lg hover:bg-blue-50 transition-colors duration-200 border border-gray-200 hover:border-blue-300 group"
-                >
-                  <span className="text-gray-700 group-hover:text-blue-700">
-                    Various Technologies - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න
-                  </span>
-                  <ExternalLink className="w-4 h-4 text-blue-600 group-hover:scale-110 transition-transform" />
-                </a>
-
-                <a
-                  href="https://www.facebook.com/share/178gYEzVBS/?mibextid=wwXIfr"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-between p-4 bg-white rounded-lg hover:bg-blue-50 transition-colors duration-200 border border-gray-200 hover:border-blue-300 group"
-                >
-                  <span className="text-gray-700 group-hover:text-blue-700">
-                    NOIRELLE - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න
-                  </span>
-                  <ExternalLink className="w-4 h-4 text-blue-600 group-hover:scale-110 transition-transform" />
-                </a>
-
-                <a
-                  href="https://www.facebook.com/share/1ChgcGPsKX/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-between p-4 bg-white rounded-lg hover:bg-blue-50 transition-colors duration-200 border border-gray-200 hover:border-blue-300 group"
-                >
-                  <span className="text-gray-700 group-hover:text-blue-700">
-                    𝐌 𝐢 𝐧 𝐝 - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න
-                  </span>
-                  <ExternalLink className="w-4 h-4 text-blue-600 group-hover:scale-110 transition-transform" />
-                </a>
-
-                <a
-                  href="https://www.facebook.com/SantaDoraHospital"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-between p-4 bg-white rounded-lg hover:bg-blue-50 transition-colors duration-200 border border-gray-200 hover:border-blue-300 group"
-                >
-                  <span className="text-gray-700 group-hover:text-blue-700">
-                    Santa Dora Hospital - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න
-                  </span>
-                  <ExternalLink className="w-4 h-4 text-blue-600 group-hover:scale-110 transition-transform" />
-                </a>
-                <a
-                  href="https://www.facebook.com/share/1B5ySJ3hEQ/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-between p-4 bg-white rounded-lg hover:bg-blue-50 transition-colors duration-200 border border-gray-200 hover:border-blue-300 group"
-                >
-                  <span className="text-gray-700 group-hover:text-blue-700">
-                    Blue Cross Hospital - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න
-                  </span>
-                  <ExternalLink className="w-4 h-4 text-blue-600 group-hover:scale-110 transition-transform" />
-                </a>
-                <a
-                  href="https://www.facebook.com/share/14GRFoHwkjx/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-between p-4 bg-white rounded-lg hover:bg-blue-50 transition-colors duration-200 border border-gray-200 hover:border-blue-300 group"
-                >
-                  <span className="text-gray-700 group-hover:text-blue-700">
-                    CDEM Hospital - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න
-                  </span>
-                  <ExternalLink className="w-4 h-4 text-blue-600 group-hover:scale-110 transition-transform" />
-                </a>
-                <a
-                  href="https://www.facebook.com/share/16RRjrSB6z/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-between p-4 bg-white rounded-lg hover:bg-blue-50 transition-colors duration-200 border border-gray-200 hover:border-blue-300 group"
-                >
-                  <span className="text-gray-700 group-hover:text-blue-700">
-                    Sunway Motors - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න
-                  </span>
-                  <ExternalLink className="w-4 h-4 text-blue-600 group-hover:scale-110 transition-transform" />
-                </a>
-                <a
-                  href="https://www.facebook.com/profile.php?id=61579035706488"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-between p-4 bg-white rounded-lg hover:bg-blue-50 transition-colors duration-200 border border-gray-200 hover:border-blue-300 group"
-                >
-                  <span className="text-gray-700 group-hover:text-blue-700">
-                    SA Trading - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න
-                  </span>
-                  <ExternalLink className="w-4 h-4 text-blue-600 group-hover:scale-110 transition-transform" />
-                </a>
-                <a
-                  href="https://www.facebook.com/share/1JgK3WSNU3/?mibextid=wwXIfr"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-between p-4 bg-white rounded-lg hover:bg-blue-50 transition-colors duration-200 border border-gray-200 hover:border-blue-300 group"
-                >
-                  <span className="text-gray-700 group-hover:text-blue-700">
-                    පුන්සර විතානගේ (පුන්සර මල්ලී) - ෆෙස්බුක් profile ෆලෝ කරන්න
-                  </span>
-                  <ExternalLink className="w-4 h-4 text-blue-600 group-hover:scale-110 transition-transform" />
-                </a>
-                <a
-                  href="https://www.facebook.com/share/p/14Dnr3BUXJb/?mibextid=wwXIfr"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-between p-4 bg-white rounded-lg hover:bg-blue-50 transition-colors duration-200 border border-gray-200 hover:border-blue-300 group"
-                >
-                  <span className="text-gray-700 group-hover:text-blue-700">
-                    ෆෙස්බුක් පොස්ට් එකට ලයික් කරන්න
-                  </span>
-                  <ExternalLink className="w-4 h-4 text-blue-600 group-hover:scale-110 transition-transform" />
-                </a>
-                <a
-                  href="https://www.facebook.com/share/p/1Jehcmr1kr/?mibextid=wwXIfr"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-between p-4 bg-white rounded-lg hover:bg-blue-50 transition-colors duration-200 border border-gray-200 hover:border-blue-300 group"
-                >
-                  <span className="text-gray-700 group-hover:text-blue-700">
-                    ෆෙස්බුක් පොස්ට් එකට ලයික් කරන්න
-                  </span>
-                  <ExternalLink className="w-4 h-4 text-blue-600 group-hover:scale-110 transition-transform" />
-                </a>
-                <a
-                  href="https://www.facebook.com/share/r/173DdbWUGR/?mibextid=wwXIfr"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-between p-4 bg-white rounded-lg hover:bg-blue-50 transition-colors duration-200 border border-gray-200 hover:border-blue-300 group"
-                >
-                  <span className="text-gray-700 group-hover:text-blue-700">
-                    ෆෙස්බුක් පොස්ට් එකට ලයික් කරන්න
-                  </span>
-                  <ExternalLink className="w-4 h-4 text-blue-600 group-hover:scale-110 transition-transform" />
-                </a>
+                <div>
+                  <TaskLinks
+                    platform="facebook"
+                    onLinkClick={setSelectedLinkId}
+                  />
+                  {selectedLinkId && (
+                    <div className="mt-4 p-3 bg-green-100 border border-green-300 rounded-lg">
+                      <p className="text-green-700 font-medium">
+                        ✓ Link selected. You can now upload your screenshot.
+                      </p>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
 
@@ -729,11 +537,9 @@ export default function FbVerificationTask() {
 
                 <button
                   type="submit"
-                  disabled={
-                    !file || isSubmitting || submissionLimit.remaining <= 0
-                  }
+                  disabled={!file || isSubmitting}
                   className={`w-full py-4 rounded-xl font-bold text-lg transition-all duration-300 transform hover:scale-[1.02] ${
-                    file && submissionLimit.remaining > 0
+                    file
                       ? "bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white shadow-lg hover:shadow-xl"
                       : "bg-gray-300 text-gray-500 cursor-not-allowed"
                   }`}
@@ -743,8 +549,6 @@ export default function FbVerificationTask() {
                       <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white"></div>
                       <span>Submitting...</span>
                     </div>
-                  ) : submissionLimit.remaining <= 0 ? (
-                    "Daily Limit Reached"
                   ) : (
                     <div className="flex items-center justify-center space-x-2">
                       <Upload className="w-5 h-5" />

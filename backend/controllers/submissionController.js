@@ -62,6 +62,7 @@ const createSubmission = async (req, res) => {
 
     const userId = req.user._id;
     const cloudinaryUrl = req.file.path;
+    const { linkId } = req.body;
 
     // 1. Generate hash
     let uploadedImageHash;
@@ -134,50 +135,52 @@ const createSubmission = async (req, res) => {
       await earnings.save();
     }
 
+    if (linkId) {
+      try {
+        const apiUrl =
+          process.env.NEXT_PUBLIC_API_URL ||
+          "https://rithu-bl-web-side.vercel.app";
+        await fetch(`${apiUrl}/api/links/${linkId}/submit`, {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${req.headers.authorization.split(" ")[1]}`,
+            "Content-Type": "application/json",
+          },
+        });
+      } catch (linkError) {
+        console.error("Failed to mark link as submitted:", linkError);
+        // Don't fail the submission if link tracking fails
+      }
+    }
     // Update earnings (only when admin approves)
     // We'll move this to the approveSubmission function
 
     // Emit update to the user
     const io = req.app.get("io");
     io.to(req.user._id.toString()).emit("earningsUpdate", earnings);
-
-    const now = new Date();
-    const twentyFourHoursAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
-    const submissionCount = await Submission.countDocuments({
-      user: userId,
-      createdAt: { $gte: twentyFourHoursAgo },
-      status: { $in: ["pending", "approved"] },
-    });
-
-    const remainingSubmissions = Math.max(0, 18 - submissionCount);
-    const oldestSubmission = await Submission.findOne({
-      user: userId,
-      createdAt: { $gte: twentyFourHoursAgo },
-    }).sort({ createdAt: 1 });
-
-    let nextSubmissionTime = null;
-    if (submissionCount >= 18) {
-      nextSubmissionTime = new Date(
-        oldestSubmission.createdAt.getTime() + 24 * 60 * 60 * 1000
-      );
-    }
-
     console.log("Updated earnings:", earnings);
 
     // Debug logging
+
     res.status(201).json({
       success: true,
       message: "Submission created successfully",
       data: submission,
       earnings,
-      limitInfo: {
-        limit: 18,
-        remaining: remainingSubmissions,
-        nextSubmissionTime,
-      },
     });
   } catch (error) {
     console.error("Submission error:", error);
+
+    /* if (req.file) {
+      try {
+        await fs.unlink(
+          path.join(__dirname, "../public/uploads", req.file.filename)
+        );
+      } catch (cleanupError) {
+        console.error("Failed to clean up file:", cleanupError);
+      }
+    }*/
+
     res.status(500).json({
       success: false,
       message: "Internal server error",

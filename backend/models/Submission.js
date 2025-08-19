@@ -31,14 +31,14 @@ const submissionSchema = new mongoose.Schema(
       type: Number,
       default: 1,
     },
-    lastSubmissionTime: {
-      type: Date,
-      default: Date.now,
-    },
+    //lastSubmissionTime: {
+    //type: Date,
+    //default: Date.now,
   },
+
   { timestamps: true }
 );
 
-submissionSchema.index({ user: 1, createdAt: -1 });
+//submissionSchema.index({ user: 1, createdAt: -1 });
 
 module.exports = mongoose.model("Submission", submissionSchema);

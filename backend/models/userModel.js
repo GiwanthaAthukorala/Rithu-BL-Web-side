@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
+const { platform } = require("os");
 
 const userSchema = new mongoose.Schema(
   {
@@ -35,9 +36,21 @@ const userSchema = new mongoose.Schema(
       enum: ["user", "admin", "superadmin"],
       default: "user",
     },
+    clickedLinks: [
+      {
+        linkId: String,
+        platform: String,
+        clickedAt: {
+          type: Date,
+          default: false,
+        },
+      },
+    ],
+
     resetPasswordToken: String,
     resetPasswordExpire: Date,
   },
+
   { timestamps: true }
 );
 

@@ -8,16 +8,10 @@ const {
   rejectSubmission,
 } = require("../controllers/submissionController");
 const uploadFile = require("../middleware/uploadMiddleware");
-const submissionRateLimiter = require("../middleware/rateLimiter");
+//const submissionRateLimiter = require("../middleware/rateLimiter");
 
 // User routes
-router.post(
-  "/",
-  protect,
-  submissionRateLimiter,
-  uploadFile.single("screenshot"),
-  createSubmission
-);
+router.post("/", protect, uploadFile.single("screenshot"), createSubmission);
 router.get("/my-submissions", protect, getUserSubmissions);
 
 // Admin routes
