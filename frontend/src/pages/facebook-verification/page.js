@@ -113,7 +113,16 @@ export default function FbVerificationTask() {
       const formData = new FormData();
       formData.append("screenshot", file);
       formData.append("platform", "facebook");
-      formData.append("linkId", selectedLinkId);
+
+      if (selectedLinkId) {
+        formData.append("linkId", selectedLinkId);
+
+        try {
+          await api.post(`/links/${selectedLinkId}/submit`);
+        } catch (submitError) {
+          console.error("Failed to mark link as submitted:", submitError);
+        }
+      }
 
       const token = localStorage.getItem("token");
 
@@ -165,6 +174,11 @@ export default function FbVerificationTask() {
       console.log("Success response : ", result);
 
       setIsSubmitted(true);
+
+      if (selectedLinkId) {
+        setSelectedLinkId(null);
+      }
+
       setTimeout(() => {
         router.push("/Profile/page");
       }, 1000);

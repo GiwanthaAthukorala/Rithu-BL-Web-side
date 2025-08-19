@@ -38,12 +38,24 @@ const userSchema = new mongoose.Schema(
     },
     clickedLinks: [
       {
-        linkId: String,
-        platform: String,
+        linkId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Link",
+          required: true,
+        },
+        platform: {
+          type: String,
+          required: true,
+        },
         clickedAt: {
           type: Date,
+          default: Date.now,
+        },
+        submitted: {
+          type: Boolean,
           default: false,
         },
+        submittedAt: Date,
       },
     ],
 

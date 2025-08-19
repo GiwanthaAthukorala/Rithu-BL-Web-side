@@ -88,9 +88,15 @@ router.post("/:linkId/submit", protect, async (req, res) => {
       clickedLink.submitted = true;
       clickedLink.submittedAt = new Date();
       await user.save();
+      return res.json({ success: true, message: "Link marked as submitted" });
+    } else {
+      return res
+        .status(404)
+        .json({
+          success: false,
+          message: "Link not found in user's clicked links",
+        });
     }
-
-    res.json({ success: true });
   } catch (error) {
     console.error("Link submit error:", error);
     res
@@ -98,5 +104,4 @@ router.post("/:linkId/submit", protect, async (req, res) => {
       .json({ success: false, message: "Failed to mark link as submitted" });
   }
 });
-
 module.exports = router;
