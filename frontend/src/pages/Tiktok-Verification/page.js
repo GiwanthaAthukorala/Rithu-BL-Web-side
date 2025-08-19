@@ -128,7 +128,7 @@ export default function TikTokVerificationTask() {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50">
         <Header />
-        <div className="min-h-screen flex items-center justify-center">
+        <div className="min-h-screen flex items-center justify-center px-4">
           <div className="relative">
             <div className="animate-spin rounded-full h-16 w-16 border-4 border-purple-200 border-t-purple-600"></div>
             <div className="absolute inset-0 animate-pulse rounded-full h-16 w-16 border-4 border-blue-200 opacity-75"></div>
@@ -142,18 +142,18 @@ export default function TikTokVerificationTask() {
     return (
       <div className="min-h-screen bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50">
         <Header />
-        <div className="max-w-md mx-auto p-6 min-h-screen flex items-center">
-          <div className="bg-white/80 backdrop-blur-sm p-8 rounded-2xl shadow-xl border border-green-200 text-center w-full">
-            <div className="relative w-20 h-20 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full flex items-center justify-center mx-auto mb-6">
-              <CheckCircle className="w-10 h-10 text-white" />
-              <div className="absolute -top-1 -right-1 w-6 h-6 bg-yellow-400 rounded-full flex items-center justify-center">
-                <Star className="w-3 h-3 text-yellow-700 fill-current" />
+        <div className="max-w-md mx-auto p-4 sm:p-6 min-h-screen flex items-center">
+          <div className="bg-white/80 backdrop-blur-sm p-6 sm:p-8 rounded-2xl shadow-xl border border-green-200 text-center w-full">
+            <div className="relative w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6">
+              <CheckCircle className="w-8 h-8 sm:w-10 sm:h-10 text-white" />
+              <div className="absolute -top-1 -right-1 w-5 h-5 sm:w-6 sm:h-6 bg-yellow-400 rounded-full flex items-center justify-center">
+                <Star className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-yellow-700 fill-current" />
               </div>
             </div>
-            <h2 className="text-3xl font-bold mb-3 bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
+            <h2 className="text-2xl sm:text-3xl font-bold mb-3 bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
               Submission Successful!
             </h2>
-            <p className="text-gray-600 mb-6 text-lg">
+            <p className="text-gray-600 mb-4 sm:mb-6 text-base sm:text-lg">
               🎉 You've earned{" "}
               <span className="font-bold text-green-600">Rs 1/=</span>
               <br />
@@ -161,7 +161,7 @@ export default function TikTokVerificationTask() {
             </p>
             <button
               onClick={() => router.push("/Profile/page")}
-              className="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-8 py-3 rounded-xl hover:from-green-600 hover:to-emerald-700 transform hover:scale-105 transition-all duration-200 shadow-lg font-semibold"
+              className="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-6 sm:px-8 py-2.5 sm:py-3 rounded-xl hover:from-green-600 hover:to-emerald-700 transform hover:scale-105 transition-all duration-200 shadow-lg font-semibold text-sm sm:text-base"
             >
               View Your Earnings
             </button>
@@ -174,121 +174,139 @@ export default function TikTokVerificationTask() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
       <Header />
-      <div className="max-w-4xl mx-auto p-4">
+      <div className="max-w-4xl mx-auto p-2 sm:p-4">
         {/* Enhanced Header */}
-        <div className="relative overflow-hidden bg-gradient-to-r from-black via-gray-900 to-black rounded-t-2xl shadow-2xl">
+        <div className="relative overflow-hidden bg-gradient-to-r from-black via-gray-900 to-black rounded-t-xl sm:rounded-t-2xl shadow-2xl">
           {/* Animated background elements */}
           <div className="absolute inset-0 opacity-10">
-            <div className="absolute top-0 left-0 w-32 h-32 bg-pink-500 rounded-full animate-pulse"></div>
-            <div className="absolute top-10 right-10 w-24 h-24 bg-blue-500 rounded-full animate-bounce delay-300"></div>
-            <div className="absolute bottom-0 left-1/2 w-40 h-40 bg-purple-500 rounded-full animate-pulse delay-700"></div>
+            <div className="absolute top-0 left-0 w-20 sm:w-32 h-20 sm:h-32 bg-pink-500 rounded-full animate-pulse"></div>
+            <div className="absolute top-5 sm:top-10 right-5 sm:right-10 w-16 sm:w-24 h-16 sm:h-24 bg-blue-500 rounded-full animate-bounce delay-300"></div>
+            <div className="absolute bottom-0 left-1/2 w-24 sm:w-40 h-24 sm:h-40 bg-purple-500 rounded-full animate-pulse delay-700"></div>
           </div>
 
           {/* Content */}
-          <div className="relative z-10 p-8">
-            <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center space-x-4">
+          <div className="relative z-10 p-4 sm:p-6 lg:p-8">
+            <div className="flex flex-col sm:flex-row items-center sm:justify-between mb-4 sm:mb-6 space-y-4 sm:space-y-0">
+              <div className="flex flex-col sm:flex-row items-center sm:items-start space-y-3 sm:space-y-0 sm:space-x-4 text-center sm:text-left">
                 <div className="relative group">
-                  <div className="w-24 h-24 bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 rounded-2xl p-1 transform group-hover:scale-110 transition-transform duration-300">
-                    <div className="w-full h-full bg-black rounded-xl flex items-center justify-center overflow-hidden">
+                  <div className="w-16 h-16 sm:w-20 lg:w-24 sm:h-20 lg:h-24 bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 rounded-xl sm:rounded-2xl p-1 transform group-hover:scale-110 transition-transform duration-300">
+                    <div className="w-full h-full bg-black rounded-lg sm:rounded-xl flex items-center justify-center overflow-hidden">
                       <img
                         src="/Tiktok.png"
                         alt="TikTok Icon"
-                        className="w-16 h-16 object-contain filter brightness-0 invert"
+                        className="w-10 h-10 sm:w-12 lg:w-16 sm:h-12 lg:h-16 object-contain filter brightness-0 invert"
                       />
                     </div>
                   </div>
-                  <div className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 rounded-full flex items-center justify-center animate-pulse">
+                  <div className="absolute -top-1 -right-1 sm:-top-2 sm:-right-2 w-5 h-5 sm:w-6 sm:h-6 bg-red-500 rounded-full flex items-center justify-center animate-pulse">
                     <span className="text-white text-xs font-bold">✓</span>
                   </div>
                 </div>
 
                 <div>
-                  <h1 className="text-3xl font-bold bg-gradient-to-r from-white via-pink-200 to-purple-200 bg-clip-text text-transparent mb-2">
+                  <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold bg-gradient-to-r from-white via-pink-200 to-purple-200 bg-clip-text text-transparent mb-1 sm:mb-2">
                     TikTok Verification
                   </h1>
-                  <p className="text-gray-300 text-lg">
+                  <p className="text-gray-300 text-sm sm:text-base lg:text-lg">
                     Complete tasks • Earn rewards
                   </p>
                 </div>
               </div>
 
-              <div className="text-right">
-                <div className="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-6 py-3 rounded-xl shadow-lg">
+              <div className="text-center sm:text-right">
+                <div className="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg sm:rounded-xl shadow-lg">
                   <div className="flex items-center space-x-2">
-                    <TrendingUp className="w-5 h-5" />
-                    <span className="font-bold text-xl">Rs 0.80</span>
+                    <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5" />
+                    <span className="font-bold text-lg sm:text-xl">
+                      Rs 0.80
+                    </span>
                   </div>
-                  <p className="text-green-100 text-sm">per verification</p>
+                  <p className="text-green-100 text-xs sm:text-sm">
+                    per verification
+                  </p>
                 </div>
               </div>
             </div>
 
             {/* Stats Cards */}
-            <div className="grid grid-cols-3 gap-4 mt-8">
-              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 text-center border border-white/20">
-                <Star className="w-6 h-6 text-yellow-400 mx-auto mb-2" />
-                <div className="text-white font-semibold">Easy Tasks</div>
-                <div className="text-gray-300 text-sm">Simple & Quick</div>
+            <div className="grid grid-cols-3 gap-2 sm:gap-4 mt-4 sm:mt-8">
+              <div className="bg-white/10 backdrop-blur-sm rounded-lg sm:rounded-xl p-2 sm:p-4 text-center border border-white/20">
+                <Star className="w-4 h-4 sm:w-6 sm:h-6 text-yellow-400 mx-auto mb-1 sm:mb-2" />
+                <div className="text-white font-semibold text-xs sm:text-sm">
+                  Easy Tasks
+                </div>
+                <div className="text-gray-300 text-xs sm:text-sm">
+                  Simple & Quick
+                </div>
               </div>
-              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 text-center border border-white/20">
-                <Users className="w-6 h-6 text-blue-400 mx-auto mb-2" />
-                <div className="text-white font-semibold">Join Community</div>
-                <div className="text-gray-300 text-sm">Connect & Earn</div>
+              <div className="bg-white/10 backdrop-blur-sm rounded-lg sm:rounded-xl p-2 sm:p-4 text-center border border-white/20">
+                <Users className="w-4 h-4 sm:w-6 sm:h-6 text-blue-400 mx-auto mb-1 sm:mb-2" />
+                <div className="text-white font-semibold text-xs sm:text-sm">
+                  Join Community
+                </div>
+                <div className="text-gray-300 text-xs sm:text-sm">
+                  Connect & Earn
+                </div>
               </div>
-              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 text-center border border-white/20">
-                <CheckCircle className="w-6 h-6 text-green-400 mx-auto mb-2" />
-                <div className="text-white font-semibold">Instant Rewards</div>
-                <div className="text-gray-300 text-sm">Fast Payments</div>
+              <div className="bg-white/10 backdrop-blur-sm rounded-lg sm:rounded-xl p-2 sm:p-4 text-center border border-white/20">
+                <CheckCircle className="w-4 h-4 sm:w-6 sm:h-6 text-green-400 mx-auto mb-1 sm:mb-2" />
+                <div className="text-white font-semibold text-xs sm:text-sm">
+                  Instant Rewards
+                </div>
+                <div className="text-gray-300 text-xs sm:text-sm">
+                  Fast Payments
+                </div>
               </div>
             </div>
           </div>
         </div>
 
         {/* Main Content */}
-        <div className="bg-white/90 backdrop-blur-sm p-8 rounded-b-2xl shadow-xl border-x border-b border-gray-200">
+        <div className="bg-white/90 backdrop-blur-sm p-4 sm:p-6 lg:p-8 rounded-b-xl sm:rounded-b-2xl shadow-xl border-x border-b border-gray-200">
           {/* Instructions Section */}
-          <div className="mb-8">
-            <div className="flex items-center space-x-3 mb-6">
-              <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-sm">📋</span>
+          <div className="mb-6 sm:mb-8">
+            <div className="flex items-center space-x-3 mb-4 sm:mb-6">
+              <div className="w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+                <span className="text-white font-bold text-xs sm:text-sm">
+                  📋
+                </span>
               </div>
-              <h2 className="text-2xl font-bold text-gray-800">
+              <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-800">
                 How to Complete This Task
               </h2>
             </div>
 
-            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-200">
-              <ol className="space-y-4">
-                <li className="flex items-start space-x-3">
-                  <div className="w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-bold mt-0.5">
+            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg sm:rounded-xl p-4 sm:p-6 border border-blue-200">
+              <ol className="space-y-3 sm:space-y-4">
+                <li className="flex items-start space-x-2 sm:space-x-3">
+                  <div className="w-5 h-5 sm:w-6 sm:h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-xs sm:text-sm font-bold mt-0.5 flex-shrink-0">
                     1
                   </div>
-                  <span className="text-gray-700 font-medium">
+                  <span className="text-gray-700 font-medium text-sm sm:text-base">
                     Visit our TikTok page using the links below
                   </span>
                 </li>
-                <li className="flex items-start space-x-3">
-                  <div className="w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-bold mt-0.5">
+                <li className="flex items-start space-x-2 sm:space-x-3">
+                  <div className="w-5 h-5 sm:w-6 sm:h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-xs sm:text-sm font-bold mt-0.5 flex-shrink-0">
                     2
                   </div>
-                  <span className="text-gray-700 font-medium">
+                  <span className="text-gray-700 font-medium text-sm sm:text-base">
                     Like, follow, or engage with our content
                   </span>
                 </li>
-                <li className="flex items-start space-x-3">
-                  <div className="w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-bold mt-0.5">
+                <li className="flex items-start space-x-2 sm:space-x-3">
+                  <div className="w-5 h-5 sm:w-6 sm:h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-xs sm:text-sm font-bold mt-0.5 flex-shrink-0">
                     3
                   </div>
-                  <span className="text-gray-700 font-medium">
+                  <span className="text-gray-700 font-medium text-sm sm:text-base">
                     Take a clear screenshot showing your engagement
                   </span>
                 </li>
-                <li className="flex items-start space-x-3">
-                  <div className="w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-bold mt-0.5">
+                <li className="flex items-start space-x-2 sm:space-x-3">
+                  <div className="w-5 h-5 sm:w-6 sm:h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-xs sm:text-sm font-bold mt-0.5 flex-shrink-0">
                     4
                   </div>
-                  <span className="text-gray-700 font-medium">
+                  <span className="text-gray-700 font-medium text-sm sm:text-base">
                     Upload the screenshot below to earn Rs 0.80
                   </span>
                 </li>
@@ -297,22 +315,26 @@ export default function TikTokVerificationTask() {
           </div>
 
           {/* TikTok Links Section */}
-          <div className="mb-8">
-            <div className="flex items-center space-x-3 mb-4">
-              <div className="w-8 h-8 bg-gradient-to-r from-pink-500 to-red-500 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-sm">🔗</span>
+          <div className="mb-6 sm:mb-8">
+            <div className="flex items-center space-x-3 mb-3 sm:mb-4">
+              <div className="w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-r from-pink-500 to-red-500 rounded-lg flex items-center justify-center">
+                <span className="text-white font-bold text-xs sm:text-sm">
+                  🔗
+                </span>
               </div>
-              <h3 className="text-xl font-bold text-gray-800">TikTok Links</h3>
+              <h3 className="text-lg sm:text-xl font-bold text-gray-800">
+                TikTok Links
+              </h3>
             </div>
 
-            <div className="grid gap-4">
-              <div className="bg-gradient-to-r from-gray-800 to-black p-6 rounded-xl border border-gray-300 hover:shadow-lg transition-all duration-300 group">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h4 className="font-semibold text-white mb-1">
-                      Follow Our Main Account -ටික් ටොක් එකව්න්ට් එක ෆලෝ කරන්න
+            <div className="space-y-3 sm:space-y-4">
+              <div className="bg-gradient-to-r from-gray-800 to-black p-4 sm:p-6 rounded-lg sm:rounded-xl border border-gray-300 hover:shadow-lg transition-all duration-300 group">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-3 sm:space-y-0">
+                  <div className="flex-1">
+                    <h4 className="font-semibold text-white mb-1 text-sm sm:text-base">
+                      Follow Our Main Account -ටික් ටොක් එකව්න්ට් එක ෆලෝ කරන්න
                     </h4>
-                    <p className="text-gray-300 text-sm">
+                    <p className="text-gray-300 text-xs sm:text-sm">
                       @wisdom.weave.netw - Join our community
                     </p>
                   </div>
@@ -320,43 +342,52 @@ export default function TikTokVerificationTask() {
                     href="https://www.tiktok.com/@wisdom.weave.netw?_t=ZS-8yyWp3m1hWz&_r=1"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center bg-gradient-to-r from-pink-500 to-red-500 text-white px-6 py-2 rounded-lg hover:from-pink-600 hover:to-red-600 transition-all duration-200 font-medium group-hover:scale-105"
+                    className="flex items-center justify-center bg-gradient-to-r from-pink-500 to-red-500 text-white px-4 sm:px-6 py-2 rounded-lg hover:from-pink-600 hover:to-red-600 transition-all duration-200 font-medium group-hover:scale-105 text-xs sm:text-sm"
                   >
-                    Follow Now - ටික් ටොක් එකව්න්ට් එක ෆලෝ කරන්න
-                    <ExternalLink className="w-4 h-4 ml-2" />
+                    <span className="hidden sm:inline">
+                      Follow Now - ටික් ටොක් එකව්න්ට් එක ෆලෝ කරන්න
+                    </span>
+                    <span className="sm:hidden">Follow Now</span>
+                    <ExternalLink className="w-3 h-3 sm:w-4 sm:h-4 ml-1 sm:ml-2" />
                   </a>
                 </div>
               </div>
 
               {/* Video Links */}
-              <div className="grid md:grid-cols-2 gap-4">
-                <div className="bg-gradient-to-br from-purple-50 to-pink-50 p-4 rounded-xl border border-purple-200 hover:shadow-md transition-all duration-300 group">
-                  <h4 className="font-semibold text-gray-800 mb-2">
-                    Like Video #1 - ටික් ටොක් විඩියෝ එකට ලයික් කරන්න
+              <div className="grid gap-3 sm:gap-4">
+                <div className="bg-gradient-to-br from-purple-50 to-pink-50 p-3 sm:p-4 rounded-lg sm:rounded-xl border border-purple-200 hover:shadow-md transition-all duration-300 group">
+                  <h4 className="font-semibold text-gray-800 mb-2 text-sm sm:text-base">
+                    Like Video #1 - ටික් ටොක් විඩියෝ එකට ලයික් කරන්න
                   </h4>
                   <a
                     href="https://vt.tiktok.com/ZSALp8R9J/"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium group-hover:underline"
+                    className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium group-hover:underline text-xs sm:text-sm"
                   >
-                    Watch & Like - ටික් ටොක් විඩියෝ එකට ලයික් කරන්න
-                    <ExternalLink className="w-4 h-4 ml-1" />
+                    <span className="hidden sm:inline">
+                      Watch & Like - ටික් ටොක් විඩියෝ එකට ලයික් කරන්න
+                    </span>
+                    <span className="sm:hidden">Watch & Like</span>
+                    <ExternalLink className="w-3 h-3 sm:w-4 sm:h-4 ml-1" />
                   </a>
                 </div>
 
-                <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-4 rounded-xl border border-blue-200 hover:shadow-md transition-all duration-300 group">
-                  <h4 className="font-semibold text-gray-800 mb-2">
-                    Like Video #2 - ටික් ටොක් විඩියෝ එකට ලයික් කරන්න
+                <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-3 sm:p-4 rounded-lg sm:rounded-xl border border-blue-200 hover:shadow-md transition-all duration-300 group">
+                  <h4 className="font-semibold text-gray-800 mb-2 text-sm sm:text-base">
+                    Like Video #2 - ටික් ටොක් විඩියෝ එකට ලයික් කරන්න
                   </h4>
                   <a
                     href="https://vt.tiktok.com/ZSALgoYhm/"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium group-hover:underline"
+                    className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium group-hover:underline text-xs sm:text-sm"
                   >
-                    Watch & Like -ටික් ටොක් විඩියෝ එකට ලයික් කරන්න
-                    <ExternalLink className="w-4 h-4 ml-1" />
+                    <span className="hidden sm:inline">
+                      Watch & Like -ටික් ටොක් විඩියෝ එකට ලයික් කරන්න
+                    </span>
+                    <span className="sm:hidden">Watch & Like</span>
+                    <ExternalLink className="w-3 h-3 sm:w-4 sm:h-4 ml-1" />
                   </a>
                 </div>
               </div>
@@ -364,35 +395,45 @@ export default function TikTokVerificationTask() {
           </div>
 
           {/* Requirements Section */}
-          <div className="mb-8">
-            <div className="bg-gradient-to-r from-yellow-50 to-amber-50 p-6 rounded-xl border border-yellow-300 shadow-sm">
-              <div className="flex items-center space-x-3 mb-4">
-                <div className="w-8 h-8 bg-yellow-500 rounded-lg flex items-center justify-center">
-                  <span className="text-white font-bold text-sm">⚠️</span>
+          <div className="mb-6 sm:mb-8">
+            <div className="bg-gradient-to-r from-yellow-50 to-amber-50 p-4 sm:p-6 rounded-lg sm:rounded-xl border border-yellow-300 shadow-sm">
+              <div className="flex items-center space-x-3 mb-3 sm:mb-4">
+                <div className="w-6 h-6 sm:w-8 sm:h-8 bg-yellow-500 rounded-lg flex items-center justify-center">
+                  <span className="text-white font-bold text-xs sm:text-sm">
+                    ⚠️
+                  </span>
                 </div>
-                <h3 className="text-lg font-bold text-yellow-800">
+                <h3 className="text-base sm:text-lg font-bold text-yellow-800">
                   Screenshot Requirements
                 </h3>
               </div>
-              <div className="grid md:grid-cols-2 gap-4">
+              <div className="grid sm:grid-cols-2 gap-3 sm:gap-4">
                 <ul className="space-y-2 text-yellow-700">
-                  <li className="flex items-center space-x-2">
-                    <CheckCircle className="w-4 h-4 text-green-600" />
-                    <span>Must clearly show the liked/followed page</span>
+                  <li className="flex items-start space-x-2">
+                    <CheckCircle className="w-3 h-3 sm:w-4 sm:h-4 text-green-600 mt-0.5 flex-shrink-0" />
+                    <span className="text-xs sm:text-sm">
+                      Must clearly show the liked/followed page
+                    </span>
                   </li>
-                  <li className="flex items-center space-x-2">
-                    <CheckCircle className="w-4 h-4 text-green-600" />
-                    <span>Must show your profile or browser context</span>
+                  <li className="flex items-start space-x-2">
+                    <CheckCircle className="w-3 h-3 sm:w-4 sm:h-4 text-green-600 mt-0.5 flex-shrink-0" />
+                    <span className="text-xs sm:text-sm">
+                      Must show your profile or browser context
+                    </span>
                   </li>
                 </ul>
                 <ul className="space-y-2 text-yellow-700">
-                  <li className="flex items-center space-x-2">
-                    <CheckCircle className="w-4 h-4 text-green-600" />
-                    <span>No edited or cropped images</span>
+                  <li className="flex items-start space-x-2">
+                    <CheckCircle className="w-3 h-3 sm:w-4 sm:h-4 text-green-600 mt-0.5 flex-shrink-0" />
+                    <span className="text-xs sm:text-sm">
+                      No edited or cropped images
+                    </span>
                   </li>
-                  <li className="flex items-center space-x-2">
-                    <CheckCircle className="w-4 h-4 text-green-600" />
-                    <span>File size under 5MB</span>
+                  <li className="flex items-start space-x-2">
+                    <CheckCircle className="w-3 h-3 sm:w-4 sm:h-4 text-green-600 mt-0.5 flex-shrink-0" />
+                    <span className="text-xs sm:text-sm">
+                      File size under 5MB
+                    </span>
                   </li>
                 </ul>
               </div>
@@ -401,37 +442,37 @@ export default function TikTokVerificationTask() {
 
           {/* Upload Section */}
           <div>
-            <div className="flex items-center space-x-3 mb-6">
-              <div className="w-8 h-8 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center">
-                <Upload className="w-4 h-4 text-white" />
+            <div className="flex items-center space-x-3 mb-4 sm:mb-6">
+              <div className="w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center">
+                <Upload className="w-3 h-3 sm:w-4 sm:h-4 text-white" />
               </div>
-              <h3 className="text-2xl font-bold text-gray-800">
+              <h3 className="text-lg sm:text-2xl font-bold text-gray-800">
                 Upload Your Screenshot
               </h3>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-3">
+                <label className="block text-sm font-semibold text-gray-700 mb-2 sm:mb-3">
                   Screenshot File
                 </label>
 
                 {preview ? (
-                  <div className="relative bg-gradient-to-br from-green-50 to-emerald-50 border-2 border-green-300 rounded-2xl p-6 text-center group hover:from-green-100 hover:to-emerald-100 transition-all duration-300">
+                  <div className="relative bg-gradient-to-br from-green-50 to-emerald-50 border-2 border-green-300 rounded-lg sm:rounded-2xl p-4 sm:p-6 text-center group hover:from-green-100 hover:to-emerald-100 transition-all duration-300">
                     <div className="relative inline-block">
                       <img
                         src={preview}
                         alt="Screenshot preview"
-                        className="max-h-80 mx-auto mb-4 rounded-xl shadow-lg border-4 border-white"
+                        className="max-h-60 sm:max-h-80 w-full sm:w-auto mx-auto mb-3 sm:mb-4 rounded-lg sm:rounded-xl shadow-lg border-2 sm:border-4 border-white object-contain"
                       />
-                      <div className="absolute -top-2 -right-2 w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
-                        <CheckCircle className="w-5 h-5 text-white" />
+                      <div className="absolute -top-1 -right-1 sm:-top-2 sm:-right-2 w-6 h-6 sm:w-8 sm:h-8 bg-green-500 rounded-full flex items-center justify-center">
+                        <CheckCircle className="w-3 h-3 sm:w-5 sm:h-5 text-white" />
                       </div>
                     </div>
-                    <p className="text-green-700 font-semibold text-lg">
+                    <p className="text-green-700 font-semibold text-base sm:text-lg break-all">
                       {file.name}
                     </p>
-                    <p className="text-green-600 text-sm mb-4">
+                    <p className="text-green-600 text-sm mb-3 sm:mb-4">
                       Ready to submit!
                     </p>
                     <button
@@ -440,28 +481,28 @@ export default function TikTokVerificationTask() {
                         setFile(null);
                         setPreview(null);
                       }}
-                      className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors duration-200 font-medium"
+                      className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors duration-200 font-medium text-sm"
                     >
                       Remove file
                     </button>
                   </div>
                 ) : (
-                  <div className="relative border-2 border-dashed border-gray-300 rounded-2xl p-8 text-center hover:border-blue-400 hover:bg-blue-50/50 transition-all duration-300 group">
-                    <div className="absolute inset-0 bg-gradient-to-br from-blue-50/0 to-purple-50/0 group-hover:from-blue-50/30 group-hover:to-purple-50/30 rounded-2xl transition-all duration-300"></div>
+                  <div className="relative border-2 border-dashed border-gray-300 rounded-lg sm:rounded-2xl p-6 sm:p-8 text-center hover:border-blue-400 hover:bg-blue-50/50 transition-all duration-300 group">
+                    <div className="absolute inset-0 bg-gradient-to-br from-blue-50/0 to-purple-50/0 group-hover:from-blue-50/30 group-hover:to-purple-50/30 rounded-lg sm:rounded-2xl transition-all duration-300"></div>
                     <div className="relative z-10">
-                      <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
-                        <Upload className="w-8 h-8 text-white" />
+                      <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl sm:rounded-2xl flex items-center justify-center mx-auto mb-3 sm:mb-4 group-hover:scale-110 transition-transform duration-300">
+                        <Upload className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
                       </div>
-                      <h4 className="text-xl font-bold text-gray-800 mb-2">
+                      <h4 className="text-lg sm:text-xl font-bold text-gray-800 mb-2">
                         Drop Your Screenshot Here
                       </h4>
-                      <p className="text-gray-600 mb-2">
+                      <p className="text-gray-600 mb-2 text-sm sm:text-base">
                         Drag and drop your screenshot or click to browse
                       </p>
-                      <p className="text-sm text-gray-500 mb-6">
+                      <p className="text-xs sm:text-sm text-gray-500 mb-4 sm:mb-6">
                         Supported formats: PNG, JPG, JPEG (max 5MB)
                       </p>
-                      <label className="inline-block bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-3 rounded-xl cursor-pointer hover:from-blue-600 hover:to-purple-700 transform hover:scale-105 transition-all duration-200 font-semibold shadow-lg">
+                      <label className="inline-block bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 sm:px-8 py-2.5 sm:py-3 rounded-lg sm:rounded-xl cursor-pointer hover:from-blue-600 hover:to-purple-700 transform hover:scale-105 transition-all duration-200 font-semibold shadow-lg text-sm sm:text-base">
                         Choose File
                         <input
                           type="file"
@@ -475,9 +516,9 @@ export default function TikTokVerificationTask() {
                 )}
 
                 {error && (
-                  <div className="mt-4 bg-red-50 border border-red-200 p-4 rounded-xl">
-                    <p className="text-red-600 font-medium flex items-center">
-                      <span className="w-5 h-5 bg-red-500 rounded-full flex items-center justify-center mr-2">
+                  <div className="mt-3 sm:mt-4 bg-red-50 border border-red-200 p-3 sm:p-4 rounded-lg sm:rounded-xl">
+                    <p className="text-red-600 font-medium flex items-start text-sm sm:text-base">
+                      <span className="w-4 h-4 sm:w-5 sm:h-5 bg-red-500 rounded-full flex items-center justify-center mr-2 mt-0.5 flex-shrink-0">
                         <span className="text-white text-xs">!</span>
                       </span>
                       {error}
@@ -486,11 +527,11 @@ export default function TikTokVerificationTask() {
                 )}
               </div>
 
-              <div className="pt-4">
+              <div className="pt-2 sm:pt-4">
                 <button
                   type="submit"
                   disabled={!file || isSubmitting}
-                  className={`w-full py-4 rounded-xl font-bold text-lg transition-all duration-300 transform ${
+                  className={`w-full py-3 sm:py-4 rounded-lg sm:rounded-xl font-bold text-base sm:text-lg transition-all duration-300 transform ${
                     file
                       ? "bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white shadow-lg hover:scale-105 hover:shadow-xl"
                       : "bg-gray-200 text-gray-500 cursor-not-allowed"
@@ -498,13 +539,16 @@ export default function TikTokVerificationTask() {
                 >
                   {isSubmitting ? (
                     <div className="flex items-center justify-center space-x-2">
-                      <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent"></div>
+                      <div className="animate-spin rounded-full h-4 w-4 sm:h-5 sm:w-5 border-2 border-white border-t-transparent"></div>
                       <span>Submitting...</span>
                     </div>
                   ) : (
                     <div className="flex items-center justify-center space-x-2">
-                      <CheckCircle className="w-5 h-5" />
-                      <span>Submit Screenshot & Earn Rs 1/=</span>
+                      <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5" />
+                      <span className="hidden sm:inline">
+                        Submit Screenshot & Earn Rs 1/=
+                      </span>
+                      <span className="sm:hidden">Submit & Earn Rs 1/=</span>
                     </div>
                   )}
                 </button>

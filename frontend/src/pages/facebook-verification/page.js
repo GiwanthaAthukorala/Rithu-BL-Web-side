@@ -258,34 +258,36 @@ export default function FbVerificationTask() {
           </div>
 
           {/* Content */}
-          <div className="relative z-10 p-8">
-            <div className="flex items-center space-x-6">
+          <div className="relative z-10 p-6 sm:p-8">
+            <div className="flex flex-col sm:flex-row items-center sm:items-start sm:space-x-6 space-y-4 sm:space-y-0">
               {/* Facebook Icon with Animated Border */}
-              <div className="relative">
+              <div className="relative flex-shrink-0">
                 <div className="absolute inset-0 bg-gradient-to-r from-blue-400 to-blue-300 rounded-2xl blur-sm opacity-60 animate-pulse"></div>
-                <div className="relative w-20 h-20 bg-white rounded-2xl flex items-center justify-center shadow-lg transform hover:scale-105 transition-transform duration-300">
+                <div className="relative w-16 h-16 sm:w-20 sm:h-20 bg-white rounded-2xl flex items-center justify-center shadow-lg transform hover:scale-105 transition-transform duration-300">
                   <img
                     src="/facebook.png"
                     alt="Facebook Icon"
-                    className="w-16 h-16 object-contain"
+                    className="w-12 h-12 sm:w-16 sm:h-16 object-contain"
                   />
                 </div>
               </div>
 
               {/* Title Section */}
-              <div className="flex-1">
-                <div className="flex items-center space-x-3 mb-2">
-                  <h1 className="text-3xl font-bold text-white tracking-tight">
+              <div className="flex-1 text-center sm:text-left">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-3 mb-2">
+                  <h1 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
                     Facebook Verification
                   </h1>
-                  <div className="px-3 py-1 bg-green-500 text-white text-sm font-semibold rounded-full shadow-md animate-bounce">
+                  <div className="mt-2 sm:mt-0 px-3 py-1 bg-green-500 text-white text-sm font-semibold rounded-full shadow-md animate-bounce w-max mx-auto sm:mx-0">
                     Rs 1.00
                   </div>
                 </div>
-                <p className="text-blue-100 text-lg font-medium">
+
+                <p className="text-blue-100 text-base sm:text-lg font-medium">
                   Earn money by engaging with Facebook pages
                 </p>
-                <div className="flex items-center space-x-4 mt-3">
+
+                <div className="flex flex-col sm:flex-row items-center sm:items-center justify-center sm:justify-start space-y-2 sm:space-y-0 sm:space-x-4 mt-3">
                   <div className="flex items-center space-x-2 text-blue-200">
                     <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
                     <span className="text-sm">Active Task</span>
