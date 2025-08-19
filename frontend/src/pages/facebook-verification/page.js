@@ -154,11 +154,7 @@ export default function FbVerificationTask() {
         }
 
         if (response.status === 429) {
-          setSubmissionLimit({
-            remainig: 0,
-            nextSubmissionTime: new Date(errorData.nextSubmissionTime),
-          });
-          setError(errorData.message);
+          setError(errorData.message || "Rate limit exceeded");
           return;
         }
 
@@ -167,11 +163,6 @@ export default function FbVerificationTask() {
 
       const result = await response.json();
       console.log("Success response : ", result);
-
-      setSubmissionLimit({
-        remaining: result.limitInfo.remaining,
-        nextSubmissionTime: result.limitInfo.nextSubmissionTime,
-      });
 
       setIsSubmitted(true);
       setTimeout(() => {
