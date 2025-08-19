@@ -10,6 +10,8 @@ const connectDB = async () => {
     }
 
     await mongoose.connect(process.env.MONGO_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
       serverSelectionTimeoutMS: 5000,
       socketTimeoutMS: 30000,
     });
@@ -130,20 +132,36 @@ const facebookLinks = [
     platform: "facebook",
     earnings: 1.0,
   },
+  {
+    url: "https://www.facebook.com/share/1B2PBfKSfp/",
+    title: "Kaushan - ෆෙස්බුක් පෙජ් ලයික් ෆලෝ කරන්න",
+    platform: "facebook",
+    earnings: 1.0,
+  },
+  {
+    url: "https://www.facebook.com/share/176m5DZxQ6/",
+    title: "ONE 100 Consultants - ෆෙස්බුක් පෙජ් ලයික් ෆලෝ කරන්න",
+    platform: "facebook",
+    earnings: 1.0,
+  },
+  {
+    url: "https://www.facebook.com/share/16x61jaVWQ/?mibextid=wwXIfr",
+    title: "Sirasa Housing & - ෆෙස්බුක් පෙජ් ලයික් ෆලෝ කරන්න",
+    platform: "facebook",
+    earnings: 1.0,
+  },
 ];
 
 async function seedLinks() {
   try {
     await connectDB();
 
+    await Link.deleteMany({ platform: "facebook" });
+    console.log("Cleared existing Facebook links");
+
     for (const linkData of facebookLinks) {
-      const existingLink = await Link.findOne({ url: linkData.url });
-      if (!existingLink) {
-        await Link.create(linkData);
-        console.log(`Added link: ${linkData.title}`);
-      } else {
-        console.log(`Link already exists: ${linkData.title}`);
-      }
+      await Link.create(linkData);
+      console.log(`Added link: ${linkData.title}`);
     }
 
     console.log("Links seeding completed");
