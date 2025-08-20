@@ -25,6 +25,18 @@ const connectDB = async () => {
 
 const facebookLinks = [
   {
+    url: "https://www.facebook.com/share/1CGcR2x2n1/",
+    title: "Science - Supun Rathnayaka - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න",
+    platform: "facebook",
+    earnings: 1.0,
+  },
+  {
+    url: "https://www.facebook.com/share/1EqCrVLXBv/?mibextid=wwXIfr",
+    title: "Chathura Vithanage - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න",
+    platform: "facebook",
+    earnings: 1.0,
+  },
+  {
     url: "https://www.facebook.com/SuwaPiyasaHomeNursing",
     title: "Suwa Piyasa Home Nursing - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න",
     platform: "facebook",
