@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import {
   ExternalLink,
   CheckCircle,
@@ -15,17 +15,7 @@ export default function TaskLinks({ platform, onLinkClick }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [retryCount, setRetryCount] = useState(0);
-  const [isIOS, setIsIOS] = useState(false);
   const { user } = useAuth();
-  const clickTimers = useRef({});
-
-  useEffect(() => {
-    // Detect iOS devices
-    const isIOSDevice =
-      /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-    setIsIOS(isIOSDevice);
-    console.log("Is iOS device:", isIOSDevice);
-  }, []);
 
   useEffect(() => {
     if (user) {
@@ -52,52 +42,6 @@ export default function TaskLinks({ platform, onLinkClick }) {
     }
   };
 
-  const openLinkInNewTab = (url, linkId) => {
-    // Clear any existing timer for this link
-    if (clickTimers.current[linkId]) {
-      clearTimeout(clickTimers.current[linkId]);
-      delete clickTimers.current[linkId];
-    }
-
-    // For iOS, we need to use a different approach due to popup blockers
-    if (isIOS) {
-      // Method 1: Use window.location (less ideal but works)
-      // window.location.href = url;
-
-      // Method 2: Create a temporary anchor element and trigger click
-      const anchor = document.createElement("a");
-      anchor.href = url;
-      anchor.target = "_blank";
-      anchor.rel = "noopener noreferrer";
-      anchor.style.display = "none";
-      document.body.appendChild(anchor);
-
-      // Trigger click programmatically
-      const event = new MouseEvent("click", {
-        view: window,
-        bubbles: true,
-        cancelable: true,
-      });
-
-      // Use a try-catch block for iOS compatibility
-      try {
-        anchor.dispatchEvent(event);
-      } catch (e) {
-        console.error("Error dispatching click event:", e);
-        // Fallback: open in same tab
-        window.location.href = url;
-      }
-
-      // Clean up
-      setTimeout(() => {
-        document.body.removeChild(anchor);
-      }, 100);
-    } else {
-      // Standard method for other devices
-      window.open(url, "_blank", "noopener,noreferrer");
-    }
-  };
-
   const handleLinkClick = async (link, e) => {
     e.preventDefault(); // Prevent default link behavior
 
@@ -119,8 +63,8 @@ export default function TaskLinks({ platform, onLinkClick }) {
         });
         setLinks(updatedLinks);
 
-        // Open the link with iOS-compatible method
-        openLinkInNewTab(link.url, link._id);
+        // Open the link in a new tab
+        window.open(link.url, "_blank", "noopener,noreferrer");
 
         // Notify parent component
         if (onLinkClick) {
@@ -136,18 +80,11 @@ export default function TaskLinks({ platform, onLinkClick }) {
         setLinks(updatedLinks);
         alert("You've reached the maximum number of clicks for this link.");
       } else {
-        // Even if tracking fails, still try to open the link
-        openLinkInNewTab(link.url, link._id);
-
-        // Show a more user-friendly message for iOS
-        if (isIOS) {
-          // Set a timer to check if the link opened successfully
-          clickTimers.current[link._id] = setTimeout(() => {
-            alert(
-              "If the link didn't open, please check your pop-up settings or tap the link again."
-            );
-          }, 1000);
-        }
+        // Even if tracking fails, still open the link
+        window.open(link.url, "_blank", "noopener,noreferrer");
+        alert(
+          "There was an error tracking your click, but the link has been opened."
+        );
       }
     }
   };
@@ -165,17 +102,6 @@ export default function TaskLinks({ platform, onLinkClick }) {
   const handleRetry = () => {
     setRetryCount((prev) => prev + 1);
   };
-
-  // Add instructions for iOS users
-  const IOSInstructions = () => (
-    <div className="mb-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
-      <h4 className="font-semibold text-yellow-800 mb-1">iPhone/iPad Users:</h4>
-      <p className="text-yellow-700 text-sm">
-        If links don't open automatically, please allow pop-ups for this site in
-        your browser settings.
-      </p>
-    </div>
-  );
 
   if (loading) {
     return (
@@ -224,8 +150,6 @@ export default function TaskLinks({ platform, onLinkClick }) {
 
   return (
     <div className="space-y-3">
-      {isIOS && <IOSInstructions />}
-
       {links.map((link) => {
         const status = getClickStatus(link);
         const isCompleted = status === "completed";

@@ -8,7 +8,6 @@ import { useAuth } from "@/Context/AuthContext";
 import DuplicateWarningModal from "@/components/DuplicateWarningModal";
 //import Countdown from "react-countdown";
 import TaskLinks from "@/components/TaskLinks/TaskLinks";
-import IOSInstructions from "@/components/IOS/IOSInstructions";
 
 export default function FbVerificationTask() {
   const [file, setFile] = useState(null);
@@ -22,30 +21,6 @@ export default function FbVerificationTask() {
   const [previousSubmissionDate, setPreviousSubmissionDate] = useState("");
   const [selectedLinkId, setSelectedLinkId] = useState(null);
   const [linkClickCounts, setLinkClickCounts] = useState({});
-  const [showIOSInstructions, setShowIOSInstructions] = useState(false);
-
-  useEffect(() => {
-    // Detect iOS and show instructions on first visit
-    const isIOS =
-      /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-    const hasSeenInstructions = localStorage.getItem("hasSeenIOSInstructions");
-
-    if (isIOS && !hasSeenInstructions) {
-      setShowIOSInstructions(true);
-    }
-  }, []);
-
-  const handleCloseInstructions = () => {
-    setShowIOSInstructions(false);
-    localStorage.setItem("hasSeenIOSInstructions", "true");
-  };
-
-  // In your return statement, add this component
-  {
-    showIOSInstructions && (
-      <IOSInstructions onClose={handleCloseInstructions} />
-    );
-  }
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
