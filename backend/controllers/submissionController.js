@@ -135,7 +135,7 @@ const createSubmission = async (req, res) => {
       await earnings.save();
     }
 
-    if (linkId) {
+    if (req.body.linkId) {
       try {
         const apiUrl =
           process.env.NEXT_PUBLIC_API_URL ||

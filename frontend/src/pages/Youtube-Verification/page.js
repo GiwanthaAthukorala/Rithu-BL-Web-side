@@ -192,68 +192,18 @@ export default function YouTubeVerificationTask() {
             <p className="text-gray-700 mb-3">
               Please visit this link and take a screenshot as proof:
             </p>
-            {/* <li>
-              {" "}
-              <a
-                href=""
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium"
-              >
-                Visit our Youtube Subscribers{" "}
-                <ExternalLink className="w-4 h-4 ml-1" />
-              </a>
-            </li>
-
-            <li>
-              {" "}
-              <a
-                href=""
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium"
-              >
-                Visit our Youtube Subscribers{" "}
-                <ExternalLink className="w-4 h-4 ml-1" />
-              </a>
-            </li>
-            <li>
-              {" "}
-              <a
-                href=""
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium"
-              >
-                Visit our Youtube Subscribers{" "}
-                <ExternalLink className="w-4 h-4 ml-1" />
-              </a>
-            </li>
-            <li>
-              {" "}
-              <a
-                href=""
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium"
-              >
-                Visit our Youtube Subscribers{" "}
-                <ExternalLink className="w-4 h-4 ml-1" />
-              </a>
-            </li>
-            <li>
-              {" "}
-              <a
-                href=""
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium"
-              >
-                Visit our Youtube Subscribers{" "}
-                <ExternalLink className="w-4 h-4 ml-1" />
-              </a>
-            </li>
-            */}
+            <a
+              href="https://web.facebook.com/profile.php?id=61578843232009&notif_id=1755669738607664&notif_t=profile_plus_admin_invite&ref=notif"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-between p-4 bg-white rounded-lg hover:bg-blue-50 transition-colors duration-200 border border-gray-200 hover:border-blue-300 group"
+            >
+              <span className="text-gray-700 group-hover:text-blue-700">
+                Naveen Prasanga Youtube Channel - යූ ටියුබ් චැනල් එක
+                සබ්ක්‍රයිබ් කරන්න
+              </span>
+              <ExternalLink className="w-4 h-4 text-blue-600 group-hover:scale-110 transition-transform" />
+            </a>
           </div>
 
           <div className="mb-8 bg-yellow-50 p-4 rounded-lg border border-yellow-200">

@@ -47,7 +47,19 @@ const userSchema = new mongoose.Schema(
           type: String,
           required: true,
         },
+        clickCount: {
+          type: Number,
+          default: 0,
+        },
         clickedAt: {
+          type: Date,
+          default: Date.now,
+        },
+        maxClicks: {
+          type: Number,
+          default: 4,
+        },
+        lastClickedAt: {
           type: Date,
           default: Date.now,
         },

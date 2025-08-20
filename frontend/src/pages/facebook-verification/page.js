@@ -20,59 +20,7 @@ export default function FbVerificationTask() {
   const [showDuplicateModal, setShowDuplicateModal] = useState(false);
   const [previousSubmissionDate, setPreviousSubmissionDate] = useState("");
   const [selectedLinkId, setSelectedLinkId] = useState(null);
-  //const [submissionLimit, setSubmissionLimit] = useState({
-  //remainig: 18,
-  // nextSubmissionTime: null,
-  //});
-
-  // Fetch submission limit info when component mounts
-  /*  useEffect(() => {
-    if (user?._id) {
-      fetchSubmissionLimit();
-    }
-  }, [user?._id]);*/
-
-  {
-    /** const fetchSubmissionLimit = async () => {
-    try {
-      const response = await api.get("/submissions/my-submissions");
-      if (response.data?.success) {
-        const now = new Date();
-        const twentyFourHoursAgo = new Date(
-          now.getTime() - 24 * 60 * 60 * 1000
-        );
-
-        // Filter submissions in last 24 hours
-        const recentSubmissions = response.data.data.filter(
-          (sub) =>
-            new Date(sub.createdAt) >= twentyFourHoursAgo &&
-            ["pending", "approved"].includes(sub.status)
-        );
-
-        const remaining = Math.max(0, 18 - recentSubmissions.length);
-
-        let nextSubmissionTime = null;
-        if (recentSubmissions.length >= 18) {
-          const oldestSubmission = recentSubmissions.reduce((oldest, current) =>
-            new Date(current.createdAt) < new Date(oldest.createdAt)
-              ? current
-              : oldest
-          );
-          nextSubmissionTime = new Date(
-            new Date(oldestSubmission.createdAt).getTime() + 24 * 60 * 60 * 1000
-          );
-        }
-
-        setSubmissionLimit({
-          remaining,
-          nextSubmissionTime,
-        });
-      }
-    } catch (error) {
-      console.error("Failed to fetch submission limit:", error);
-    }
-  };*/
-  }
+  const [linkClickCounts, setLinkClickCounts] = useState({});
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
@@ -102,9 +50,47 @@ export default function FbVerificationTask() {
     reader.readAsDataURL(selectedFile);
   };
 
+  const handleLinkClick = (linkId, clickCount) => {
+    setLinkClickCounts((prev) => ({
+      ...prev,
+      [linkId]: clickCount,
+    }));
+
+    // Only set as selected if it's the first click
+    if (clickCount === 1) {
+      setSelectedLinkId(linkId);
+    }
+  };
+
+  <TaskLinks platform="facebook" onLinkClick={handleLinkClick} />;
+
+  // Update the selected link info display
+  {
+    selectedLinkId && (
+      <div className="mt-4 p-3 bg-blue-50 border border-blue-300 rounded-lg">
+        <p className="text-blue-700 font-medium">
+          ✓ Link selected.
+          {linkClickCounts[selectedLinkId] && (
+            <span className="ml-2">
+              Clicks: {linkClickCounts[selectedLinkId]}/4
+            </span>
+          )}
+        </p>
+        <p className="text-blue-600 text-sm mt-1">
+          Complete 4 clicks and submit a screenshot to earn Rs 1.00
+        </p>
+      </div>
+    );
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!file || !user) return;
+
+    if (selectedLinkId && linkClickCounts[selectedLinkId] < 4) {
+      setError("You need to click the link at least 4 times before submitting");
+      return;
+    }
 
     setIsSubmitting(true);
     setError(null);
