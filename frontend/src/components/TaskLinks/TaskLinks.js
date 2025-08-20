@@ -43,7 +43,8 @@ export default function TaskLinks({ platform, onLinkClick }) {
   };
 
   const handleLinkClick = async (link, e) => {
-    e.preventDefault(); // Prevent default link behavior
+    e.preventDefault();
+    e.stopPropagation();
 
     try {
       // Track the click
@@ -63,8 +64,19 @@ export default function TaskLinks({ platform, onLinkClick }) {
         });
         setLinks(updatedLinks);
 
-        // Open the link in a new tab
-        window.open(link.url, "_blank", "noopener,noreferrer");
+        // Mobile-friendly link opening
+        const isMobile =
+          /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+            navigator.userAgent
+          ) || window.innerWidth <= 768;
+
+        if (isMobile) {
+          // For mobile devices, use direct navigation
+          window.location.href = link.url;
+        } else {
+          // For desktop, open in new tab
+          window.open(link.url, "_blank", "noopener,noreferrer");
+        }
 
         // Notify parent component
         if (onLinkClick) {
@@ -81,7 +93,16 @@ export default function TaskLinks({ platform, onLinkClick }) {
         alert("You've reached the maximum number of clicks for this link.");
       } else {
         // Even if tracking fails, still open the link
-        window.open(link.url, "_blank", "noopener,noreferrer");
+        const isMobile =
+          /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+            navigator.userAgent
+          ) || window.innerWidth <= 768;
+
+        if (isMobile) {
+          window.location.href = link.url;
+        } else {
+          window.open(link.url, "_blank", "noopener,noreferrer");
+        }
         alert(
           "There was an error tracking your click, but the link has been opened."
         );
@@ -164,6 +185,10 @@ export default function TaskLinks({ platform, onLinkClick }) {
                 ? "bg-green-50 border-green-200 cursor-not-allowed"
                 : "bg-white border-gray-200 hover:border-blue-300 hover:bg-blue-50 cursor-pointer"
             } group`}
+            style={{
+              minHeight: "44px",
+              touchAction: "manipulation",
+            }}
           >
             <div className="flex-1">
               <span

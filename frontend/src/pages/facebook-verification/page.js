@@ -6,7 +6,6 @@ import Header from "@/components/Header/Header";
 import api from "@/lib/api";
 import { useAuth } from "@/Context/AuthContext";
 import DuplicateWarningModal from "@/components/DuplicateWarningModal";
-//import Countdown from "react-countdown";
 import TaskLinks from "@/components/TaskLinks/TaskLinks";
 
 export default function FbVerificationTask() {
@@ -21,6 +20,17 @@ export default function FbVerificationTask() {
   const [previousSubmissionDate, setPreviousSubmissionDate] = useState("");
   const [selectedLinkId, setSelectedLinkId] = useState(null);
   const [linkClickCounts, setLinkClickCounts] = useState({});
+
+  // Mobile detection
+  const isMobile = () => {
+    return (
+      typeof window !== "undefined" &&
+      (/Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+        navigator.userAgent
+      ) ||
+        window.innerWidth <= 768)
+    );
+  };
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
@@ -51,44 +61,36 @@ export default function FbVerificationTask() {
   };
 
   const handleLinkClick = (linkId, clickCount) => {
+    console.log(`Link ${linkId} clicked ${clickCount} times`);
+
     setLinkClickCounts((prev) => ({
       ...prev,
       [linkId]: clickCount,
     }));
 
-    // Only set as selected if it's the first click
+    // Set as selected link for the first click
     if (clickCount === 1) {
       setSelectedLinkId(linkId);
+      console.log(`Selected link: ${linkId}`);
+    }
+
+    // Provide feedback for mobile users
+    if (isMobile() && navigator.vibrate) {
+      navigator.vibrate(50);
     }
   };
-
-  <TaskLinks platform="facebook" onLinkClick={handleLinkClick} />;
-
-  // Update the selected link info display
-  {
-    selectedLinkId && (
-      <div className="mt-4 p-3 bg-blue-50 border border-blue-300 rounded-lg">
-        <p className="text-blue-700 font-medium">
-          ✓ Link selected.
-          {linkClickCounts[selectedLinkId] && (
-            <span className="ml-2">
-              Clicks: {linkClickCounts[selectedLinkId]}/4
-            </span>
-          )}
-        </p>
-        <p className="text-blue-600 text-sm mt-1">
-          Complete 4 clicks and submit a screenshot to earn Rs 1.00
-        </p>
-      </div>
-    );
-  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!file || !user) return;
 
-    if (selectedLinkId && linkClickCounts[selectedLinkId] < 4) {
-      setError("You need to click the link at least 4 times before submitting");
+    // Validate link clicks if a link is selected
+    if (selectedLinkId && linkClickCounts[selectedLinkId] < 3) {
+      setError(
+        `You need to click the link at least 3 times before submitting (current: ${
+          linkClickCounts[selectedLinkId] || 0
+        })`
+      );
       return;
     }
 
@@ -102,12 +104,6 @@ export default function FbVerificationTask() {
 
       if (selectedLinkId) {
         formData.append("linkId", selectedLinkId);
-
-        try {
-          await api.post(`/links/${selectedLinkId}/submit`);
-        } catch (submitError) {
-          console.error("Failed to mark link as submitted:", submitError);
-        }
       }
 
       const token = localStorage.getItem("token");
@@ -119,14 +115,15 @@ export default function FbVerificationTask() {
       const apiUrl =
         process.env.NEXT_PUBLIC_API_URL ||
         "https://rithu-bl-web-side.vercel.app";
+
       console.log("Submitting to:", `${apiUrl}/api/submissions`);
-      console.log("Token exists:", !!token);
+
       const response = await fetch(`${apiUrl}/api/submissions`, {
         method: "POST",
         body: formData,
-        credentials: "include", // Important for cookies/auth
+        credentials: "include",
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${token}`,
         },
       });
 
@@ -140,7 +137,7 @@ export default function FbVerificationTask() {
       if (!response.ok) {
         const errorData = await response.json();
 
-        // Handle duplicate image case specifically
+        // Handle duplicate image case
         if (errorData.message.includes("too similar")) {
           const dateMatch = errorData.message.match(/\d{1,2}\/\d{1,2}\/\d{4}/);
           setPreviousSubmissionDate(dateMatch ? dateMatch[0] : "previously");
@@ -157,18 +154,25 @@ export default function FbVerificationTask() {
       }
 
       const result = await response.json();
-      console.log("Success response : ", result);
+      console.log("Success response:", result);
+
+      // Mark link as submitted if we have one
+      if (selectedLinkId) {
+        try {
+          await api.post(`/links/${selectedLinkId}/submit`);
+          console.log("Link marked as submitted");
+        } catch (submitError) {
+          console.error("Failed to mark link as submitted:", submitError);
+          // Don't fail the whole submission for this
+        }
+      }
 
       setIsSubmitted(true);
 
-      if (selectedLinkId) {
-        setSelectedLinkId(null);
-      }
-
+      // Navigate to profile after success
       setTimeout(() => {
         router.push("/Profile/page");
-      }, 1000);
-      router.push("/Profile/page");
+      }, 2000);
     } catch (error) {
       console.error("Submission error:", error);
       if (!error.message.includes("too similar")) {
@@ -178,21 +182,6 @@ export default function FbVerificationTask() {
       setIsSubmitting(false);
     }
   };
-
-  // Countdown renderer
-  {
-    /** const countdownRenderer = ({ hours, minutes, seconds, completed }) => {
-    if (completed) {
-      return <span>You can submit now!</span>;
-    } else {
-      return (
-        <span>
-          {hours}h {minutes}m {seconds}s
-        </span>
-      );
-    }
-  };*/
-  }
 
   if (isAuthLoading || !user) {
     return (
@@ -216,11 +205,11 @@ export default function FbVerificationTask() {
             </div>
             <h2 className="text-2xl font-bold mb-2">Submission Successful!</h2>
             <p className="text-gray-600 mb-6">
-              You've earned Rs 1.00/= Your balance has been updated.
+              You've earned Rs 1.00! Your balance has been updated.
             </p>
             <button
               onClick={() => router.push("/Profile/page")}
-              className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700"
+              className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
             >
               View Your Earnings
             </button>
@@ -246,7 +235,7 @@ export default function FbVerificationTask() {
           {/* Content */}
           <div className="relative z-10 p-6 sm:p-8">
             <div className="flex flex-col sm:flex-row items-center sm:items-start sm:space-x-6 space-y-4 sm:space-y-0">
-              {/* Facebook Icon with Animated Border */}
+              {/* Facebook Icon */}
               <div className="relative flex-shrink-0">
                 <div className="absolute inset-0 bg-gradient-to-r from-blue-400 to-blue-300 rounded-2xl blur-sm opacity-60 animate-pulse"></div>
                 <div className="relative w-16 h-16 sm:w-20 sm:h-20 bg-white rounded-2xl flex items-center justify-center shadow-lg transform hover:scale-105 transition-transform duration-300">
@@ -314,54 +303,6 @@ export default function FbVerificationTask() {
 
         {/* Main Content */}
         <div className="bg-white rounded-b-2xl shadow-xl border-t-0">
-          {/* Submission Limit Info - Enhanced */}
-          <div className="p-6 border-b border-gray-100">
-            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-6 rounded-xl border border-blue-200">
-              {/**  <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-4">
-                  <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center">
-                    <span className="text-white font-bold text-lg">
-                      {submissionLimit.remaining}
-                    </span>
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-gray-800 text-lg">
-                      Daily Submission Limit
-                    </h3>
-                    <p className="text-gray-600">
-                      {submissionLimit.remaining > 0 ? (
-                        <span className="text-green-600 font-medium">
-                          {submissionLimit.remaining} screenshots remaining
-                          today
-                        </span>
-                      ) : (
-                        <span className="text-red-600 font-medium">
-                          Daily limit reached
-                        </span>
-                      )}
-                    </p>
-                  </div>
-                </div>
-                {submissionLimit.nextSubmissionTime && (
-                  <div className="flex items-center space-x-2 bg-white px-4 py-2 rounded-lg shadow-sm">
-                    <Clock className="w-5 h-5 text-blue-600" />
-                    <div className="text-center">
-                      <div className="text-sm text-gray-500">
-                        Next submission in
-                      </div>
-                      <div className="font-mono font-semibold text-blue-600">
-                        <Countdown
-                          date={submissionLimit.nextSubmissionTime}
-                          renderer={countdownRenderer}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>*/}
-            </div>
-          </div>
-
           {/* Instructions Section */}
           <div className="p-6">
             <div className="mb-8">
@@ -377,27 +318,31 @@ export default function FbVerificationTask() {
                     <span className="flex-shrink-0 w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-bold">
                       1
                     </span>
-                    <span>Visit our Facebook page using the link below</span>
+                    <span>Click on a Facebook page link below</span>
                   </li>
                   <li className="flex items-start space-x-3">
                     <span className="flex-shrink-0 w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-bold">
                       2
                     </span>
-                    <span>
-                      Like or follow the page (ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න)
-                    </span>
+                    <span>Like or follow the page on Facebook</span>
                   </li>
                   <li className="flex items-start space-x-3">
                     <span className="flex-shrink-0 w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-bold">
                       3
                     </span>
-                    <span>Take a clear screenshot showing your engagement</span>
+                    <span>Click the link 3 times to track your engagement</span>
                   </li>
                   <li className="flex items-start space-x-3">
                     <span className="flex-shrink-0 w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-bold">
                       4
                     </span>
-                    <span>Upload the screenshot below</span>
+                    <span>Take a screenshot showing your like/follow</span>
+                  </li>
+                  <li className="flex items-start space-x-3">
+                    <span className="flex-shrink-0 w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-bold">
+                      5
+                    </span>
+                    <span>Upload the screenshot to earn Rs 1.00</span>
                   </li>
                 </ol>
               </div>
@@ -409,21 +354,32 @@ export default function FbVerificationTask() {
                 <ExternalLink className="w-5 h-5 text-blue-600" />
                 <span>Facebook Pages to Follow</span>
               </h3>
-              <div className="grid gap-3">
-                <div>
-                  <TaskLinks
-                    platform="facebook"
-                    onLinkClick={setSelectedLinkId}
-                  />
-                  {selectedLinkId && (
-                    <div className="mt-4 p-3 bg-green-100 border border-green-300 rounded-lg">
-                      <p className="text-green-700 font-medium">
-                        ✓ Link selected. You can now upload your screenshot.
-                      </p>
-                    </div>
+
+              <TaskLinks platform="facebook" onLinkClick={handleLinkClick} />
+
+              {selectedLinkId && linkClickCounts[selectedLinkId] && (
+                <div className="mt-4 p-4 bg-blue-100 border border-blue-300 rounded-lg">
+                  <div className="flex items-center justify-between">
+                    <p className="text-blue-700 font-medium">
+                      ✓ Link selected - Progress:{" "}
+                      {linkClickCounts[selectedLinkId]}/3 clicks
+                    </p>
+                    {linkClickCounts[selectedLinkId] >= 3 && (
+                      <CheckCircle className="w-5 h-5 text-green-600" />
+                    )}
+                  </div>
+                  {linkClickCounts[selectedLinkId] >= 3 ? (
+                    <p className="text-green-700 text-sm mt-1">
+                      Ready to submit! Upload your screenshot below.
+                    </p>
+                  ) : (
+                    <p className="text-blue-600 text-sm mt-1">
+                      Click {3 - linkClickCounts[selectedLinkId]} more times to
+                      complete
+                    </p>
                   )}
                 </div>
-              </div>
+              )}
             </div>
 
             {/* Screenshot Requirements */}
@@ -459,6 +415,40 @@ export default function FbVerificationTask() {
                 </div>
               </div>
             </div>
+
+            {/* Mobile-specific instructions */}
+            {isMobile() && (
+              <div className="mb-8 bg-gradient-to-r from-purple-50 to-pink-50 p-6 rounded-xl border border-purple-200">
+                <h3 className="text-lg font-semibold text-purple-800 mb-4 flex items-center space-x-2">
+                  <span className="text-xl">📱</span>
+                  <span>Mobile Instructions</span>
+                </h3>
+                <div className="space-y-3 text-purple-700">
+                  <p className="flex items-start space-x-2">
+                    <span className="text-purple-600 font-bold">•</span>
+                    <span>
+                      Links will open in new tabs or redirect you to Facebook
+                    </span>
+                  </p>
+                  <p className="flex items-start space-x-2">
+                    <span className="text-purple-600 font-bold">•</span>
+                    <span>
+                      Use your browser's back button to return here after liking
+                    </span>
+                  </p>
+                  <p className="flex items-start space-x-2">
+                    <span className="text-purple-600 font-bold">•</span>
+                    <span>
+                      Take screenshots using your device's screenshot function
+                    </span>
+                  </p>
+                  <p className="flex items-start space-x-2">
+                    <span className="text-purple-600 font-bold">•</span>
+                    <span>If links don't work, try refreshing this page</span>
+                  </p>
+                </div>
+              </div>
+            )}
 
             {/* Upload Section */}
             <div>
@@ -504,18 +494,21 @@ export default function FbVerificationTask() {
                         <Upload className="w-8 h-8 text-blue-600" />
                       </div>
                       <p className="text-gray-600 mb-2 text-lg font-medium">
-                        Drag and drop your screenshot here or click to browse
+                        {isMobile()
+                          ? "Tap to select your screenshot"
+                          : "Drag and drop your screenshot here or click to browse"}
                       </p>
                       <p className="text-sm text-gray-500 mb-6">
                         Supported formats: PNG, JPG, JPEG (max 5MB)
                       </p>
                       <label className="inline-block bg-gradient-to-r from-blue-600 to-blue-700 text-white px-8 py-3 rounded-xl cursor-pointer hover:from-blue-700 hover:to-blue-800 transition-all duration-300 transform hover:scale-105 shadow-lg font-semibold">
-                        Choose File
+                        {isMobile() ? "Select File" : "Choose File"}
                         <input
                           type="file"
-                          accept=".png,.jpg,.jpeg"
+                          accept=".png,.jpg,.jpeg,image/*"
                           onChange={handleFileChange}
                           className="hidden"
+                          capture={isMobile() ? "environment" : undefined}
                         />
                       </label>
                     </div>
@@ -530,11 +523,28 @@ export default function FbVerificationTask() {
                   )}
                 </div>
 
+                {/* Submission validation messages */}
+                {selectedLinkId &&
+                  linkClickCounts[selectedLinkId] &&
+                  linkClickCounts[selectedLinkId] < 3 && (
+                    <div className="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                      <p className="text-yellow-800 font-medium">
+                        ⚠️ Please complete {3 - linkClickCounts[selectedLinkId]}{" "}
+                        more clicks on your selected link before submitting.
+                      </p>
+                    </div>
+                  )}
+
                 <button
                   type="submit"
-                  disabled={!file || isSubmitting}
+                  disabled={
+                    !file ||
+                    isSubmitting ||
+                    (selectedLinkId && linkClickCounts[selectedLinkId] < 3)
+                  }
                   className={`w-full py-4 rounded-xl font-bold text-lg transition-all duration-300 transform hover:scale-[1.02] ${
-                    file
+                    file &&
+                    (!selectedLinkId || linkClickCounts[selectedLinkId] >= 3)
                       ? "bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white shadow-lg hover:shadow-xl"
                       : "bg-gray-300 text-gray-500 cursor-not-allowed"
                   }`}
@@ -552,21 +562,50 @@ export default function FbVerificationTask() {
                   )}
                 </button>
 
-                {showDuplicateModal && (
-                  <DuplicateWarningModal
-                    onClose={() => {
-                      setShowDuplicateModal(false);
-                      setFile(null);
-                      setPreview(null);
-                    }}
-                    previousDate={previousSubmissionDate}
-                  />
+                {/* Mobile-specific submission note */}
+                {isMobile() && (
+                  <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                    <p className="text-blue-700 text-sm">
+                      📱 <strong>Mobile Tip:</strong> After submitting, you'll
+                      be redirected to your profile page to see your updated
+                      earnings.
+                    </p>
+                  </div>
                 )}
               </form>
             </div>
           </div>
         </div>
+
+        {/* Duplicate Warning Modal */}
+        {showDuplicateModal && (
+          <DuplicateWarningModal
+            onClose={() => {
+              setShowDuplicateModal(false);
+              setFile(null);
+              setPreview(null);
+            }}
+            previousDate={previousSubmissionDate}
+          />
+        )}
       </div>
+
+      {/* Add mobile-specific styles */}
+      <style jsx>{`
+        @media (max-width: 768px) {
+          .task-link:active {
+            transform: scale(0.98);
+            background-color: rgba(59, 130, 246, 0.2);
+          }
+
+          .task-link {
+            -webkit-tap-highlight-color: rgba(59, 130, 246, 0.1);
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            user-select: none;
+          }
+        }
+      `}</style>
     </div>
   );
 }
