@@ -25,50 +25,8 @@ const connectDB = async () => {
 
 const facebookLinks = [
   {
-    url: "https://www.facebook.com/share/1CVEp1bSgv/?mibextid=wwXIfr",
-    title: "CS Studio and Communication - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න",
-    platform: "facebook",
-    earnings: 1.0,
-  },
-  {
-    url: "https://www.facebook.com/profile.php?id=61579385003718",
-    title: "හෙළ වෙදකම - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න",
-    platform: "facebook",
-    earnings: 1.0,
-  },
-  {
-    url: "https://www.facebook.com/profile.php?id=61574553219898&mibextid=wwXIfr&mibextid=wwXIfr",
-    title: "SHILA - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න",
-    platform: "facebook",
-    earnings: 1.0,
-  },
-  {
     url: "https://www.facebook.com/SuwaPiyasaHomeNursing",
     title: "Suwa Piyasa Home Nursing - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න",
-    platform: "facebook",
-    earnings: 1.0,
-  },
-  {
-    url: "https://www.facebook.com/minukoreanlanguagecenter/",
-    title: "Minu Korean Language Center - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න",
-    platform: "facebook",
-    earnings: 1.0,
-  },
-  {
-    url: "https://www.facebook.com/share/17ftfCoqE4/?mibextid=wwXIfr",
-    title: "TMR Travels & Tours Private Ltd - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න",
-    platform: "facebook",
-    earnings: 1.0,
-  },
-  {
-    url: "https://www.facebook.com/share/16Ms5EmWDc/",
-    title: "Various Technologies - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න",
-    platform: "facebook",
-    earnings: 1.0,
-  },
-  {
-    url: "https://www.facebook.com/share/178gYEzVBS/?mibextid=wwXIfr",
-    title: "NOIRELLE - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න",
     platform: "facebook",
     earnings: 1.0,
   },
@@ -91,44 +49,8 @@ const facebookLinks = [
     earnings: 1.0,
   },
   {
-    url: "https://www.facebook.com/share/14GRFoHwkjx/",
-    title: "CDEM Hospital - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න",
-    platform: "facebook",
-    earnings: 1.0,
-  },
-  {
-    url: "https://www.facebook.com/share/16RRjrSB6z/",
-    title: "Sunway Motors - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න",
-    platform: "facebook",
-    earnings: 1.0,
-  },
-  {
-    url: "https://www.facebook.com/profile.php?id=61579035706488",
-    title: "SA Trading - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න",
-    platform: "facebook",
-    earnings: 1.0,
-  },
-  {
     url: "https://www.facebook.com/share/1JgK3WSNU3/?mibextid=wwXIfr",
     title: "පුන්සර විතානගේ (පුන්සර මල්ලී) - ෆෙස්බුක් profile ෆලෝ කරන්න",
-    platform: "facebook",
-    earnings: 1.0,
-  },
-  {
-    url: "https://www.facebook.com/share/p/14Dnr3BUXJb/?mibextid=wwXIfr",
-    title: "ෆෙස්බුක් පොස්ට් එකට ලයික් කරන්න",
-    platform: "facebook",
-    earnings: 1.0,
-  },
-  {
-    url: "https://www.facebook.com/share/p/1Jehcmr1kr/?mibextid=wwXIfr",
-    title: "ෆෙස්බුක් පොස්ට් එකට ලයික් කරන්න",
-    platform: "facebook",
-    earnings: 1.0,
-  },
-  {
-    url: "https://www.facebook.com/share/r/173DdbWUGR/?mibextid=wwXIfr",
-    title: "ෆෙස්බුක් පොස්ට් එකට ලයික් කරන්න",
     platform: "facebook",
     earnings: 1.0,
   },

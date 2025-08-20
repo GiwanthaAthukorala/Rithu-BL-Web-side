@@ -373,7 +373,7 @@ export default function TikTokVerificationTask() {
                   </a>
                 </div>
 
-                <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-3 sm:p-4 rounded-lg sm:rounded-xl border border-blue-200 hover:shadow-md transition-all duration-300 group">
+                {/**  <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-3 sm:p-4 rounded-lg sm:rounded-xl border border-blue-200 hover:shadow-md transition-all duration-300 group">
                   <h4 className="font-semibold text-gray-800 mb-2 text-sm sm:text-base">
                     Like Video #2 - ටික් ටොක් විඩියෝ එකට ලයික් කරන්න
                   </h4>
@@ -390,6 +390,7 @@ export default function TikTokVerificationTask() {
                     <ExternalLink className="w-3 h-3 sm:w-4 sm:h-4 ml-1" />
                   </a>
                 </div>
+                */}
               </div>
             </div>
           </div>

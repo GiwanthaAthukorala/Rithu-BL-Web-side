@@ -1,5 +1,12 @@
+"use client";
+
 import { useState, useEffect } from "react";
-import { ExternalLink } from "lucide-react";
+import {
+  ExternalLink,
+  CheckCircle,
+  AlertCircle,
+  RefreshCw,
+} from "lucide-react";
 import api from "@/lib/api";
 import { useAuth } from "@/Context/AuthContext";
 
@@ -7,26 +14,29 @@ export default function TaskLinks({ platform, onLinkClick }) {
   const [links, setLinks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [retryCount, setRetryCount] = useState(0);
   const { user } = useAuth();
 
   useEffect(() => {
     if (user) {
       fetchLinks();
     }
-  }, [user, platform]);
+  }, [user, platform, retryCount]);
 
   const fetchLinks = async () => {
     try {
       setLoading(true);
+      setError(null);
       const response = await api.get(`/links/${platform}`);
+
       if (response.data.success) {
         setLinks(response.data.data);
       } else {
-        setError("Failed to load links");
+        setError(response.data.message || "Failed to load links");
       }
     } catch (err) {
       console.error("Error fetching links:", err);
-      setError("Failed to load links");
+      setError(err.message || "Failed to load links. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -72,9 +82,13 @@ export default function TaskLinks({ platform, onLinkClick }) {
       } else {
         // Even if tracking fails, still open the link
         window.open(link.url, "_blank", "noopener,noreferrer");
+        alert(
+          "There was an error tracking your click, but the link has been opened."
+        );
       }
     }
   };
+
   const getClickStatus = (link) => {
     if (link.userClickCount >= link.maxClicks) {
       return "completed";
@@ -83,6 +97,10 @@ export default function TaskLinks({ platform, onLinkClick }) {
     } else {
       return "not-started";
     }
+  };
+
+  const handleRetry = () => {
+    setRetryCount((prev) => prev + 1);
   };
 
   if (loading) {
@@ -100,8 +118,19 @@ export default function TaskLinks({ platform, onLinkClick }) {
 
   if (error) {
     return (
-      <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-red-700">
-        {error}
+      <div className="p-6 bg-red-50 border border-red-200 rounded-lg">
+        <div className="flex items-center mb-3">
+          <AlertCircle className="w-5 h-5 text-red-600 mr-2" />
+          <h3 className="text-red-800 font-medium">Failed to load links</h3>
+        </div>
+        <p className="text-red-700 text-sm mb-4">{error}</p>
+        <button
+          onClick={handleRetry}
+          className="flex items-center text-blue-600 hover:text-blue-800 text-sm font-medium"
+        >
+          <RefreshCw className="w-4 h-4 mr-1" />
+          Try Again
+        </button>
       </div>
     );
   }

@@ -46,10 +46,12 @@ const userSchema = new mongoose.Schema(
         platform: {
           type: String,
           required: true,
+          enum: ["facebook", "tiktok", "instagram", "youtube", "whatsapp"],
         },
         clickCount: {
           type: Number,
           default: 0,
+          min: 0,
         },
         clickedAt: {
           type: Date,
