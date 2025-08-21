@@ -14,6 +14,7 @@ import api from "@/lib/api";
 import { useAuth } from "@/Context/AuthContext";
 import DuplicateWarningModal from "@/components/DuplicateWarningModal";
 import TaskLinks from "@/components/TaskLinks/TaskLinks";
+import Link from "next/link";
 
 export default function FbVerificationTask() {
   const [file, setFile] = useState(null);
@@ -191,7 +192,7 @@ export default function FbVerificationTask() {
   };
 
   // Handle camera capture (optional feature)
-  const handleCameraCapture = () => {
+  /*const handleCameraCapture = () => {
     // Create a separate input for camera capture
     const cameraInput = document.createElement("input");
     cameraInput.type = "file";
@@ -206,7 +207,7 @@ export default function FbVerificationTask() {
     };
 
     cameraInput.click();
-  };
+  };*/
 
   if (isAuthLoading || !user) {
     return (
@@ -325,61 +326,6 @@ export default function FbVerificationTask() {
             </svg>
           </div>
         </div>
-        <h2 className="text-xl font-bold text-gray-800 mb-6 flex items-center space-x-2">
-          <div className="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold">
-            !
-          </div>
-
-          <span>Facebook pages Review and Comment Section</span>
-        </h2>
-        {/** Facebook pages Review and Comment Section */}
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 max-w-6xl mx-auto mb-12">
-          <Link href="/FbPageReview/pages">
-            <div className="cursor-pointer bg-white shadow-md rounded-lg p-6 border-0 hover:shadow-lg transition">
-              <div className="flex items-center mb-4">
-                <div className="w-16 h-16 flex items-center justify-center mr-3 overflow-hidden">
-                  <img
-                    src="/.png"
-                    alt="youtube Icon"
-                    className="w-16 h-16 object-contain"
-                  />
-                </div>
-                <h3 className="text-lg font-semibold text-gray-900">
-                  Facebook Page Review Section
-                </h3>
-              </div>
-              <p className="text-[#000000] font-bold mb-4 text-[18px]">
-                Page Review
-              </p>
-              <div className="text-sm text-[#000000] font-medium">
-                Rs 30/= • Page Review
-              </div>
-            </div>
-          </Link>
-
-          <Link href="">
-            <div className="cursor-pointer bg-white shadow-md rounded-lg p-6 border-0 hover:shadow-lg transition">
-              <div className="flex items-center mb-4">
-                <div className="w-16 h-16 flex items-center justify-center mr-3 overflow-hidden">
-                  <img
-                    src="/.png"
-                    alt="Whatsapp Icon"
-                    className="w-16 h-16 object-contain"
-                  />
-                </div>
-                <h3 className="text-lg font-semibold text-gray-900">
-                  Post Comment Section
-                </h3>
-              </div>
-              <p className="text-[#000000]  font-bold mb-4 text-[18px] ">
-                Comment in Post
-              </p>
-              <div className="text-sm text-[#000000] font-medium ">
-                Rs 15/= Comment Section
-              </div>
-            </div>
-          </Link>
-        </div>
 
         {/* Main Content */}
         <div className="bg-white rounded-b-2xl shadow-xl border-t-0">
@@ -427,6 +373,61 @@ export default function FbVerificationTask() {
                   </li>
                 </ol>
               </div>
+            </div>
+            <h2 className="text-xl font-bold text-gray-800 mb-6 flex items-center space-x-2">
+              <div className="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold">
+                !
+              </div>
+
+              <span>Facebook pages Review and Comment Section</span>
+            </h2>
+            {/** Facebook pages Review and Comment Section */}
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 max-w-6xl mx-auto mb-12">
+              <Link href="/FbPageReview/pages">
+                <div className="cursor-pointer bg-white shadow-md rounded-lg p-6 border-0 hover:shadow-lg transition">
+                  <div className="flex items-center mb-4">
+                    <div className="w-16 h-16 flex items-center justify-center mr-3 overflow-hidden">
+                      <img
+                        src="/.png"
+                        alt="youtube Icon"
+                        className="w-16 h-16 object-contain"
+                      />
+                    </div>
+                    <h3 className="text-lg font-semibold text-gray-900">
+                      Facebook Page Review Section
+                    </h3>
+                  </div>
+                  <p className="text-[#000000] font-bold mb-4 text-[18px]">
+                    Page Review
+                  </p>
+                  <div className="text-sm text-[#000000] font-medium">
+                    Rs 30/= • Page Review
+                  </div>
+                </div>
+              </Link>
+
+              <Link href="">
+                <div className="cursor-pointer bg-white shadow-md rounded-lg p-6 border-0 hover:shadow-lg transition">
+                  <div className="flex items-center mb-4">
+                    <div className="w-16 h-16 flex items-center justify-center mr-3 overflow-hidden">
+                      <img
+                        src="/.png"
+                        alt="Whatsapp Icon"
+                        className="w-16 h-16 object-contain"
+                      />
+                    </div>
+                    <h3 className="text-lg font-semibold text-gray-900">
+                      Post Comment Section
+                    </h3>
+                  </div>
+                  <p className="text-[#000000]  font-bold mb-4 text-[18px] ">
+                    Comment in Post
+                  </p>
+                  <div className="text-sm text-[#000000] font-medium ">
+                    Rs 15/= Comment Section
+                  </div>
+                </div>
+              </Link>
             </div>
 
             {/* Facebook Pages Links */}
