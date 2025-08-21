@@ -546,16 +546,6 @@ export default function FbVerificationTask() {
                           </label>
 
                           {/* Camera option for mobile (optional) */}
-                          {isMobile() && (
-                            <button
-                              type="button"
-                              onClick={handleCameraCapture}
-                              className="inline-block bg-gradient-to-r from-green-600 to-green-700 text-white px-8 py-3 rounded-xl cursor-pointer hover:from-green-700 hover:to-green-800 transition-all duration-300 transform hover:scale-105 shadow-lg font-semibold"
-                            >
-                              <Camera className="w-5 h-5 inline mr-2" />
-                              Take Photo
-                            </button>
-                          )}
                         </div>
 
                         {/* Mobile help text */}

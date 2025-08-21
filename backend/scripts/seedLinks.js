@@ -25,23 +25,26 @@ const connectDB = async () => {
 
 const facebookLinks = [
   {
-    url: "https://www.facebook.com/share/v/16vmjJVdNj/?mibextid=wwXIfr",
-    title: "පොස්ට් එකට ලයික් කරන්න",
+    url: "https://www.facebook.com/share/v/17Dgc4chF8/?mibextid=wwXIfr",
+    title: "පොස්ට් එක සෙයා කරන්න",
     platform: "facebook",
     earnings: 1.0,
   },
+
   {
-    url: "https://www.facebook.com/share/p/1FLNRLctdC/?mibextid=wwXIfr",
-    title: "පොස්ට් එකට ලයික් කරන්න",
+    url: "https://www.facebook.com/share/v/1WJPzPTfyT/?mibextid=wwXIfr",
+    title: "පොස්ට් එක සෙයා කරන්න",
     platform: "facebook",
     earnings: 1.0,
   },
+
   {
-    url: "https://www.facebook.com/share/p/19ySCzyenn/?mibextid=wwXIfr",
-    title: "පොස්ට් එකට ලයික් කරන්න",
+    url: "https://www.facebook.com/share/19WRYP4wgs/",
+    title: "Indhu salon & Photography - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න",
     platform: "facebook",
     earnings: 1.0,
   },
+
   {
     url: "https://www.facebook.com/share/1A4dxsYsmM/",
     title: "RaaVo Live Music Band - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න",
