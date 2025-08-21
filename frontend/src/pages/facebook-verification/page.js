@@ -1,7 +1,14 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Upload, ExternalLink, CheckCircle, Clock } from "lucide-react";
+import {
+  Upload,
+  ExternalLink,
+  CheckCircle,
+  Clock,
+  Camera,
+  Image,
+} from "lucide-react";
 import Header from "@/components/Header/Header";
 import api from "@/lib/api";
 import { useAuth } from "@/Context/AuthContext";
@@ -115,15 +122,14 @@ export default function FbVerificationTask() {
       const apiUrl =
         process.env.NEXT_PUBLIC_API_URL ||
         "https://rithu-bl-web-side.vercel.app";
-
       console.log("Submitting to:", `${apiUrl}/api/submissions`);
-
+      console.log("Token exists:", !!token);
       const response = await fetch(`${apiUrl}/api/submissions`, {
         method: "POST",
         body: formData,
-        credentials: "include",
+        credentials: "include", // Important for cookies/auth
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
 
@@ -168,6 +174,7 @@ export default function FbVerificationTask() {
       }
 
       setIsSubmitted(true);
+      setSelectedLinkId(null);
 
       // Navigate to profile after success
       setTimeout(() => {
@@ -181,6 +188,24 @@ export default function FbVerificationTask() {
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  // Handle camera capture (optional feature)
+  const handleCameraCapture = () => {
+    // Create a separate input for camera capture
+    const cameraInput = document.createElement("input");
+    cameraInput.type = "file";
+    cameraInput.accept = "image/*";
+    cameraInput.capture = "environment"; // This opens camera
+
+    cameraInput.onchange = (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        handleFileChange({ target: { files: [file] } });
+      }
+    };
+
+    cameraInput.click();
   };
 
   if (isAuthLoading || !user) {
@@ -440,11 +465,12 @@ export default function FbVerificationTask() {
                     <span className="text-purple-600 font-bold">•</span>
                     <span>
                       Take screenshots using your device's screenshot function
+                      (usually Power + Volume Down)
                     </span>
                   </p>
                   <p className="flex items-start space-x-2">
                     <span className="text-purple-600 font-bold">•</span>
-                    <span>If links don't work, try refreshing this page</span>
+                    <span>Screenshots will be saved to your photo gallery</span>
                   </p>
                 </div>
               </div>
@@ -489,28 +515,60 @@ export default function FbVerificationTask() {
                       </div>
                     </div>
                   ) : (
-                    <div className="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center hover:border-blue-400 hover:bg-blue-50 transition-all duration-300">
-                      <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <Upload className="w-8 h-8 text-blue-600" />
+                    <div className="space-y-4">
+                      {/* Main file upload area */}
+                      <div className="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center hover:border-blue-400 hover:bg-blue-50 transition-all duration-300">
+                        <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                          <Upload className="w-8 h-8 text-blue-600" />
+                        </div>
+                        <p className="text-gray-600 mb-2 text-lg font-medium">
+                          {isMobile()
+                            ? "Select your screenshot from gallery"
+                            : "Drag and drop your screenshot here or click to browse"}
+                        </p>
+                        <p className="text-sm text-gray-500 mb-6">
+                          Supported formats: PNG, JPG, JPEG (max 5MB)
+                        </p>
+
+                        {/* File selection buttons */}
+                        <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
+                          {/* Gallery/File picker - Main option */}
+                          <label className="inline-block bg-gradient-to-r from-blue-600 to-blue-700 text-white px-8 py-3 rounded-xl cursor-pointer hover:from-blue-700 hover:to-blue-800 transition-all duration-300 transform hover:scale-105 shadow-lg font-semibold">
+                            <Image className="w-5 h-5 inline mr-2" />
+                            {isMobile() ? "Choose from Gallery" : "Choose File"}
+                            <input
+                              type="file"
+                              accept="image/*"
+                              onChange={handleFileChange}
+                              className="hidden"
+                              // REMOVED: capture attribute to prevent forcing camera
+                            />
+                          </label>
+
+                          {/* Camera option for mobile (optional) */}
+                          {isMobile() && (
+                            <button
+                              type="button"
+                              onClick={handleCameraCapture}
+                              className="inline-block bg-gradient-to-r from-green-600 to-green-700 text-white px-8 py-3 rounded-xl cursor-pointer hover:from-green-700 hover:to-green-800 transition-all duration-300 transform hover:scale-105 shadow-lg font-semibold"
+                            >
+                              <Camera className="w-5 h-5 inline mr-2" />
+                              Take Photo
+                            </button>
+                          )}
+                        </div>
+
+                        {/* Mobile help text */}
+                        {isMobile() && (
+                          <div className="mt-4 p-3 bg-gray-100 rounded-lg">
+                            <p className="text-xs text-gray-600">
+                              <strong>Tip:</strong> If you already took a
+                              screenshot, use "Choose from Gallery". If you want
+                              to take a new photo, use "Take Photo".
+                            </p>
+                          </div>
+                        )}
                       </div>
-                      <p className="text-gray-600 mb-2 text-lg font-medium">
-                        {isMobile()
-                          ? "Tap to select your screenshot"
-                          : "Drag and drop your screenshot here or click to browse"}
-                      </p>
-                      <p className="text-sm text-gray-500 mb-6">
-                        Supported formats: PNG, JPG, JPEG (max 5MB)
-                      </p>
-                      <label className="inline-block bg-gradient-to-r from-blue-600 to-blue-700 text-white px-8 py-3 rounded-xl cursor-pointer hover:from-blue-700 hover:to-blue-800 transition-all duration-300 transform hover:scale-105 shadow-lg font-semibold">
-                        {isMobile() ? "Select File" : "Choose File"}
-                        <input
-                          type="file"
-                          accept=".png,.jpg,.jpeg,image/*"
-                          onChange={handleFileChange}
-                          className="hidden"
-                          capture={isMobile() ? "environment" : undefined}
-                        />
-                      </label>
                     </div>
                   )}
 
@@ -603,7 +661,30 @@ export default function FbVerificationTask() {
             -webkit-touch-callout: none;
             -webkit-user-select: none;
             user-select: none;
+            min-height: 44px;
+            touch-action: manipulation;
           }
+
+          /* Ensure file inputs work properly on mobile */
+          input[type="file"] {
+            -webkit-appearance: none;
+            appearance: none;
+          }
+
+          /* Better button styling for mobile */
+          button,
+          label {
+            min-height: 44px;
+            touch-action: manipulation;
+          }
+        }
+
+        /* Hide file input styling across all devices */
+        input[type="file"] {
+          position: absolute;
+          opacity: 0;
+          width: 0;
+          height: 0;
         }
       `}</style>
     </div>
