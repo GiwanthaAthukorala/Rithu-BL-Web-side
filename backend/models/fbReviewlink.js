@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
 
-// Check if the model already exists to prevent overwriting
 const fbReviewLinkSchema = new mongoose.Schema(
   {
     user: {
@@ -20,13 +19,10 @@ const fbReviewLinkSchema = new mongoose.Schema(
     },
     amount: {
       type: Number,
-      default: 2.0, // Rs. 2 per submission
+      default: 30.0,
     },
   },
   { timestamps: true }
 );
 
-// Prevent model overwrite error
-module.exports =
-  mongoose.models.fbReviewLink ||
-  mongoose.model("fbReviewLink", fbReviewLinkSchema);
+module.exports = mongoose.model("fbReviewLink", fbReviewLinkSchema);
