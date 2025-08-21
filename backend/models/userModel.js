@@ -73,6 +73,38 @@ const userSchema = new mongoose.Schema(
       },
     ],
 
+    fbReviewClickedLinks: [
+      {
+        linkId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "FBReviewLink",
+          required: true,
+        },
+        platform: {
+          type: String,
+          default: "facebook",
+        },
+        clickCount: {
+          type: Number,
+          default: 0,
+        },
+        maxClicks: {
+          type: Number,
+          default: 1, // Single click for FB Review
+        },
+        submitted: {
+          type: Boolean,
+          default: false,
+        },
+        submittedAt: {
+          type: Date,
+        },
+        lastClickedAt: {
+          type: Date,
+        },
+      },
+    ],
+
     resetPasswordToken: String,
     resetPasswordExpire: Date,
   },

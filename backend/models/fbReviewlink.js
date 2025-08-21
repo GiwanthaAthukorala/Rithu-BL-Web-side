@@ -7,6 +7,11 @@ const fbReviewLinkSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
+    platform: {
+      type: String,
+      required: true,
+      enum: ["facebook", "instagram", "tiktok", "youtube", "whatsapp"],
+    },
     screenshot: {
       type: String,
       required: true,
@@ -21,7 +26,15 @@ const fbReviewLinkSchema = new mongoose.Schema(
       type: Number,
       default: 30.0,
     },
+    submissionCount: {
+      type: Number,
+      default: 30,
+    },
+    //lastSubmissionTime: {
+    //type: Date,
+    //default: Date.now,
   },
+
   { timestamps: true }
 );
 

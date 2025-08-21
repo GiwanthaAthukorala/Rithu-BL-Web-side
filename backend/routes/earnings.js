@@ -4,6 +4,7 @@ const Earnings = require("../models/Earnings");
 const Submission = require("../models/Submission");
 const { protect } = require("../middleware/authMiddleware");
 const YoutubeSubmission = require("../models/YoutubeSubmission");
+const FbReview = require("../models/fbReviewlink");
 
 router.get("/", protect, async (req, res) => {
   try {
@@ -29,12 +30,16 @@ router.get("/", protect, async (req, res) => {
     }
 
     // Get approved submissions
-    const [fbSubmissions, ytSubmissions] = await Promise.all([
+    const [fbSubmissions, ytSubmissions, ReviewSubmission] = await Promise.all([
       Submission.find({
         user: req.user._id,
         status: "approved",
       }),
       YoutubeSubmission.find({
+        user: req.user._id,
+        status: "approved",
+      }),
+      FbReview.find({
         user: req.user._id,
         status: "approved",
       }),
@@ -47,7 +52,10 @@ router.get("/", protect, async (req, res) => {
       (sum, sub) => sum + (sub.amount || 2),
       0
     );
-    const calculatedTotal = fbTotal + ytTotal;
+    const ReviewTotal = ReviewSubmission.reduce(
+      (sum, sub) => sum + (sub.amount || 30)
+    );
+    const calculatedTotal = fbTotal + ytTotal + ReviewTotal;
 
     // Update earnings if needed
     if (earnings.totalEarned !== calculatedTotal) {

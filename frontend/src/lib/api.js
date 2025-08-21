@@ -59,6 +59,7 @@ export const endpoints = {
   submissions: "/submissions", // Note: Changed from /submissions to /api/submissions
   earnings: "/earnings",
   youtubeSubmission: "/youtubeSubmissions",
+  fbReviews: "/fb-reviews",
 };
 
 export const register = async (userData) => {
@@ -109,4 +110,33 @@ export const getProfile = async () => {
   }
 };
 
+export const getFBReviewLinks = async () => {
+  try {
+    const response = await api.get("/fb-reviews");
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching FB Review links:", error);
+    throw error;
+  }
+};
+
+export const trackFBReviewClick = async (linkId) => {
+  try {
+    const response = await api.post(`/fb-reviews/${linkId}/click`);
+    return response.data;
+  } catch (error) {
+    console.error("Error tracking FB Review click:", error);
+    throw error;
+  }
+};
+
+export const submitFBReview = async (linkId) => {
+  try {
+    const response = await api.post(`/fb-reviews/${linkId}/submit`);
+    return response.data;
+  } catch (error) {
+    console.error("Error submitting FB Review:", error);
+    throw error;
+  }
+};
 export default api;

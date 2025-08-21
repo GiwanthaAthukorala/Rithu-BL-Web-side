@@ -97,7 +97,7 @@ const SupportedPlatforms = () => {
                   className="w-16 h-16 object-contain"
                 />
               </div>
-              <h3 className="text-lg font-semibold text-gray-900"></h3>
+              <h3 className="text-lg font-semibold text-gray-900">Youtube</h3>
             </div>
             <p className="text-[#000000] font-bold mb-4 text-[18px]">
               Get paid for likes on your videos and Subscribers.
