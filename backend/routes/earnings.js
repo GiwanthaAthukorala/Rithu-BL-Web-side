@@ -7,6 +7,7 @@ const YoutubeSubmission = require("../models/YoutubeSubmission");
 
 router.get("/", protect, async (req, res) => {
   try {
+    console.log("User ID:", req.user._id);
     // Validate user exists
     if (!req.user?._id) {
       return res.status(400).json({
