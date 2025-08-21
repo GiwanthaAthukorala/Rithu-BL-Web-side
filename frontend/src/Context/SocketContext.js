@@ -13,7 +13,7 @@ export function SocketProvider({ children }) {
     if (typeof window === "undefined") return;
 
     const socketInstance = io(process.env.NEXT_PUBLIC_API_URL, {
-      path: "/socket.io",
+      path: "/socket.io/",
       withCredentials: true,
       transports: ["websocket", "polling"],
       reconnectionAttempts: 5,

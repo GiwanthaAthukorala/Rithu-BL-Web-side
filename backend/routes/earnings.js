@@ -7,9 +7,8 @@ const YoutubeSubmission = require("../models/YoutubeSubmission");
 
 router.get("/", protect, async (req, res) => {
   try {
-    console.log("User ID:", req.user._id);
     // Validate user exists
-    if (!req.user?._id) {
+    if (!req.user || !req.user._id) {
       return res.status(400).json({
         success: false,
         message: "User not authenticated",
@@ -40,6 +39,7 @@ router.get("/", protect, async (req, res) => {
         status: "approved",
       }),
     ]);
+
     const fbTotal = fbSubmissions.reduce(
       (sum, sub) => sum + (sub.amount || 1),
       0

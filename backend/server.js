@@ -21,7 +21,7 @@ const io = new Server(httpServer, {
     credentials: true,
   },
   transports: ["websocket", "polling"],
-  path: "/socket.io",
+  path: "/socket.io/",
   pingTimeout: 60000,
   pingInterval: 25000,
 });
@@ -76,8 +76,8 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: "50mb" }));
+app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use((req, res, next) => {
@@ -139,7 +139,16 @@ app.use((err, req, res, next) => {
 
 // === Export Handler for Vercel or Start Server Locally ===
 if (process.env.VERCEL) {
-  module.exports = app;
+  // For Vercel, we need to export the HTTP server, not just Express app
+  module.exports = (req, res) => {
+    if (req.url.startsWith("/socket.io/")) {
+      // Let Socket.IO handle its own requests
+      httpServer.emit("request", req, res);
+    } else {
+      // Let Express handle other requests
+      app(req, res);
+    }
+  };
 } else {
   const PORT = process.env.PORT || 5000;
   httpServer.listen(PORT, () => {
