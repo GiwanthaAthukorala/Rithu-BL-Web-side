@@ -1,38 +1,28 @@
 const mongoose = require("mongoose");
-const bcrypt = require("bcryptjs");
 
-const earningsSchema = new mongoose.Schema(
+const fbReviewLinkSchema = new mongoose.Schema(
   {
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
-      unique: true,
     },
-    totalEarned: {
-      type: Number,
-      default: 0,
-      min: 0,
+    screenshot: {
+      type: String,
+      required: true,
     },
-    availableBalance: {
-      type: Number,
-      default: 0,
-      min: 0,
+    imageHash: { type: String },
+    status: {
+      type: String,
+      enum: ["pending", "approved", "rejected"],
+      default: "pending",
     },
-    pendingWithdrawal: {
+    amount: {
       type: Number,
-      default: 0,
-      min: 0,
-    },
-    withdrawnAmount: {
-      type: Number,
-      default: 0,
-      min: 0,
+      default: 30.0,
     },
   },
-  {
-    timestamps: true,
-  }
+  { timestamps: true }
 );
 
-module.exports = mongoose.model("Earnings", earningsSchema);
+module.exports = mongoose.model("fbReviewLink", fbReviewLinkSchema);

@@ -1,13 +1,13 @@
 const express = require("express");
 const router = express.Router();
-const { protect, admin } = require("../../middleware/authMiddleware");
+const { protect, admin } = require("../middleware/authMiddleware");
 const {
   createFbReviewSubmission,
   getUserReviewSubmissions,
   approveReviewSubmission,
   rejectReviewSubmission,
-} = require("../../controllers/FacebookController/FbReviewController");
-const uploadFile = require("../../middleware/uploadMiddleware");
+} = require("../controllers/FbReviewController");
+const uploadFile = require("../middleware/uploadMiddleware");
 
 // User routes
 router.post(

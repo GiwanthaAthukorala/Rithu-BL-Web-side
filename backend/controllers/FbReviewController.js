@@ -1,7 +1,7 @@
-const fbReviewLink = require("../../models/Facebook/fbreViewlink");
-const Earnings = require("../../models/Earnings");
-const generateImageHash = require("../../utils/generateImageHash");
-const isSimilarHash = require("../../utils/isSimilarHash");
+const fbReviewLink = require("../models/fbReviewlink");
+const Earnings = require("../models/Earnings");
+const generateImageHash = require("../utils/generateImageHash");
+const isSimilarHash = require("../utils/isSimilarHash");
 
 const createFbReviewSubmission = async (req, res) => {
   console.log("==== REVIEW SUBMISSION REQUEST RECEIVED ====");
