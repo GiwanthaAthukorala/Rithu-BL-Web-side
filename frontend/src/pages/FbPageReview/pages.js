@@ -117,7 +117,7 @@ export default function FacebookReview() {
         "https://rithu-bl-web-side.vercel.app";
 
       // Use the FB Review submission endpoint
-      const response = await fetch(`${apiUrl}/api/fb-reviews/submit`, {
+      const response = await fetch(`${apiUrl}/api/fb-reviews`, {
         method: "POST",
         body: formData,
         credentials: "include",
