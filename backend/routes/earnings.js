@@ -1,27 +1,44 @@
 const express = require("express");
 const router = express.Router();
 const Earnings = require("../models/Earnings");
-const Transaction = require("../models/Transaction");
 const Submission = require("../models/Submission");
-const YoutubeSubmission = require("../models/YoutubeSubmission");
 const { protect } = require("../middleware/authMiddleware");
+const YoutubeSubmission = require("../models/YoutubeSubmission");
 
-// GET /api/earnings - Get user earnings
 router.get("/", protect, async (req, res) => {
   try {
-    console.log("Fetching earnings for user:", req.user._id);
+    // Validate user exists
+    if (!req.user?._id) {
+      return res.status(400).json({
+        success: false,
+        message: "User not authenticated",
+      });
+    }
 
-    const [earnings, transactions, fbSubmissions, ytSubmissions] =
-      await Promise.all([
-        Earnings.findOne({ user: req.user._id }),
-        Transaction.find({ user: req.user._id })
-          .sort({ createdAt: -1 })
-          .limit(18),
-        Submission.find({ user: req.user._id, status: "approved" }),
-        YoutubeSubmission.find({ user: req.user._id, status: "approved" }),
-      ]);
+    // Find or create earnings record
+    let earnings = await Earnings.findOne({ user: req.user._id });
 
-    // Calculate total from both submission types
+    if (!earnings) {
+      earnings = await Earnings.create({
+        user: req.user._id,
+        totalEarned: 0,
+        availableBalance: 0,
+        pendingWithdrawal: 0,
+        withdrawnAmount: 0,
+      });
+    }
+
+    // Get approved submissions
+    const [fbSubmissions, ytSubmissions] = await Promise.all([
+      Submission.find({
+        user: req.user._id,
+        status: "approved",
+      }),
+      YoutubeSubmission.find({
+        user: req.user._id,
+        status: "approved",
+      }),
+    ]);
     const fbTotal = fbSubmissions.reduce(
       (sum, sub) => sum + (sub.amount || 1),
       0
@@ -32,97 +49,23 @@ router.get("/", protect, async (req, res) => {
     );
     const calculatedTotal = fbTotal + ytTotal;
 
-    // Create earnings record if doesn't exist
-    let earningsData = earnings;
-    if (!earningsData) {
-      earningsData = await Earnings.create({
-        user: req.user._id,
-        totalEarned: calculatedTotal,
-        availableBalance: calculatedTotal,
-        pendingWithdrawal: 0,
-        withdrawnAmount: 0,
-      });
-    } else if (earningsData.totalEarned !== calculatedTotal) {
-      // Update if calculation differs
-      earningsData.totalEarned = calculatedTotal;
-      earningsData.availableBalance =
-        calculatedTotal -
-        (earningsData.withdrawnAmount + earningsData.pendingWithdrawal);
-      await earningsData.save();
+    // Update earnings if needed
+    if (earnings.totalEarned !== calculatedTotal) {
+      earnings.totalEarned = calculatedTotal;
+      earnings.availableBalance =
+        calculatedTotal - earnings.withdrawnAmount - earnings.pendingWithdrawal;
+      await earnings.save();
     }
 
     res.json({
       success: true,
-      data: {
-        ...earningsData.toObject(),
-        transactions: transactions || [],
-      },
+      data: earnings,
     });
   } catch (error) {
     console.error("Earnings route error:", error);
     res.status(500).json({
       success: false,
       message: "Failed to get earnings",
-      error: error.message,
-    });
-  }
-});
-
-// POST /api/earnings/withdraw - Withdraw earnings
-router.post("/withdraw", protect, async (req, res) => {
-  try {
-    const { amount } = req.body;
-    const minWithdrawal = 500;
-
-    if (!amount || amount < minWithdrawal) {
-      return res.status(400).json({
-        success: false,
-        message: `Minimum withdrawal amount is Rs ${minWithdrawal}`,
-      });
-    }
-
-    const earnings = await Earnings.findOne({ user: req.user._id });
-
-    if (!earnings || earnings.availableBalance < amount) {
-      return res.status(400).json({
-        success: false,
-        message: "Insufficient balance for withdrawal",
-      });
-    }
-
-    const transaction = await Transaction.create({
-      user: req.user._id,
-      type: "debit",
-      amount,
-      status: "pending",
-      reference: `WD-${Date.now()}`,
-      bankDetails: {
-        name: req.user.bankName,
-        branch: req.user.bankBranch,
-        account: req.user.bankAccountNo,
-      },
-    });
-
-    earnings.availableBalance -= amount;
-    earnings.pendingWithdrawal += amount;
-    await earnings.save();
-
-    const io = req.app.get("io");
-    if (io) {
-      io.emit("newWithdrawal", transaction);
-    }
-
-    res.json({
-      success: true,
-      message: "Withdrawal request submitted",
-      data: transaction,
-      earnings: earnings, // Send updated earnings back
-    });
-  } catch (error) {
-    console.error("Withdrawal error:", error);
-    res.status(500).json({
-      success: false,
-      message: "Withdrawal failed",
       error: error.message,
     });
   }
