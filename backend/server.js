@@ -1,4 +1,3 @@
-require("dotenv").config();
 const express = require("express");
 const { createServer } = require("http");
 const { Server } = require("socket.io");
@@ -7,7 +6,7 @@ const path = require("path");
 const cloudinary = require("./utils/cloudinary");
 
 const connectDB = require("./config/db");
-const app = express(); // ✅ Now declared before it's used
+const app = express();
 const httpServer = createServer(app);
 
 // === Socket.IO Configuration ===
@@ -47,7 +46,10 @@ connectDB().catch((err) => {
 });
 
 // === Middleware ===
-const allowedOrigins = ["https://rithu-business-client-side-2131.vercel.app"];
+const allowedOrigins = [
+  "https://rithu-business-client-side-2131.vercel.app",
+  "http://localhost:3000", // Add localhost for development
+];
 
 app.use((req, res, next) => {
   const origin = req.headers.origin;
@@ -76,10 +78,11 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: "10mb" }));
+app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 app.use(express.static(path.join(__dirname, "public")));
 
+// Logging middleware
 app.use((req, res, next) => {
   console.log(`${req.method} ${req.path}`);
   console.log("Auth header:", req.headers.authorization);
@@ -100,7 +103,7 @@ app.get("/health", (req, res) => {
   res.status(200).json({ status: "ok" });
 });
 
-// ✅ Move this route **AFTER** app is initialized
+// Cloudinary test route
 app.get("/api/test-cloudinary", async (req, res) => {
   try {
     const result = await cloudinary.api.resources({
