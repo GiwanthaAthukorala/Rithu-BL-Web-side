@@ -57,66 +57,6 @@ const facebookLinks = [
     platform: "facebook",
     earnings: 1.0,
   },
-  {
-    url: "https://www.facebook.com/share/1EqCrVLXBv/?mibextid=wwXIfr",
-    title: "Chathura Vithanage - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න",
-    platform: "facebook",
-    earnings: 1.0,
-  },
-  {
-    url: "https://www.facebook.com/SuwaPiyasaHomeNursing",
-    title: "Suwa Piyasa Home Nursing - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න",
-    platform: "facebook",
-    earnings: 1.0,
-  },
-  {
-    url: "https://www.facebook.com/share/1ChgcGPsKX/",
-    title: "𝐌 𝐢 𝐧 𝐝 - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න",
-    platform: "facebook",
-    earnings: 1.0,
-  },
-  {
-    url: "https://www.facebook.com/SantaDoraHospital",
-    title: "Santa Dora Hospital - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න",
-    platform: "facebook",
-    earnings: 1.0,
-  },
-  {
-    url: "https://www.facebook.com/share/1B5ySJ3hEQ/",
-    title: "Blue Cross Hospital - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න",
-    platform: "facebook",
-    earnings: 1.0,
-  },
-  {
-    url: "https://www.facebook.com/share/1JgK3WSNU3/?mibextid=wwXIfr",
-    title: "පුන්සර විතානගේ (පුන්සර මල්ලී) - ෆෙස්බුක් profile ෆලෝ කරන්න",
-    platform: "facebook",
-    earnings: 1.0,
-  },
-  {
-    url: "https://www.facebook.com/share/1B2PBfKSfp/",
-    title: "Kaushan - ෆෙස්බුක් පෙජ් ලයික් ෆලෝ කරන්න",
-    platform: "facebook",
-    earnings: 1.0,
-  },
-  {
-    url: "https://www.facebook.com/share/176m5DZxQ6/",
-    title: "ONE 100 Consultants - ෆෙස්බුක් පෙජ් ලයික් ෆලෝ කරන්න",
-    platform: "facebook",
-    earnings: 1.0,
-  },
-  {
-    url: "https://www.facebook.com/share/16x61jaVWQ/?mibextid=wwXIfr",
-    title: "Sirasa Housing & - ෆෙස්බුක් පෙජ් ලයික් ෆලෝ කරන්න",
-    platform: "facebook",
-    earnings: 1.0,
-  },
-  {
-    url: "https://web.facebook.com/profile.php?id=61578843232009&notif_id=1755669738607664&notif_t=profile_plus_admin_invite&ref=notif",
-    title: "Oushada With Green Investment - ෆෙස්බුක් පෙජ් ලයික් ෆලෝ කරන්න",
-    platform: "facebook",
-    earnings: 1.0,
-  },
 ];
 
 async function seedLinks() {

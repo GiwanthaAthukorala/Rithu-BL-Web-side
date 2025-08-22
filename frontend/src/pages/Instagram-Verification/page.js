@@ -169,7 +169,7 @@ export default function InstagramVerificationTask() {
           <h1 className="text-xl text-[#000000]  font-bold mb-2">
             Instragrma Verification Section
           </h1>
-          <p className="text-blue-100">Earn Rs 0.80 per valid screenshot</p>
+          <p className="text-blue-100">Earn Rs 1/= per valid screenshot</p>
         </div>
 
         {/* Main Content */}
@@ -192,19 +192,31 @@ export default function InstagramVerificationTask() {
             <p className="text-gray-700 mb-3">
               Please visit this link and take a screenshot as proof:
             </p>
-            {/*  <li>
+            <li>
               {" "}
               <a
-                href=""
+                href="https://www.instagram.com/dreamfashion318?igsh=MTMyZDE2YXZwZzJmcQ=="
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium"
               >
-                Visit our Instagram Profile{" "}
+                dreamfashion318 - ඉන්ස්ට්‍ර ග්‍රෑම් එකව්න්ට් එක ෆලෝ කරන්න{" "}
                 <ExternalLink className="w-4 h-4 ml-1" />
               </a>
             </li>
-
+            <li>
+              {" "}
+              <a
+                href="https://www.instagram.com/beetle.clothingsl?igsh=MWF0b3A2OHczYTJqNw%3D%3D&utm_source=qr"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium"
+              >
+                Beetle - ඉන්ස්ට්‍රග්‍රැම් එකව්න්ට් එක ෆලෝ කරන්න (Visit our
+                Instagram Profile) <ExternalLink className="w-4 h-4 ml-1" />
+              </a>
+            </li>
+            {/** */}{" "}
             <li>
               {" "}
               <a
@@ -229,31 +241,6 @@ export default function InstagramVerificationTask() {
                 <ExternalLink className="w-4 h-4 ml-1" />
               </a>
             </li>
-            <li>
-              {" "}
-              <a
-                href=""
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium"
-              >
-                Visit our Instagram Profile{" "}
-                <ExternalLink className="w-4 h-4 ml-1" />
-              </a>
-            </li>
-            <li>
-              {" "}
-              <a
-                href=""
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium"
-              >
-                Visit our Instagram Profile{" "}
-                <ExternalLink className="w-4 h-4 ml-1" />
-              </a>
-            </li>
-            * */}
           </div>
 
           <div className="mb-8 bg-yellow-50 p-4 rounded-lg border border-yellow-200">
