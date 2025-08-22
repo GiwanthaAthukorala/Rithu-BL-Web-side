@@ -25,18 +25,6 @@ const connectDB = async () => {
 
 const facebookLinks = [
   {
-    url: "https://www.facebook.com/share/15wvA1t4jG/?mibextid=wwXIfr",
-    title: "Option4 Software Solutions - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න",
-    platform: "facebook",
-    earnings: 1.0,
-  },
-  {
-    url: "https://www.facebook.com/share/1C1Refeowf",
-    title: "Madushan Abeysinghe - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න",
-    platform: "facebook",
-    earnings: 1.0,
-  },
-  {
     url: "https://www.facebook.com/share/v/17Dgc4chF8/?mibextid=wwXIfr",
     title: "පොස්ට් එක සෙයා කරන්න",
     platform: "facebook",
