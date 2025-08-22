@@ -9,7 +9,6 @@ const generateToken = (id) => {
 // Register new user
 const registerUser = async (req, res) => {
   try {
-    console.log("Registration attempt with:", req.body);
     const {
       firstName,
       lastName,
@@ -31,32 +30,21 @@ const registerUser = async (req, res) => {
       "bankAccountNo",
       "password",
     ];
-    const existingUser = await User.findOne({
-      $or: [{ email }, { phoneNumber }, { bankAccountNo }],
-    });
-
-    if (existingUser) {
-      if (existingUser.email === email) {
-        return res.status(400).json({
-          success: false,
-          errorType: "email",
-          message: "Email is already registered",
-        });
-      }
-      if (existingUser.phoneNumber === phoneNumber) {
-        return res.status(400).json({
-          success: false,
-          errorType: "phone",
-          message: "Phone number is already registered",
-        });
-      }
-      if (existingUser.bankAccountNo === bankAccountNo) {
-        return res.status(400).json({
-          success: false,
-          errorType: "bank",
-          message: "Bank account number is already registered",
-        });
-      }
+    const emailExists = await User.findOne({ email });
+    if (emailExists) {
+      return res.status(400).json({
+        success: false,
+        errorType: "email",
+        message: "Email is already registered",
+      });
+    }
+    const phoneExists = await User.findOne({ phoneNumber });
+    if (phoneExists) {
+      return res.status(400).json({
+        success: false,
+        errorType: "phone",
+        message: "Phone number is already registered",
+      });
     }
 
     const missingFields = requiredFields.filter((field) => !req.body[field]);
@@ -109,22 +97,6 @@ const registerUser = async (req, res) => {
     });
   } catch (error) {
     console.error("Registration error:", error);
-
-    if (error.code === 11000) {
-      const field = Object.keys(error.keyValue)[0];
-      return res.status(400).json({
-        success: false,
-        errorType: field,
-        message: `${field} is already registered`,
-      });
-    }
-    if (error.name === "ValidationError") {
-      const errors = Object.values(error.errors).map((err) => err.message);
-      return res.status(400).json({
-        success: false,
-        message: errors.join(", "),
-      });
-    }
 
     // Handle duplicate key errors
     return res.status(500).json({
