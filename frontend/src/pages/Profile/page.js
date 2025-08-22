@@ -45,7 +45,7 @@ export default function Profile() {
       setIsFetching(true);
       setError(null);
 
-      const response = await api.get("/api/earnings");
+      const response = await api.get("/earnings");
 
       if (response.data?.success) {
         setEarnings(
