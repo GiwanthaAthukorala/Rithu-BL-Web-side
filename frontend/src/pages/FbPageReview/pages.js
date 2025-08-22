@@ -6,7 +6,7 @@ import Header from "@/components/Header/Header";
 import api from "@/lib/api";
 import { useAuth } from "@/Context/AuthContext";
 import DuplicateWarningModal from "@/components/DuplicateWarningModal";
-import TaskLinks from "@/components/ReviewLink/ReviewLink";
+import ReviewTaskLinks from "@/components/ReviewLink/ReviewLink";
 
 export default function FacebookReview() {
   const [file, setFile] = useState(null);
@@ -85,9 +85,9 @@ export default function FacebookReview() {
     if (!file || !user) return;
 
     // Validate link clicks if a link is selected
-    if (selectedLinkId && linkClickCounts[selectedLinkId] < 1) {
+    if (selectedLinkId && linkClickCounts[selectedLinkId] < 3) {
       setError(
-        `You need to click the link at least 1 time before submitting (current: ${
+        `You need to click the link at least 3 times before submitting (current: ${
           linkClickCounts[selectedLinkId] || 0
         })`
       );
@@ -115,12 +115,12 @@ export default function FacebookReview() {
       const apiUrl =
         process.env.NEXT_PUBLIC_API_URL ||
         "https://rithu-bl-web-side.vercel.app";
-
-      // Use the FB Review submission endpoint
-      const response = await fetch(`${apiUrl}/api/fb-reviews`, {
+      console.log("Submitting to:", `${apiUrl}/api/submissions`);
+      console.log("Token exists:", !!token);
+      const response = await fetch(`${apiUrl}/api/submissions`, {
         method: "POST",
         body: formData,
-        credentials: "include",
+        credentials: "include", // Important for cookies/auth
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
@@ -144,6 +144,11 @@ export default function FacebookReview() {
           return;
         }
 
+        if (response.status === 429) {
+          setError(errorData.message || "Rate limit exceeded");
+          return;
+        }
+
         throw new Error(errorData.message || "Submission failed");
       }
 
@@ -153,10 +158,11 @@ export default function FacebookReview() {
       // Mark link as submitted if we have one
       if (selectedLinkId) {
         try {
-          await api.post(`/fb-reviews/${selectedLinkId}/submit`);
+          await api.post(`/links/${selectedLinkId}/submit`);
           console.log("Link marked as submitted");
         } catch (submitError) {
           console.error("Failed to mark link as submitted:", submitError);
+          // Don't fail the whole submission for this
         }
       }
 
@@ -199,7 +205,7 @@ export default function FacebookReview() {
             </div>
             <h2 className="text-2xl font-bold mb-2">Submission Successful!</h2>
             <p className="text-gray-600 mb-6">
-              You've earned Rs 30.00! Your balance has been updated.
+              You've earned Rs 1.00! Your balance has been updated.
             </p>
             <button
               onClick={() => router.push("/Profile/page")}

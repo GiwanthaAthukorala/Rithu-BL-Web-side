@@ -77,31 +77,36 @@ const userSchema = new mongoose.Schema(
       {
         linkId: {
           type: mongoose.Schema.Types.ObjectId,
-          ref: "FBReviewLink",
+          ref: "Link",
           required: true,
         },
         platform: {
           type: String,
-          default: "facebook",
+          required: true,
+          enum: ["facebook", "tiktok", "instagram", "youtube", "whatsapp"],
         },
         clickCount: {
           type: Number,
           default: 0,
+          min: 0,
+        },
+        clickedAt: {
+          type: Date,
+          default: Date.now,
         },
         maxClicks: {
           type: Number,
-          default: 1, // Single click for FB Review
+          default: 3,
+        },
+        lastClickedAt: {
+          type: Date,
+          default: Date.now,
         },
         submitted: {
           type: Boolean,
           default: false,
         },
-        submittedAt: {
-          type: Date,
-        },
-        lastClickedAt: {
-          type: Date,
-        },
+        submittedAt: Date,
       },
     ],
 
