@@ -7,7 +7,7 @@ const path = require("path");
 const cloudinary = require("./utils/cloudinary");
 
 const connectDB = require("./config/db");
-const app = express();
+const app = express(); // ✅ Now declared before it's used
 const httpServer = createServer(app);
 
 // === Socket.IO Configuration ===
@@ -47,10 +47,7 @@ connectDB().catch((err) => {
 });
 
 // === Middleware ===
-const allowedOrigins = [
-  "https://rithu-business-client-side-2131.vercel.app",
-  "http://localhost:3000", // Add localhost for development
-];
+const allowedOrigins = ["https://rithu-business-client-side-2131.vercel.app"];
 
 app.use((req, res, next) => {
   const origin = req.headers.origin;
@@ -79,8 +76,8 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(express.json({ limit: "10mb" }));
-app.use(express.urlencoded({ extended: true, limit: "10mb" }));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use((req, res, next) => {
@@ -134,24 +131,18 @@ app.use((err, req, res, next) => {
     return res.status(400).json({ success: false, message: err.message });
   }
 
-  if (err.code === 11000) {
-    const field = Object.keys(err.keyValue)[0];
-    return res.status(400).json({
-      success: false,
-      message: `${field} already exists`,
-      errorType: field,
-    });
-  }
-
   res.status(500).json({
     success: false,
     message: err.message || "Internal server error",
   });
 });
-
-// 404 handler
-app.use((req, res) => {
-  res.status(404).json({ success: false, message: "Route not found" });
+app.use((error, req, res, next) => {
+  console.error("Error stack:", error.stack);
+  res.status(500).json({
+    success: false,
+    message: error.message,
+    stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
+  });
 });
 
 // === Export Handler for Vercel or Start Server Locally ===
