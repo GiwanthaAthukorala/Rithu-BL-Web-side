@@ -96,7 +96,7 @@ const userSchema = new mongoose.Schema(
         },
         maxClicks: {
           type: Number,
-          default: 3,
+          default: 1,
         },
         lastClickedAt: {
           type: Date,
