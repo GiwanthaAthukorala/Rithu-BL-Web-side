@@ -9,18 +9,32 @@ const protect = async (req, res, next) => {
       req.headers.authorization &&
       req.headers.authorization.startsWith("Bearer")
     ) {
-      token = req.headers.authorization.split(" ")[1];
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      req.user = await User.findById(decoded.id).select("-password");
-
-      return next();
+      try {
+        token = req.headers.authorization.split(" ")[1];
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        req.user = await User.findById(decoded.id).select("-password");
+        return next();
+      } catch (error) {
+        console.error("Token verification error:", error);
+        return res.status(401).json({
+          success: false,
+          message: "Not authorized, token failed",
+        });
+      }
     }
 
-    res.status(401);
-    throw new Error("Not authorized, no token");
+    if (!token) {
+      return res.status(401).json({
+        success: false,
+        message: "Not authorized, no token",
+      });
+    }
   } catch (error) {
-    console.error(error);
-    res.status(401).json({ message: error.message || "Not authorized" });
+    console.error("Auth middleware error:", error);
+    res.status(401).json({
+      success: false,
+      message: error.message || "Not authorized",
+    });
   }
 };
 
@@ -28,7 +42,10 @@ const admin = (req, res, next) => {
   if (req.user && ["admin", "superadmin"].includes(req.user.role)) {
     return next();
   }
-  res.status(403).json({ message: "Not authorized as admin" });
+  res.status(403).json({
+    success: false,
+    message: "Not authorized as admin",
+  });
 };
 
 module.exports = { protect, admin };
