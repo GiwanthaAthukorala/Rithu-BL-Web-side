@@ -14,34 +14,22 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [isAuthLoading, setIsAuthLoading] = useState(true);
   const router = useRouter();
 
   useEffect(() => {
     const initializeAuth = async () => {
-      setIsAuthLoading(true);
-      try {
-        const storedToken =
-          typeof window !== "undefined" ? localStorage.getItem("token") : null;
-        if (storedToken) {
-          try {
-            const userData = await getProfile();
-            setUser(userData);
-            setToken(storedToken);
-            console.log("User authenticated from stored token:", userData._id);
-          } catch (error) {
-            console.error("Failed to authenticate with stored token:", error);
-            if (typeof window !== "undefined") {
-              localStorage.removeItem("token");
-            }
-          }
+      const storedToken = localStorage.getItem("token");
+      if (storedToken) {
+        try {
+          const userData = await getProfile();
+          setUser(userData);
+          setToken(storedToken);
+        } catch (error) {
+          console.error("Failed to authenticate with stored token:", error);
+          localStorage.removeItem("token");
         }
-      } catch (error) {
-        console.error("Auth initialization error:", error);
-      } finally {
-        setLoading(false);
-        setIsAuthLoading(false);
       }
+      setLoading(false);
     };
 
     initializeAuth();
@@ -49,13 +37,7 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (credentials) => {
     try {
-      setIsAuthLoading(true);
-      console.log("AuthContext: Starting login process");
-
       const userData = await apiLogin(credentials);
-
-      console.log("AuthContext: Login successful, setting user data");
-
       setUser({
         _id: userData._id,
         firstName: userData.firstName,
@@ -66,80 +48,63 @@ export const AuthProvider = ({ children }) => {
         bankBranch: userData.bankBranch,
         bankAccountNo: userData.bankAccountNo,
       });
-
       setToken(userData.token);
-
-      if (typeof window !== "undefined") {
-        localStorage.setItem("token", userData.token);
-        if (credentials.rememberMe) {
-          localStorage.setItem("rememberMe", "true");
-        }
+      localStorage.setItem("token", userData.token);
+      if (credentials.rememberMe) {
+        localStorage.setItem("rememberMe", "true");
       }
-
+      router.push("/");
       return userData;
     } catch (error) {
-      console.error("AuthContext: Login failed:", error);
+      console.error("Login failed:", error);
       throw error;
-    } finally {
-      setIsAuthLoading(false);
     }
   };
 
   const register = async (userData) => {
     try {
-      setIsAuthLoading(true);
-      console.log("AuthContext: Starting registration process");
-
       const response = await apiRegister(userData);
-
+      // Automatically log in after registration
       if (response && response.success) {
-        console.log(
-          "AuthContext: Registration successful, attempting auto-login"
-        );
-
-        // Automatically log in after registration
+        console.log("Registration successful, attempting login...");
         await login({
           email: userData.email,
           password: userData.password,
           rememberMe: true,
         });
-
-        return response;
-      } else {
-        throw new Error(response?.message || "Registration failed");
       }
+      router.push("/Profile/page");
+      return response;
     } catch (error) {
-      console.error("AuthContext: Registration failed:", error);
+      console.error("Registration failed:", error);
       const enhancedError = new Error(error.message);
       enhancedError.errorType = error.errorType;
-      enhancedError.errors = error.errors;
       throw enhancedError;
-    } finally {
-      setIsAuthLoading(false);
+    }
+  };
+
+  const adminLogin = async (credentials) => {
+    try {
+      const response = await api.post("/api/admin/login", credentials);
+      localStorage.setItem("token", response.data.token);
+      setUser(response.data.user);
+      return response.data;
+    } catch (error) {
+      console.error("Admin login error:", error);
+      throw error;
     }
   };
 
   const logout = () => {
     setUser(null);
     setToken(null);
-    if (typeof window !== "undefined") {
-      localStorage.removeItem("token");
-      localStorage.removeItem("rememberMe");
-    }
-    router.push("/LoginPage/page");
+    localStorage.removeItem("token");
+    router.push("/Log-in/page");
   };
 
   return (
     <AuthContext.Provider
-      value={{
-        user,
-        token,
-        login,
-        logout,
-        register,
-        loading,
-        isAuthLoading,
-      }}
+      value={{ user, token, login, logout, register, loading, adminLogin }}
     >
       {children}
     </AuthContext.Provider>
@@ -147,9 +112,5 @@ export const AuthProvider = ({ children }) => {
 };
 
 export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error("useAuth must be used within an AuthProvider");
-  }
-  return context;
+  return useContext(AuthContext);
 };

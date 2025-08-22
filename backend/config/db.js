@@ -6,19 +6,13 @@ const connectDB = async () => {
       throw new Error("MONGO_URI is not defined in environment variables");
     }
 
-    // Check if already connected
-    if (mongoose.connection.readyState === 1) {
-      console.log("MongoDB already connected");
-      return;
-    }
-
     await mongoose.connect(process.env.MONGO_URI, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
-      serverSelectionTimeoutMS: 10000,
-      socketTimeoutMS: 45000,
+      serverSelectionTimeoutMS: 5000,
+      socketTimeoutMS: 30000,
     });
-
+    await mongoose.connect(process.env.MONGO_URI);
     console.log("MongoDB connected successfully");
   } catch (error) {
     console.error("MongoDB connection failed:", error.message);
