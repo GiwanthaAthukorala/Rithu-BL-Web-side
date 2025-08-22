@@ -94,7 +94,6 @@ app.use("/api/youtubeSubmissions", require("./routes/youtubeRoutes"));
 app.use("/api/auth", require("./routes/passwordResetRoutes"));
 app.use("/api/links", require("./routes/linkRoutes"));
 app.use("/api/fb-reviews", require("./routes/ReviewRoutes"));
-app.use("/api/fb-reviewlink", require("./routes/ReviewLink"));
 
 // === Health Check ===
 app.get("/health", (req, res) => {
