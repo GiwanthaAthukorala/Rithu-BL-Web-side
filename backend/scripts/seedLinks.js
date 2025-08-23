@@ -25,6 +25,19 @@ const connectDB = async () => {
 
 const facebookLinks = [
   {
+    url: "https://web.facebook.com/MeghaTravelsPvtLtd",
+    title: "මේඝ Megha Travels Pvt Ltd - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න",
+    platform: "facebook",
+    earnings: 1.0,
+  },
+  {
+    url: "https://www.facebook.com/share/1BtmgNLfaE/?mibextid=wwXIfr",
+    title: "Shin Fuji Nihongo Academy - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න",
+    platform: "facebook",
+    earnings: 1.0,
+  },
+
+  {
     url: "https://www.facebook.com/thilinahetti?mibextid=ZbWKwL",
     title: "Thilina Hettiarachchi - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න",
     platform: "facebook",

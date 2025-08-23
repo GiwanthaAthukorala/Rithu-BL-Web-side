@@ -126,6 +126,7 @@ export default function FacebookReview() {
         },
       });
 
+      await api.post(`/api/review-links/${selectedLinkId}/submit`);
       console.log("Response status:", response.status);
 
       if (!response.headers.get("content-type")?.includes("application/json")) {

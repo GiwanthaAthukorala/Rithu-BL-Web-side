@@ -216,6 +216,19 @@ export default function InstagramVerificationTask() {
                 Instagram Profile) <ExternalLink className="w-4 h-4 ml-1" />
               </a>
             </li>{" "}
+            <li>
+              {" "}
+              <a
+                href="https://www.instagram.com/noirelle_premium?igsh=bXM4ajMyanFmN2xl&utm_source=qr"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium"
+              >
+                NOIRELLE Clothing (brand)- ඉන්ස්ට්‍රග්‍රැම් එකව්න්ට් එක
+                ෆලෝ කරන්න (Visit our Instagram Profile){" "}
+                <ExternalLink className="w-4 h-4 ml-1" />
+              </a>
+            </li>
             {/*<li>
               {" "}
               <a

@@ -59,7 +59,7 @@ const userSchema = new mongoose.Schema(
         },
         maxClicks: {
           type: Number,
-          default: 3,
+          default: 2,
         },
         lastClickedAt: {
           type: Date,

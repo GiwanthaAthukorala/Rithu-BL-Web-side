@@ -15,6 +15,7 @@ import { useAuth } from "@/Context/AuthContext";
 import DuplicateWarningModal from "@/components/DuplicateWarningModal";
 import TaskLinks from "@/components/TaskLinks/TaskLinks";
 import Link from "next/link";
+import { MdRateReview } from "react-icons/md";
 
 export default function FbVerificationTask() {
   const [file, setFile] = useState(null);
@@ -93,9 +94,9 @@ export default function FbVerificationTask() {
     if (!file || !user) return;
 
     // Validate link clicks if a link is selected
-    if (selectedLinkId && linkClickCounts[selectedLinkId] < 3) {
+    if (selectedLinkId && linkClickCounts[selectedLinkId] < 2) {
       setError(
-        `You need to click the link at least 3 times before submitting (current: ${
+        `You need to click the link at least 2 times before submitting (current: ${
           linkClickCounts[selectedLinkId] || 0
         })`
       );
@@ -334,7 +335,7 @@ export default function FbVerificationTask() {
             <div className="mb-8">
               <h2 className="text-xl font-bold text-gray-800 mb-6 flex items-center space-x-2">
                 <div className="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold">
-                  !
+                  <MdRateReview />
                 </div>
 
                 <span>Instructions</span>
@@ -375,9 +376,7 @@ export default function FbVerificationTask() {
               </div>
             </div>
             <h2 className="text-xl font-bold text-gray-800 mb-6 flex items-center space-x-2">
-              <div className="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold">
-                !
-              </div>
+              <div className="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold"></div>
 
               <span>Facebook pages Review and Comment Section</span>
             </h2>
