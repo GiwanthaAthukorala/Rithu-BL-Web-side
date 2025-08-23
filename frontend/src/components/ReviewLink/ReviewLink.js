@@ -27,7 +27,7 @@ export default function ReviewLink({ platform, onLinkClick }) {
     try {
       setLoading(true);
       setError(null);
-      const response = await api.get(`/links/${platform}`);
+      const response = await api.get(`/review-links/${platform}`);
 
       if (response.data.success) {
         setLinks(response.data.data);
@@ -48,7 +48,7 @@ export default function ReviewLink({ platform, onLinkClick }) {
 
     try {
       // Track the click
-      const response = await api.post(`/links/${link._id}/click`);
+      const response = await api.post(`/review-links/${link._id}/click`);
 
       if (response.data.success) {
         // If the link is now completed, remove it from the list
