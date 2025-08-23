@@ -360,7 +360,7 @@ export default function TikTokVerificationTask() {
                     Like Video #1 - ටික් ටොක් විඩියෝ එකට ලයික් කරන්න
                   </h4>
                   <a
-                    href="https://www.tiktok.com/@mishacarpetcleaning/video/7382005792704056577?is_from_webapp=1&sender_device=pc&web_id=7382005154315388417"
+                    href="https://www.tiktok.com/@mishacarpetcleaning/video/7386778584117136646?is_from_webapp=1&sender_device=pc&web_id=7382005154315388417"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium group-hover:underline text-xs sm:text-sm"
@@ -377,7 +377,7 @@ export default function TikTokVerificationTask() {
                     Like Video #1 - ටික් ටොක් විඩියෝ එකට ලයික් කරන්න
                   </h4>
                   <a
-                    href="https://www.tiktok.com/@mishacarpetcleaning/video/7387302716466416912?is_from_webapp=1&sender_device=pc&web_id=7382005154315388417"
+                    href="https://www.tiktok.com/@mishacarpetcleaning/video/7382509387170041096?is_from_webapp=1&sender_device=pc&web_id=7382005154315388417"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium group-hover:underline text-xs sm:text-sm"

@@ -25,6 +25,37 @@ const connectDB = async () => {
 
 const facebookLinks = [
   {
+    url: "https://www.facebook.com/thilinahetti?mibextid=ZbWKwL",
+    title: "Thilina Hettiarachchi - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න",
+    platform: "facebook",
+    earnings: 1.0,
+  },
+  {
+    url: "https://www.facebook.com/share/1EMPgfih2f/?mibextid=wwXIfr",
+    title: "Cake by Nishu - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න",
+    platform: "facebook",
+    earnings: 1.0,
+  },
+  {
+    url: "https://www.facebook.com/share/16nu8A4T7t/",
+    title: "𝐌𝐘 𝐒𝐓𝐔𝐃𝐈𝐎 - 𝐖𝐄𝐃𝐃𝐈𝐍𝐆  - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න",
+    platform: "facebook",
+    earnings: 1.0,
+  },
+  {
+    url: "https://www.facebook.com/share/1FzHdp5JJy/?mibextid=wwXIfr",
+    title: "Futurebound Education  - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න",
+    platform: "facebook",
+    earnings: 1.0,
+  },
+  {
+    url: "https://www.facebook.com/cobls9djhi",
+    title:
+      "වෙල්ලස්සේ කොල්ලෙක් (ගොවිකමක සිහිනයක් සැබෑ කරන්නට) - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න",
+    platform: "facebook",
+    earnings: 1.0,
+  },
+  {
     url: "https://www.facebook.com/share/15wvA1t4jG/?mibextid=wwXIfr",
     title: "Option4 Software Solutions - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න",
     platform: "facebook",
@@ -33,6 +64,12 @@ const facebookLinks = [
   {
     url: "https://www.facebook.com/share/1C1Refeowf",
     title: "Madushan Abeysinghe - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න",
+    platform: "facebook",
+    earnings: 1.0,
+  },
+  {
+    url: "https://www.facebook.com/share/v/1AxqBcDY6b/",
+    title: "ෆෙස්බුක් විඩියෝ එකට ලයික් කරන්න",
     platform: "facebook",
     earnings: 1.0,
   },

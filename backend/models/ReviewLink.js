@@ -23,6 +23,10 @@ const ReviewlinkSchema = new mongoose.Schema(
       type: Number,
       default: 30.0,
     },
+    maxClicks: {
+      type: Number,
+      default: 1, // Changed from 3 to 1
+    },
   },
   { timestamps: true }
 );

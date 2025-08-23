@@ -51,18 +51,23 @@ export default function ReviewLink({ platform, onLinkClick }) {
       const response = await api.post(`/links/${link._id}/click`);
 
       if (response.data.success) {
-        // Update the link with new click count
-        const updatedLinks = links.map((l) => {
-          if (l._id === link._id) {
-            return {
-              ...l,
-              userClickCount: response.data.clickCount,
-              remainingClicks: response.data.remainingClicks,
-            };
-          }
-          return l;
-        });
-        setLinks(updatedLinks);
+        // If the link is now completed, remove it from the list
+        if (response.data.completed) {
+          setLinks(links.filter((l) => l._id !== link._id));
+        } else {
+          // Update the link with new click count
+          const updatedLinks = links.map((l) => {
+            if (l._id === link._id) {
+              return {
+                ...l,
+                userClickCount: response.data.clickCount,
+                remainingClicks: response.data.remainingClicks,
+              };
+            }
+            return l;
+          });
+          setLinks(updatedLinks);
+        }
 
         // Mobile-friendly link opening
         const isMobile =
@@ -90,7 +95,7 @@ export default function ReviewLink({ platform, onLinkClick }) {
         // Remove the link from the list if max clicks reached
         const updatedLinks = links.filter((l) => l._id !== link._id);
         setLinks(updatedLinks);
-        alert("You've reached the maximum number of clicks for this link.");
+        alert("This link has already been clicked.");
       } else {
         // Even if tracking fails, still open the link
         const isMobile =
@@ -174,7 +179,6 @@ export default function ReviewLink({ platform, onLinkClick }) {
       {links.map((link) => {
         const status = getClickStatus(link);
         const isCompleted = status === "completed";
-        const isInProgress = status === "in-progress";
 
         return (
           <div
@@ -201,30 +205,10 @@ export default function ReviewLink({ platform, onLinkClick }) {
                 {link.title}
               </span>
 
-              {isInProgress && (
-                <div className="mt-2 flex items-center text-sm text-blue-600">
-                  <div className="w-24 bg-gray-200 rounded-full h-2 mr-2">
-                    <div
-                      className="bg-blue-600 h-2 rounded-full"
-                      style={{
-                        width: `${
-                          (link.userClickCount / link.maxClicks) * 100
-                        }%`,
-                      }}
-                    ></div>
-                  </div>
-                  <span>
-                    {link.userClickCount}/{link.maxClicks} clicks
-                  </span>
-                </div>
-              )}
-
               {isCompleted && (
                 <div className="mt-2 flex items-center text-sm text-green-600">
                   <CheckCircle className="w-4 h-4 mr-1" />
-                  <span>
-                    Completed ({link.maxClicks}/{link.maxClicks} clicks)
-                  </span>
+                  <span>Completed (1/1 click)</span>
                 </div>
               )}
             </div>

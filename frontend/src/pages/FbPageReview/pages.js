@@ -319,56 +319,10 @@ export default function FacebookReview() {
               </h3>
 
               {/* Custom TaskLinks component for FB Review */}
-              <div className="space-y-3">
-                {links.map((link) => {
-                  const status =
-                    link.userClickCount >= 1 ? "completed" : "not-started";
-                  const isCompleted = status === "completed";
-
-                  return (
-                    <div
-                      key={link._id}
-                      onClick={
-                        isCompleted ? null : (e) => handleLinkClick(link._id, 1)
-                      }
-                      className={`flex items-center justify-between p-4 rounded-lg transition-colors duration-200 border ${
-                        isCompleted
-                          ? "bg-green-50 border-green-200 cursor-not-allowed"
-                          : "bg-white border-gray-200 hover:border-blue-300 hover:bg-blue-50 cursor-pointer"
-                      } group`}
-                      style={{
-                        minHeight: "44px",
-                        touchAction: "manipulation",
-                      }}
-                    >
-                      <div className="flex-1">
-                        <span
-                          className={`${
-                            isCompleted
-                              ? "text-green-700 line-through"
-                              : "text-gray-700 group-hover:text-blue-700"
-                          }`}
-                        >
-                          {link.title}
-                        </span>
-
-                        {isCompleted && (
-                          <div className="mt-2 flex items-center text-sm text-green-600">
-                            <CheckCircle className="w-4 h-4 mr-1" />
-                            <span>Completed (1/1 click)</span>
-                          </div>
-                        )}
-                      </div>
-
-                      {!isCompleted ? (
-                        <ExternalLink className="w-4 h-4 text-blue-600 group-hover:scale-110 transition-transform flex-shrink-0 ml-2" />
-                      ) : (
-                        <CheckCircle className="w-4 h-4 text-green-600 flex-shrink-0 ml-2" />
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
+              <ReviewTaskLinks
+                platform="facebook"
+                onLinkClick={handleLinkClick}
+              />
 
               {selectedLinkId && linkClickCounts[selectedLinkId] && (
                 <div className="mt-4 p-4 bg-blue-100 border border-blue-300 rounded-lg">

@@ -192,7 +192,7 @@ export default function InstagramVerificationTask() {
             <p className="text-gray-700 mb-3">
               Please visit this link and take a screenshot as proof:
             </p>
-            {/**   <li>
+            <li>
               {" "}
               <a
                 href="https://www.instagram.com/dreamfashion318?igsh=MTMyZDE2YXZwZzJmcQ=="
@@ -215,9 +215,8 @@ export default function InstagramVerificationTask() {
                 Beetle - ඉන්ස්ට්‍රග්‍රැම් එකව්න්ට් එක ෆලෝ කරන්න (Visit our
                 Instagram Profile) <ExternalLink className="w-4 h-4 ml-1" />
               </a>
-            </li>
-            {" "}
-            <li>
+            </li>{" "}
+            {/*<li>
               {" "}
               <a
                 href=""

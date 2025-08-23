@@ -28,7 +28,7 @@ const fbReviewLinkSchema = new mongoose.Schema(
     },
     submissionCount: {
       type: Number,
-      default: 30,
+      default: 1,
     },
     //lastSubmissionTime: {
     //type: Date,
