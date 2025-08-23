@@ -42,15 +42,15 @@ async function seedFBReviewLinks() {
   try {
     await connectDB();
 
-    await ReviewLink.deleteMany({});
-    console.log("Cleared existing FB Review links");
+    await Link.deleteMany({ platform: "facebookReview" });
+    console.log("Cleared existing Facebook links");
 
-    for (const linkData of facebookReviewLinks) {
-      await ReviewLink.create(linkData);
-      console.log(`Added FB Review link: ${linkData.title}`);
+    for (const linkData of facebookLinks) {
+      await Link.create(linkData);
+      console.log(`Added link: ${linkData.title}`);
     }
 
-    console.log("FB Review links seeding completed");
+    console.log("Links seeding completed");
     process.exit(0);
   } catch (error) {
     console.error("Seeding error:", error);
