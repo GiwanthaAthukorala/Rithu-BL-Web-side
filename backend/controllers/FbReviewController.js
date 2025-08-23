@@ -1,4 +1,4 @@
-const FbReviewSubmission = require("../models/fbReviewLink");
+const FbReviewSubmission = require("../models/FbReviewLink");
 const Earnings = require("../models/Earnings");
 const generateImageHash = require("../utils/generateImageHash");
 const isSimilarHash = require("../utils/isSimilarHash");

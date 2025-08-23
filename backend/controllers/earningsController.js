@@ -2,7 +2,7 @@ const Earnings = require("../models/Earnings");
 const Transaction = require("../models/Transaction");
 const Submission = require("../models/Submission");
 const YoutubeSubmission = require("../models/YoutubeSubmission");
-const facebookReview = require("../models/fbReviewlink");
+const facebookReview = require("../models/FbReviewLink");
 
 exports.getUserEarnings = async (req, res) => {
   try {
