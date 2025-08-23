@@ -2,7 +2,7 @@ const Earnings = require("../models/Earnings");
 const Transaction = require("../models/Transaction");
 const Submission = require("../models/Submission");
 const YoutubeSubmission = require("../models/YoutubeSubmission");
-const facebookReview = require("../models/FbReviewSubmission");
+const FbReviewSubmission = require("../models/FbReviewSubmission");
 
 exports.getUserEarnings = async (req, res) => {
   try {
@@ -19,7 +19,7 @@ exports.getUserEarnings = async (req, res) => {
         .limit(18),
       Submission.find({ user: req.user._id, status: "approved" }),
       YoutubeSubmission.find({ user: req.user._id, status: "approved" }),
-      facebookReview.find({ user: req.user._id, status: "approved" }),
+      FbReviewSubmission.find({ user: req.user._id, status: "approved" }),
     ]);
 
     // Calculate total from both submission types
@@ -32,7 +32,7 @@ exports.getUserEarnings = async (req, res) => {
       0
     );
     const reviewTotal = reviewSubmissions.reduce(
-      (sum, sub) => sum + (sub.amount || 30),
+      (sum, sub) => sum + (sub.amount || 30), // Should be 30, not 1
       0
     );
 
