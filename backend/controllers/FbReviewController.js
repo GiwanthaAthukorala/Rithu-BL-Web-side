@@ -1,10 +1,10 @@
-const FbReviewSubmission = require("../models/FbReviewLink");
+const FbReviewSubmission = require("../models/FbReviewSubmission"); // Fixed import
 const Earnings = require("../models/Earnings");
 const generateImageHash = require("../utils/generateImageHash");
 const isSimilarHash = require("../utils/isSimilarHash");
 
 const createFbReviewSubmission = async (req, res) => {
-  console.log("==== REVIEW SUBMISSION REQUEST RECEIVED ====");
+  console.log("==== FB REVIEW SUBMISSION REQUEST RECEIVED ====");
   console.log("User ID:", req.user?._id);
   console.log("Uploaded file:", req.file);
 
@@ -55,14 +55,17 @@ const createFbReviewSubmission = async (req, res) => {
 
     console.log("Hashing took", Date.now() - startTime, "ms");
 
+    // Create the submission
     const submission = await FbReviewSubmission.create({
       user: req.user._id,
+      platform: "facebook",
       screenshot: cloudinaryUrl,
       imageHash: uploadedImageHash,
-      status: "approved",
+      status: "approved", // Auto-approve for now
       amount: 30.0,
     });
 
+    // Update earnings
     let earnings = await Earnings.findOne({ user: req.user._id });
     if (!earnings) {
       earnings = await Earnings.create({
@@ -80,17 +83,19 @@ const createFbReviewSubmission = async (req, res) => {
 
     // Emit update to the user
     const io = req.app.get("io");
-    io.to(req.user._id.toString()).emit("earningsUpdate", earnings);
+    if (io) {
+      io.to(req.user._id.toString()).emit("earningsUpdate", earnings);
+    }
     console.log("Updated earnings:", earnings);
 
     res.status(201).json({
       success: true,
-      message: "Review submission created successfully",
+      message: "FB Review submission created successfully",
       data: submission,
       earnings,
     });
   } catch (error) {
-    console.error("Review submission error:", error);
+    console.error("FB Review submission error:", error);
     res.status(500).json({
       success: false,
       message: "Internal server error",
@@ -106,7 +111,7 @@ const getUserReviewSubmissions = async (req, res) => {
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: "Failed to get Review submissions",
+      message: "Failed to get FB Review submissions",
       error: error.message,
     });
   }
@@ -116,7 +121,9 @@ const approveReviewSubmission = async (req, res) => {
   try {
     const submission = await FbReviewSubmission.findById(req.params.id);
     if (!submission) {
-      return res.status(404).json({ message: "Review submission not found" });
+      return res
+        .status(404)
+        .json({ message: "FB Review submission not found" });
     }
     if (submission.status !== "pending") {
       return res.status(400).json({ message: "Already processed" });
@@ -143,16 +150,18 @@ const approveReviewSubmission = async (req, res) => {
 
     // Emit update to the user
     const io = req.app.get("io");
-    io.to(submission.user.toString()).emit("earningsUpdate", {
-      totalEarned: earnings.totalEarned,
-      availableBalance: earnings.availableBalance,
-      pendingWithdrawal: earnings.pendingWithdrawal,
-      withdrawnAmount: earnings.withdrawnAmount,
-    });
+    if (io) {
+      io.to(submission.user.toString()).emit("earningsUpdate", {
+        totalEarned: earnings.totalEarned,
+        availableBalance: earnings.availableBalance,
+        pendingWithdrawal: earnings.pendingWithdrawal,
+        withdrawnAmount: earnings.withdrawnAmount,
+      });
+    }
 
     res.json({
       success: true,
-      message: "Review submission approved and earnings updated",
+      message: "FB Review submission approved and earnings updated",
       data: {
         submission,
         earnings,
@@ -167,7 +176,9 @@ const rejectReviewSubmission = async (req, res) => {
   try {
     const submission = await FbReviewSubmission.findById(req.params.id);
     if (!submission) {
-      return res.status(404).json({ message: "Review submission not found" });
+      return res
+        .status(404)
+        .json({ message: "FB Review submission not found" });
     }
 
     if (submission.status !== "pending") {
@@ -179,11 +190,11 @@ const rejectReviewSubmission = async (req, res) => {
 
     res.json({
       success: true,
-      message: "Review submission rejected",
+      message: "FB Review submission rejected",
       data: submission,
     });
   } catch (error) {
-    console.error("Rejection Error:", error);
+    console.error("FB Review Rejection Error:", error);
     res.status(500).json({ message: "Rejection failed", error: error.message });
   }
 };
