@@ -4,104 +4,114 @@ const { createServer } = require("http");
 const { Server } = require("socket.io");
 const cors = require("cors");
 const path = require("path");
+
+// Import configurations and utilities
+const connectDB = require("./config/db");
 const cloudinary = require("./utils/cloudinary");
 
-const connectDB = require("./config/db");
-const app = express(); // ✅ Now declared before it's used
+const app = express();
 const httpServer = createServer(app);
 
-// === Socket.IO Configuration ===
-const io = new Server(httpServer, {
-  cors: {
-    origin: [
-      process.env.FRONTEND_URL,
+// === CORS Configuration (Simplified) ===
+const corsOptions = {
+  origin: [
+    process.env.FRONTEND_URL ||
       "https://rithu-business-client-side-2131.vercel.app",
-    ],
-    methods: ["GET", "POST"],
-    credentials: true,
-  },
-  transports: ["websocket", "polling"],
-  path: "/socket.io",
-  pingTimeout: 60000,
-  pingInterval: 25000,
-});
+  ],
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
+  credentials: true,
+  optionsSuccessStatus: 200,
+};
 
-io.on("connection", (socket) => {
-  console.log("Client connected:", socket.id);
+app.use(cors(corsOptions));
 
-  socket.on("register", (userId) => {
-    socket.join(userId);
-    console.log(`User ${userId} registered for updates`);
+// === Socket.IO Configuration (Conditional for Vercel) ===
+let io;
+if (!process.env.VERCEL) {
+  io = new Server(httpServer, {
+    cors: corsOptions,
+    transports: ["websocket", "polling"],
+    path: "/socket.io",
+    pingTimeout: 60000,
+    pingInterval: 25000,
   });
 
-  socket.on("disconnect", () => {
-    console.log("Client disconnected:", socket.id);
+  io.on("connection", (socket) => {
+    console.log("Client connected:", socket.id);
+
+    socket.on("register", (userId) => {
+      socket.join(userId);
+      console.log(`User ${userId} registered for updates`);
+    });
+
+    socket.on("disconnect", () => {
+      console.log("Client disconnected:", socket.id);
+    });
   });
-});
 
-app.set("io", io);
+  app.set("io", io);
+} else {
+  // Mock io for Vercel environment
+  app.set("io", {
+    to: () => ({ emit: () => {} }),
+    emit: () => {},
+  });
+}
 
-// === MongoDB Connection ===
-connectDB().catch((err) => {
-  console.error("Database connection failed:", err.message);
-});
+// === MongoDB Connection with Better Error Handling ===
+let isConnected = false;
+
+const connectToDatabase = async () => {
+  if (isConnected) return;
+
+  try {
+    await connectDB();
+    isConnected = true;
+    console.log("✅ MongoDB connected successfully");
+  } catch (err) {
+    console.error("❌ Database connection failed:", err.message);
+    // Don't exit process in serverless environment
+    if (!process.env.VERCEL) {
+      process.exit(1);
+    }
+  }
+};
+
+// Connect to database
+connectToDatabase();
 
 // === Middleware ===
-const allowedOrigins = ["https://rithu-business-client-side-2131.vercel.app"];
-
-app.use((req, res, next) => {
-  const origin = req.headers.origin;
-
-  // Handle preflight requests
-  if (req.method === "OPTIONS") {
-    res.setHeader("Access-Control-Allow-Origin", origin || allowedOrigins[0]);
-    res.setHeader("Access-Control-Allow-Credentials", "true");
-    res.setHeader(
-      "Access-Control-Allow-Methods",
-      "GET,POST,PUT,DELETE,OPTIONS"
-    );
-    res.setHeader(
-      "Access-Control-Allow-Headers",
-      "Content-Type, Authorization, X-Requested-With"
-    );
-    return res.status(200).end();
-  }
-
-  // Handle regular requests
-  if (origin && allowedOrigins.includes(origin)) {
-    res.setHeader("Access-Control-Allow-Origin", origin);
-    res.setHeader("Access-Control-Allow-Credentials", "true");
-  }
-
-  next();
-});
-
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: "10mb" }));
+app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 app.use(express.static(path.join(__dirname, "public")));
 
+// Request logging middleware
 app.use((req, res, next) => {
-  console.log(`${req.method} ${req.path}`);
-  console.log("Auth header:", req.headers.authorization);
+  console.log(`${new Date().toISOString()} - ${req.method} ${req.path}`);
   next();
 });
 
-// === Routes ===
+// === Health Check (Must come before routes) ===
+app.get("/health", (req, res) => {
+  res.status(200).json({
+    status: "ok",
+    timestamp: new Date().toISOString(),
+    mongodb: isConnected ? "connected" : "disconnected",
+  });
+});
+
+// === API Routes ===
 app.use("/api/users", require("./routes/userRoutes"));
 app.use("/api/submissions", require("./routes/submissions"));
 app.use("/api/earnings", require("./routes/earnings"));
 app.use("/api/youtubeSubmissions", require("./routes/youtubeRoutes"));
 app.use("/api/auth", require("./routes/passwordResetRoutes"));
 app.use("/api/links", require("./routes/linkRoutes"));
-app.use("/api/review-links", require("./routes/ReviewLink")); // For link management
-app.use("/api/fb-reviews", require("./routes/ReviewRoutes")); // For submissions
+app.use("/api/review-links", require("./routes/ReviewLink"));
+app.use("/api/fb-reviews", require("./routes/ReviewRoutes"));
 
-// === Health Check ===
-app.get("/health", (req, res) => {
-  res.status(200).json({ status: "ok" });
-});
-
-// ✅ Move this route **AFTER** app is initialized
+// === Cloudinary Test Route ===
 app.get("/api/test-cloudinary", async (req, res) => {
   try {
     const result = await cloudinary.api.resources({
@@ -117,13 +127,26 @@ app.get("/api/test-cloudinary", async (req, res) => {
 
 // Root route
 app.get("/", (req, res) => {
-  res.status(200).json({ message: "Backend is running!" });
+  res.status(200).json({
+    message: "Backend is running!",
+    timestamp: new Date().toISOString(),
+    environment: process.env.VERCEL ? "production" : "development",
+  });
 });
 
-// === Error Handling ===
+// === Catch-all for API routes ===
+app.all("/api/*", (req, res) => {
+  res.status(404).json({
+    success: false,
+    message: `API route ${req.method} ${req.path} not found`,
+  });
+});
+
+// === Error Handling Middleware ===
 app.use((err, req, res, next) => {
   console.error("Error:", err);
 
+  // Handle specific error types
   if (err.name === "JsonWebTokenError") {
     return res.status(401).json({ success: false, message: "Invalid token" });
   }
@@ -132,27 +155,37 @@ app.use((err, req, res, next) => {
     return res.status(400).json({ success: false, message: err.message });
   }
 
-  res.status(500).json({
+  if (err.name === "MongoError" || err.name === "MongooseError") {
+    return res.status(500).json({
+      success: false,
+      message: "Database error occurred",
+    });
+  }
+
+  // Generic error response
+  res.status(err.statusCode || 500).json({
     success: false,
     message: err.message || "Internal server error",
-  });
-});
-app.use((error, req, res, next) => {
-  console.error("Error stack:", error.stack);
-  res.status(500).json({
-    success: false,
-    message: error.message,
-    stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
+    ...(process.env.NODE_ENV === "development" && { stack: err.stack }),
   });
 });
 
-// === Export Handler for Vercel or Start Server Locally ===
+// === Handle 404 for non-API routes ===
+app.use("*", (req, res) => {
+  res.status(404).json({
+    success: false,
+    message: "Route not found",
+  });
+});
+
+// === Export for Vercel or Start Server Locally ===
 if (process.env.VERCEL) {
   module.exports = app;
 } else {
   const PORT = process.env.PORT || 5000;
   httpServer.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-    console.log(`Socket.IO path: /socket.io`);
+    console.log(`🚀 Server running on port ${PORT}`);
+    console.log(`📡 Socket.IO path: /socket.io`);
+    console.log(`🌍 Environment: ${process.env.NODE_ENV || "development"}`);
   });
 }
