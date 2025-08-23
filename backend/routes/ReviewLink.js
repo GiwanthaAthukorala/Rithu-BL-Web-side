@@ -57,7 +57,7 @@ router.get("/:platform", protect, async (req, res) => {
     console.log(`Completed link IDs: ${completedLinkIds.join(", ")}`);
 
     // Get active links that user hasn't completed
-    const links = await Link.find({
+    const links = await ReviewLink.find({
       platform,
       active: true,
       _id: {
@@ -119,7 +119,7 @@ router.post("/:linkId/click", protect, async (req, res) => {
     }
 
     // Check if link exists
-    const link = await Link.findById(linkId);
+    const link = await ReviewLink.findById(linkId);
     if (!link || !link.active) {
       return res
         .status(404)

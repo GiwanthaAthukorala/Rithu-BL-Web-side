@@ -115,9 +115,9 @@ export default function FacebookReview() {
       const apiUrl =
         process.env.NEXT_PUBLIC_API_URL ||
         "https://rithu-bl-web-side.vercel.app";
-      console.log("Submitting to:", `${apiUrl}/api/submissions`);
+      console.log("Submitting to:", `${apiUrl}/api/fb-reviews`);
       console.log("Token exists:", !!token);
-      const response = await fetch(`${apiUrl}/api/submissions`, {
+      const response = await fetch(`${apiUrl}/api/fb-reviews`, {
         method: "POST",
         body: formData,
         credentials: "include", // Important for cookies/auth

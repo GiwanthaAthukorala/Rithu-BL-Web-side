@@ -388,7 +388,7 @@ export default function FbVerificationTask() {
                   <div className="flex items-center mb-4">
                     <div className="w-16 h-16 flex items-center justify-center mr-3 overflow-hidden">
                       <img
-                        src="/.png"
+                        src="/review.png"
                         alt="youtube Icon"
                         className="w-16 h-16 object-contain"
                       />
@@ -411,7 +411,7 @@ export default function FbVerificationTask() {
                   <div className="flex items-center mb-4">
                     <div className="w-16 h-16 flex items-center justify-center mr-3 overflow-hidden">
                       <img
-                        src="/.png"
+                        src="/comment.png"
                         alt="Whatsapp Icon"
                         className="w-16 h-16 object-contain"
                       />
