@@ -205,7 +205,7 @@ export default function FacebookReview() {
             </div>
             <h2 className="text-2xl font-bold mb-2">Submission Successful!</h2>
             <p className="text-gray-600 mb-6">
-              You've earned Rs 1.00! Your balance has been updated.
+              You've earned Rs 30.00! Your balance has been updated.
             </p>
             <button
               onClick={() => router.push("/Profile/page")}

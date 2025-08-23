@@ -32,7 +32,8 @@ exports.getUserEarnings = async (req, res) => {
       0
     );
     const reviewTotal = reviewSubmissions.reduce(
-      (sum, sub) => sum + (sub.amount || 30)
+      (sum, sub) => sum + (sub.amount || 30),
+      0
     );
 
     const calculatedTotal = fbTotal + ytTotal + reviewTotal;
