@@ -1,4 +1,4 @@
-const fbReviewLink = require("../models/fbReviewlink");
+const FbReviewSubmission = require("../models/fbReviewLink");
 const Earnings = require("../models/Earnings");
 const generateImageHash = require("../utils/generateImageHash");
 const isSimilarHash = require("../utils/isSimilarHash");
@@ -35,12 +35,10 @@ const createFbReviewSubmission = async (req, res) => {
     }
 
     // Check for duplicates
-    const previousSubmissions = await fbReviewLink
-      .find({
-        user: userId,
-        imageHash: { $ne: null },
-      })
-      .limit(10);
+    const previousSubmissions = await FbReviewSubmission.find({
+      user: userId,
+      imageHash: { $ne: null },
+    }).limit(10);
 
     for (const submission of previousSubmissions) {
       if (isSimilarHash(uploadedImageHash, submission.imageHash)) {
@@ -57,7 +55,7 @@ const createFbReviewSubmission = async (req, res) => {
 
     console.log("Hashing took", Date.now() - startTime, "ms");
 
-    const submission = await fbReviewLink.create({
+    const submission = await FbReviewSubmission.create({
       user: req.user._id,
       screenshot: cloudinaryUrl,
       imageHash: uploadedImageHash,
@@ -103,7 +101,7 @@ const createFbReviewSubmission = async (req, res) => {
 
 const getUserReviewSubmissions = async (req, res) => {
   try {
-    const submissions = await fbReviewLink.find({ user: req.user._id });
+    const submissions = await FbReviewSubmission.find({ user: req.user._id });
     res.status(200).json({ success: true, data: submissions });
   } catch (error) {
     res.status(500).json({
@@ -116,7 +114,7 @@ const getUserReviewSubmissions = async (req, res) => {
 
 const approveReviewSubmission = async (req, res) => {
   try {
-    const submission = await fbReviewLink.findById(req.params.id);
+    const submission = await FbReviewSubmission.findById(req.params.id);
     if (!submission) {
       return res.status(404).json({ message: "Review submission not found" });
     }
@@ -167,7 +165,7 @@ const approveReviewSubmission = async (req, res) => {
 
 const rejectReviewSubmission = async (req, res) => {
   try {
-    const submission = await fbReviewLink.findById(req.params.id);
+    const submission = await FbReviewSubmission.findById(req.params.id);
     if (!submission) {
       return res.status(404).json({ message: "Review submission not found" });
     }
