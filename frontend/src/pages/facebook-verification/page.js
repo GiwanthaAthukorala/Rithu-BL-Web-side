@@ -358,7 +358,7 @@ export default function FbVerificationTask() {
                     <span className="flex-shrink-0 w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-bold">
                       3
                     </span>
-                    <span>Click the link 3 times to track your engagement</span>
+                    <span>Click the link 2 times to track your engagement</span>
                   </li>
                   <li className="flex items-start space-x-3">
                     <span className="flex-shrink-0 w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-bold">
@@ -443,19 +443,19 @@ export default function FbVerificationTask() {
                   <div className="flex items-center justify-between">
                     <p className="text-blue-700 font-medium">
                       ✓ Link selected - Progress:{" "}
-                      {linkClickCounts[selectedLinkId]}/3 clicks
+                      {linkClickCounts[selectedLinkId]}/2 clicks
                     </p>
-                    {linkClickCounts[selectedLinkId] >= 3 && (
+                    {linkClickCounts[selectedLinkId] >= 2 && (
                       <CheckCircle className="w-5 h-5 text-green-600" />
                     )}
                   </div>
-                  {linkClickCounts[selectedLinkId] >= 3 ? (
+                  {linkClickCounts[selectedLinkId] >= 2 ? (
                     <p className="text-green-700 text-sm mt-1">
                       Ready to submit! Upload your screenshot below.
                     </p>
                   ) : (
                     <p className="text-blue-600 text-sm mt-1">
-                      Click {3 - linkClickCounts[selectedLinkId]} more times to
+                      Click {2 - linkClickCounts[selectedLinkId]} more times to
                       complete
                     </p>
                   )}
@@ -630,7 +630,7 @@ export default function FbVerificationTask() {
                 {/* Submission validation messages */}
                 {selectedLinkId &&
                   linkClickCounts[selectedLinkId] &&
-                  linkClickCounts[selectedLinkId] < 3 && (
+                  linkClickCounts[selectedLinkId] < 2 && (
                     <div className="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
                       <p className="text-yellow-800 font-medium">
                         ⚠️ Please complete {3 - linkClickCounts[selectedLinkId]}{" "}
@@ -644,11 +644,11 @@ export default function FbVerificationTask() {
                   disabled={
                     !file ||
                     isSubmitting ||
-                    (selectedLinkId && linkClickCounts[selectedLinkId] < 3)
+                    (selectedLinkId && linkClickCounts[selectedLinkId] < 2)
                   }
                   className={`w-full py-4 rounded-xl font-bold text-lg transition-all duration-300 transform hover:scale-[1.02] ${
                     file &&
-                    (!selectedLinkId || linkClickCounts[selectedLinkId] >= 3)
+                    (!selectedLinkId || linkClickCounts[selectedLinkId] >= 2)
                       ? "bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white shadow-lg hover:shadow-xl"
                       : "bg-gray-300 text-gray-500 cursor-not-allowed"
                   }`}
