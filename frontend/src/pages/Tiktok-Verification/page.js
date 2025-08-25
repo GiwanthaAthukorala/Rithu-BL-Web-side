@@ -218,7 +218,7 @@ export default function TikTokVerificationTask() {
                   <div className="flex items-center space-x-2">
                     <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5" />
                     <span className="font-bold text-lg sm:text-xl">
-                      Rs 0.80
+                      Rs 1.00/=
                     </span>
                   </div>
                   <p className="text-green-100 text-xs sm:text-sm">
@@ -307,7 +307,7 @@ export default function TikTokVerificationTask() {
                     4
                   </div>
                   <span className="text-gray-700 font-medium text-sm sm:text-base">
-                    Upload the screenshot below to earn Rs 0.80
+                    Upload the screenshot below to earn Rs 1/=
                   </span>
                 </li>
               </ol>
@@ -327,89 +327,7 @@ export default function TikTokVerificationTask() {
               </h3>
             </div>
 
-            <div className="space-y-3 sm:space-y-4">
-              <div className="bg-gradient-to-r from-gray-800 to-black p-4 sm:p-6 rounded-lg sm:rounded-xl border border-gray-300 hover:shadow-lg transition-all duration-300 group">
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-3 sm:space-y-0">
-                  <div className="flex-1">
-                    <h4 className="font-semibold text-white mb-1 text-sm sm:text-base">
-                      Follow Our Main Account -ටික් ටොක් එකව්න්ට් එක ෆලෝ කරන්න
-                    </h4>
-                    <p className="text-gray-300 text-xs sm:text-sm">
-                      @wisdom.weave.netw - Join our community
-                    </p>
-                  </div>
-                  <a
-                    href="https://www.tiktok.com/@wisdom.weave.netw?_t=ZS-8yyWp3m1hWz&_r=1"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center justify-center bg-gradient-to-r from-pink-500 to-red-500 text-white px-4 sm:px-6 py-2 rounded-lg hover:from-pink-600 hover:to-red-600 transition-all duration-200 font-medium group-hover:scale-105 text-xs sm:text-sm"
-                  >
-                    <span className="hidden sm:inline">
-                      Follow Now - ටික් ටොක් එකව්න්ට් එක ෆලෝ කරන්න
-                    </span>
-                    <span className="sm:hidden">Follow Now</span>
-                    <ExternalLink className="w-3 h-3 sm:w-4 sm:h-4 ml-1 sm:ml-2" />
-                  </a>
-                </div>
-              </div>
-
-              {/* Video Links */}
-              <div className="grid gap-3 sm:gap-4">
-                <div className="bg-gradient-to-br from-purple-50 to-pink-50 p-3 sm:p-4 rounded-lg sm:rounded-xl border border-purple-200 hover:shadow-md transition-all duration-300 group">
-                  <h4 className="font-semibold text-gray-800 mb-2 text-sm sm:text-base">
-                    Like Video #1 - ටික් ටොක් විඩියෝ එකට ලයික් කරන්න
-                  </h4>
-                  <a
-                    href="https://www.tiktok.com/@mishacarpetcleaning/video/7386778584117136646?is_from_webapp=1&sender_device=pc&web_id=7382005154315388417"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium group-hover:underline text-xs sm:text-sm"
-                  >
-                    <span className="hidden sm:inline">
-                      Watch & Like - ටික් ටොක් විඩියෝ එකට ලයික් කරන්න
-                    </span>
-                    <span className="sm:hidden">Watch & Like</span>
-                    <ExternalLink className="w-3 h-3 sm:w-4 sm:h-4 ml-1" />
-                  </a>
-                </div>
-                <div className="bg-gradient-to-br from-purple-50 to-pink-50 p-3 sm:p-4 rounded-lg sm:rounded-xl border border-purple-200 hover:shadow-md transition-all duration-300 group">
-                  <h4 className="font-semibold text-gray-800 mb-2 text-sm sm:text-base">
-                    Like Video #1 - ටික් ටොක් විඩියෝ එකට ලයික් කරන්න
-                  </h4>
-                  <a
-                    href="https://www.tiktok.com/@mishacarpetcleaning/video/7382509387170041096?is_from_webapp=1&sender_device=pc&web_id=7382005154315388417"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium group-hover:underline text-xs sm:text-sm"
-                  >
-                    <span className="hidden sm:inline">
-                      Watch & Like - ටික් ටොක් විඩියෝ එකට ලයික් කරන්න
-                    </span>
-                    <span className="sm:hidden">Watch & Like</span>
-                    <ExternalLink className="w-3 h-3 sm:w-4 sm:h-4 ml-1" />
-                  </a>
-                </div>
-
-                {/** <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-3 sm:p-4 rounded-lg sm:rounded-xl border border-blue-200 hover:shadow-md transition-all duration-300 group">
-                  <h4 className="font-semibold text-gray-800 mb-2 text-sm sm:text-base">
-                    Like Video #2 - ටික් ටොක් විඩියෝ එකට ලයික් කරන්න
-                  </h4>
-                  <a
-                    href="https://vt.tiktok.com/ZSALgoYhm/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium group-hover:underline text-xs sm:text-sm"
-                  >
-                    <span className="hidden sm:inline">
-                      Watch & Like -ටික් ටොක් විඩියෝ එකට ලයික් කරන්න
-                    </span>
-                    <span className="sm:hidden">Watch & Like</span>
-                    <ExternalLink className="w-3 h-3 sm:w-4 sm:h-4 ml-1" />
-                  </a>
-                </div>
-                */}
-              </div>
-            </div>
+            <div className="space-y-3 sm:space-y-4"></div>
           </div>
 
           {/* Requirements Section */}
