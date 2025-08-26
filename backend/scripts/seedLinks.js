@@ -25,6 +25,58 @@ const connectDB = async () => {
 
 const facebookLinks = [
   {
+    url: "https://web.facebook.com/profile.php?id=61579877851251",
+    title: "SM Cushion Work - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න",
+    platform: "facebook",
+    earnings: 1.0,
+  },
+
+  {
+    url: "https://www.facebook.com/share/1FzmRRe9Mk/",
+    title: "Amila Indika - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න",
+    platform: "facebook",
+    earnings: 1.0,
+  },
+  {
+    url: "https://www.facebook.com/share/1BJF9SqrvJ/?mibextid=wwXIfr",
+    title: "Thivanka Dilshani Photography - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න",
+    platform: "facebook",
+    earnings: 1.0,
+  },
+  {
+    url: "https://www.facebook.com/share/1DCy7HCNpA/",
+    title: "KS Fashion style - Mart - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න",
+    platform: "facebook",
+    earnings: 1.0,
+  },
+  {
+    url: "https://www.facebook.com/share/19tRtwiNfs/",
+    title:
+      "Indhu Studio Sandaruwan Mallikarathne Photography - Mart - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න",
+    platform: "facebook",
+    earnings: 1.0,
+  },
+
+  {
+    url: "https://www.facebook.com/share/1CZ1sccU8h/?mibextid=wwXIfr",
+    title: "Smart - Global - Mart - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න",
+    platform: "facebook",
+    earnings: 1.0,
+  },
+
+  {
+    url: "https://www.facebook.com/share/172WQmQuJm/?mibextid=wwXIfr",
+    title: "Lifeup Collection - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න",
+    platform: "facebook",
+    earnings: 1.0,
+  },
+  {
+    url: "https://www.facebook.com/share/p/1BCEaFbbta/",
+    title: "පොස්ට් එකට ලයික් කරන්න",
+    platform: "facebook",
+    earnings: 1.0,
+  },
+  {
     url: "https://www.facebook.com/share/1AynKp4wHr/?mibextid=wwXIfr",
     title: "සුව රාජ්ය - Suwa Rajya - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න",
     platform: "facebook",
