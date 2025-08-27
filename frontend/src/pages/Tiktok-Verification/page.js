@@ -359,7 +359,7 @@ export default function TikTokVerificationTask() {
                     Like Video #1 - ටික් ටොක් විඩියෝ එකට ලයික් කරන්න
                   </h4>
                   <a
-                    href="hhttps://vt.tiktok.com/ZSAfPjta8/"
+                    href="https://vt.tiktok.com/ZSAfPFgu9/"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium group-hover:underline text-xs sm:text-sm"
@@ -378,7 +378,7 @@ export default function TikTokVerificationTask() {
                     Like Video #1 - ටික් ටොක් විඩියෝ එකට ලයික් කරන්න
                   </h4>
                   <a
-                    href="hhttps://vt.tiktok.com/ZSAfPjta8/"
+                    href="https://vt.tiktok.com/ZSAfPjta8/"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium group-hover:underline text-xs sm:text-sm"
