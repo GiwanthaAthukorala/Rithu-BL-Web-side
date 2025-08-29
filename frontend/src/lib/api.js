@@ -5,7 +5,7 @@ const API_URL =
 
 // Create axios instance
 const api = axios.create({
-  baseURL: API_URL,
+  baseURL: `${API_URL}/api`,
   headers: {
     "Content-Type": "application/json",
   },
@@ -60,6 +60,7 @@ export const endpoints = {
   earnings: "/earnings",
   youtubeSubmission: "/youtubeSubmissions",
   fbReviews: "/fb-reviews",
+  reviewLinks: "/review-links",
 };
 
 export const register = async (userData) => {

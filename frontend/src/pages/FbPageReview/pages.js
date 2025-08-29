@@ -85,7 +85,7 @@ export default function FacebookReview() {
     if (!file || !user) return;
 
     // Validate link clicks if a link is selected
-    if (selectedLinkId && linkClickCounts[selectedLinkId] < 3) {
+    if (selectedLinkId && linkClickCounts[selectedLinkId] < 1) {
       setError(
         `You need to click the link at least 1 times before submitting (current: ${
           linkClickCounts[selectedLinkId] || 0
@@ -126,7 +126,6 @@ export default function FacebookReview() {
         },
       });
 
-      await api.post(`/api/review-links/${selectedLinkId}/submit`);
       console.log("Response status:", response.status);
 
       if (!response.headers.get("content-type")?.includes("application/json")) {
@@ -159,8 +158,7 @@ export default function FacebookReview() {
       // Mark link as submitted if we have one
       if (selectedLinkId) {
         try {
-          await api.post(`/api/review-links/${selectedLinkId}/submit`);
-
+          await api.post(`/review-links/${selectedLinkId}/submit`);
           console.log("Link marked as submitted");
         } catch (submitError) {
           console.error("Failed to mark link as submitted:", submitError);
@@ -430,9 +428,14 @@ export default function FacebookReview() {
 
                 <button
                   type="submit"
-                  disabled={!file || isSubmitting}
+                  disabled={
+                    !file ||
+                    isSubmitting ||
+                    (selectedLinkId && linkClickCounts[selectedLinkId] < 1)
+                  }
                   className={`w-full py-4 rounded-xl font-bold text-lg transition-all duration-300 transform hover:scale-[1.02] ${
-                    file && !selectedLinkId
+                    file &&
+                    (!selectedLinkId || linkClickCounts[selectedLinkId] >= 1)
                       ? "bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white shadow-lg hover:shadow-xl"
                       : "bg-gray-300 text-gray-500 cursor-not-allowed"
                   }`}
