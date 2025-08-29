@@ -159,7 +159,8 @@ export default function FacebookReview() {
       // Mark link as submitted if we have one
       if (selectedLinkId) {
         try {
-          await api.post(`/links/${selectedLinkId}/submit`);
+          await api.post(`/api/review-links/${selectedLinkId}/submit`);
+
           console.log("Link marked as submitted");
         } catch (submitError) {
           console.error("Failed to mark link as submitted:", submitError);

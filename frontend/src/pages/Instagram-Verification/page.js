@@ -192,7 +192,7 @@ export default function InstagramVerificationTask() {
             <p className="text-gray-700 mb-3">
               Please visit this link and take a screenshot as proof:
             </p>
-            <li>
+            {/**  <li>
               {" "}
               <a
                 href="https://www.instagram.com/dreamfashion318?igsh=MTMyZDE2YXZwZzJmcQ=="
