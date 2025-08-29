@@ -94,14 +94,14 @@ export default function FbVerificationTask() {
     if (!file || !user) return;
 
     // Validate link clicks if a link is selected
-    if (selectedLinkId && linkClickCounts[selectedLinkId] < 2) {
+    /*if (selectedLinkId && linkClickCounts[selectedLinkId] < 2) {
       setError(
         `You need to click the link at least 2 times before submitting (current: ${
           linkClickCounts[selectedLinkId] || 0
         })`
       );
       return;
-    }
+    }*/
 
     setIsSubmitting(true);
     setError(null);
@@ -111,10 +111,10 @@ export default function FbVerificationTask() {
       formData.append("screenshot", file);
       formData.append("platform", "facebook");
 
-      if (selectedLinkId) {
+      /*  if (selectedLinkId) {
         formData.append("linkId", selectedLinkId);
       }
-
+*/
       const token = localStorage.getItem("token");
 
       if (!token) {
@@ -165,7 +165,7 @@ export default function FbVerificationTask() {
       console.log("Success response:", result);
 
       // Mark link as submitted if we have one
-      if (selectedLinkId) {
+      /* if (selectedLinkId) {
         try {
           await api.post(`/links/${selectedLinkId}/submit`);
           console.log("Link marked as submitted");
@@ -173,10 +173,10 @@ export default function FbVerificationTask() {
           console.error("Failed to mark link as submitted:", submitError);
           // Don't fail the whole submission for this
         }
-      }
+      }*/
 
       setIsSubmitted(true);
-      setSelectedLinkId(null);
+      //setSelectedLinkId(null);
 
       // Navigate to profile after success
       setTimeout(() => {
