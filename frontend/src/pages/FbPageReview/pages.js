@@ -87,7 +87,7 @@ export default function FacebookReview() {
     // Validate link clicks if a link is selected
     if (selectedLinkId && linkClickCounts[selectedLinkId] < 3) {
       setError(
-        `You need to click the link at least 3 times before submitting (current: ${
+        `You need to click the link at least 1 times before submitting (current: ${
           linkClickCounts[selectedLinkId] || 0
         })`
       );
@@ -126,7 +126,7 @@ export default function FacebookReview() {
         },
       });
 
-      await api.post(`/api/fb-reviews/${selectedLinkId}/submit`);
+      await api.post(`/api/review-links/${selectedLinkId}/submit`);
       console.log("Response status:", response.status);
 
       if (!response.headers.get("content-type")?.includes("application/json")) {
@@ -430,14 +430,9 @@ export default function FacebookReview() {
 
                 <button
                   type="submit"
-                  disabled={
-                    !file ||
-                    isSubmitting ||
-                    (selectedLinkId && linkClickCounts[selectedLinkId] < 1)
-                  }
+                  disabled={!file || isSubmitting}
                   className={`w-full py-4 rounded-xl font-bold text-lg transition-all duration-300 transform hover:scale-[1.02] ${
-                    file &&
-                    (!selectedLinkId || linkClickCounts[selectedLinkId] >= 1)
+                    file && !selectedLinkId
                       ? "bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white shadow-lg hover:shadow-xl"
                       : "bg-gray-300 text-gray-500 cursor-not-allowed"
                   }`}
