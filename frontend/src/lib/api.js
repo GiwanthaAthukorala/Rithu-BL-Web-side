@@ -5,7 +5,7 @@ const API_URL =
 
 // Create axios instance
 const api = axios.create({
-  baseURL: `${API_URL}/api`,
+  baseURL: API_URL,
   headers: {
     "Content-Type": "application/json",
   },

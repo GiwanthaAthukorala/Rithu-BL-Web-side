@@ -85,14 +85,14 @@ export default function FacebookReview() {
     if (!file || !user) return;
 
     // Validate link clicks if a link is selected
-    if (selectedLinkId && linkClickCounts[selectedLinkId] < 1) {
+    /*if (selectedLinkId && linkClickCounts[selectedLinkId] < 1) {
       setError(
         `You need to click the link at least 1 times before submitting (current: ${
           linkClickCounts[selectedLinkId] || 0
         })`
       );
       return;
-    }
+    }*/
 
     setIsSubmitting(true);
     setError(null);
@@ -102,9 +102,9 @@ export default function FacebookReview() {
       formData.append("screenshot", file);
       formData.append("platform", "facebook");
 
-      if (selectedLinkId) {
+      /* if (selectedLinkId) {
         formData.append("linkId", selectedLinkId);
-      }
+      }*/
 
       const token = localStorage.getItem("token");
 
@@ -156,7 +156,7 @@ export default function FacebookReview() {
       console.log("Success response:", result);
 
       // Mark link as submitted if we have one
-      if (selectedLinkId) {
+      /* if (selectedLinkId) {
         try {
           await api.post(`/review-links/${selectedLinkId}/submit`);
           console.log("Link marked as submitted");
@@ -164,10 +164,10 @@ export default function FacebookReview() {
           console.error("Failed to mark link as submitted:", submitError);
           // Don't fail the whole submission for this
         }
-      }
+      }*/
 
       setIsSubmitted(true);
-      setSelectedLinkId(null);
+      //setSelectedLinkId(null);
 
       // Navigate to profile after success
       setTimeout(() => {
@@ -312,13 +312,13 @@ export default function FacebookReview() {
             </div>
 
             {/* Facebook Pages Links */}
-            <div className="mb-8 bg-gradient-to-r from-blue-50 to-indigo-50 p-6 rounded-xl border border-blue-200">
+            {/*  <div className="mb-8 bg-gradient-to-r from-blue-50 to-indigo-50 p-6 rounded-xl border border-blue-200">
               <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center space-x-2">
                 <ExternalLink className="w-5 h-5 text-blue-600" />
                 <span>Facebook Pages to Review</span>
               </h3>
 
-              {/* Custom TaskLinks component for FB Review */}
+              {/* Custom TaskLinks component for FB Review 
               <ReviewTaskLinks
                 platform="facebook"
                 onLinkClick={handleLinkClick}
@@ -346,7 +346,7 @@ export default function FacebookReview() {
                   )}
                 </div>
               )}
-            </div>
+            </div>*/}
 
             {/* Upload Section */}
             <div>
@@ -428,14 +428,9 @@ export default function FacebookReview() {
 
                 <button
                   type="submit"
-                  disabled={
-                    !file ||
-                    isSubmitting ||
-                    (selectedLinkId && linkClickCounts[selectedLinkId] < 1)
-                  }
+                  disabled={!file || isSubmitting}
                   className={`w-full py-4 rounded-xl font-bold text-lg transition-all duration-300 transform hover:scale-[1.02] ${
-                    file &&
-                    (!selectedLinkId || linkClickCounts[selectedLinkId] >= 1)
+                    file
                       ? "bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white shadow-lg hover:shadow-xl"
                       : "bg-gray-300 text-gray-500 cursor-not-allowed"
                   }`}
