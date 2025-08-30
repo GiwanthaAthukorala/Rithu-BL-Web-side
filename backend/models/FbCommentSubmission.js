@@ -11,7 +11,7 @@ const fbCommentSubmissionSchema = new mongoose.Schema(
       type: String,
       required: true,
       enum: ["facebook", "instagram", "tiktok", "youtube", "whatsapp"],
-      default: "facebook Comments",
+      default: "Comments",
     },
     screenshot: {
       type: String,
