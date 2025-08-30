@@ -116,7 +116,7 @@ export default function FacebookComment() {
         "https://rithu-bl-web-side.vercel.app";
       console.log("Submitting to:", `${apiUrl}/api/fb-comments`);
       console.log("Token exists:", !!token);
-      const response = await fetch(`${apiUrl}/api/fb-comments`, {
+      const response = await fetch(`${apiUrl}/fb-comments`, {
         method: "POST",
         body: formData,
         credentials: "include", // Important for cookies/auth
