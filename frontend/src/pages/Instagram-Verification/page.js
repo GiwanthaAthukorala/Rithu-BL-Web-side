@@ -192,15 +192,15 @@ export default function InstagramVerificationTask() {
             <p className="text-gray-700 mb-3">
               Please visit this link and take a screenshot as proof:
             </p>
-            {/**  <li>
+            <li>
               {" "}
               <a
-                href="https://www.instagram.com/dreamfashion318?igsh=MTMyZDE2YXZwZzJmcQ=="
+                href="https://www.instagram.com/trendzii._"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium"
               >
-                dreamfashion318 - ඉන්ස්ට්‍ර ග්‍රෑම් එකව්න්ට් එක ෆලෝ කරන්න{" "}
+                Trendzii - ඉන්ස්ට්‍ර ග්‍රෑම් එකව්න්ට් එක ෆලෝ කරන්න{" "}
                 <ExternalLink className="w-4 h-4 ml-1" />
               </a>
             </li>

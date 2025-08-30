@@ -25,56 +25,48 @@ const connectDB = async () => {
 
 const facebookLinks = [
   {
+    url: "https://www.facebook.com/profile.php?id=61579587938161&mibextid=ZbWKwL",
+    title: "Naturelle - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න",
+    platform: "facebook",
+    earnings: 1.0,
+  },
+  {
+    url: "https://www.facebook.com/share/1MiD2SrShK/",
+    title: "Geeth Art Studio  - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න",
+    platform: "facebook",
+    earnings: 1.0,
+  },
+  {
+    url: "https://www.facebook.com/profile.php?id=61578272048469",
+    title: "N2 Mobile Plus - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න",
+    platform: "facebook",
+    earnings: 1.0,
+  },
+  {
+    url: "https://www.facebook.com/profile.php?id=61579607229950",
+    title: "pretty Brides & acadamy - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න",
+    platform: "facebook",
+    earnings: 1.0,
+  },
+  {
+    url: "https://web.facebook.com/Firstcontinentallogistics/",
+    title: "First Continental Logistics - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න",
+    platform: "facebook",
+    earnings: 1.0,
+  },
+  {
+    url: "https://www.facebook.com/Trendziilk",
+    title: "Trendzii - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න",
+    platform: "facebook",
+    earnings: 1.0,
+  },
+  {
     url: "https://www.facebook.com/share/175gmnG5MQ/",
     title: "Ammta.Hudu ツ - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න",
     platform: "facebook",
     earnings: 1.0,
   },
-  {
-    url: "https://web.facebook.com/GrandSpaandWellnesslk/",
-    title: "Grand Spa & Wellness Pvt Ltd - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න",
-    platform: "facebook",
-    earnings: 1.0,
-  },
-  {
-    url: "https://www.facebook.com/share/15wAK2vKza/",
-    title: "Hundred Fashion - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න",
-    platform: "facebook",
-    earnings: 1.0,
-  },
-  {
-    url: "https://web.facebook.com/ctismartkandy",
-    title:
-      "CTI SMART Mobile Phone Repair Service Center-Kandy - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න",
-    platform: "facebook",
-    earnings: 1.0,
-  },
-  {
-    url: "https://web.facebook.com/profile.php?id=61577094362250",
-    title: "Global Tech - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න",
-    platform: "facebook",
-    earnings: 1.0,
-  },
-  {
-    url: "https://www.facebook.com/share/1DRToiVMLR/",
-    title: "Maths with අකිල අමරතුංග - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න",
-    platform: "facebook",
-    earnings: 1.0,
-  },
-  {
-    url: "https://www.facebook.com/share/1YYapLHDJw/",
-    title: "Besty - බෙස්ටි - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න",
-    platform: "facebook",
-    earnings: 1.0,
-  },
-  {
-    url: "https://web.facebook.com/profile.php?id=61579877851251",
-    title: "SM Cushion Work - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න",
-    platform: "facebook",
-    earnings: 1.0,
-  },
 ];
-
 async function seedLinks() {
   try {
     await connectDB();
