@@ -5,6 +5,7 @@ const Submission = require("../models/Submission");
 const { protect } = require("../middleware/authMiddleware");
 const YoutubeSubmission = require("../models/YoutubeSubmission");
 const FbReviewSubmission = require("../models/FbReviewSubmission");
+const fbCommentSubmission = require("../models/fbCommentSubmission");
 
 router.get("/", protect, async (req, res) => {
   try {
@@ -30,22 +31,29 @@ router.get("/", protect, async (req, res) => {
     }
 
     // Get approved submissions
-    const [fbSubmissions, ytSubmissions, reviewSubmissions] = await Promise.all(
-      [
-        Submission.find({
-          user: req.user._id,
-          status: "approved",
-        }),
-        YoutubeSubmission.find({
-          user: req.user._id,
-          status: "approved",
-        }),
-        FbReviewSubmission.find({
-          user: req.user._id,
-          status: "approved",
-        }),
-      ]
-    );
+    const [
+      fbSubmissions,
+      ytSubmissions,
+      reviewSubmissions,
+      commmentSubmissions,
+    ] = await Promise.all([
+      Submission.find({
+        user: req.user._id,
+        status: "approved",
+      }),
+      YoutubeSubmission.find({
+        user: req.user._id,
+        status: "approved",
+      }),
+      FbReviewSubmission.find({
+        user: req.user._id,
+        status: "approved",
+      }),
+      fbCommentSubmission.find({
+        user: req.user._id,
+        status: "approved",
+      }),
+    ]);
     const fbTotal = fbSubmissions.reduce(
       (sum, sub) => sum + (sub.amount || 1),
       0
@@ -58,8 +66,12 @@ router.get("/", protect, async (req, res) => {
       (sum, sub) => sum + (sub.amount || 30),
       0
     );
+    const commentTotal = commmentSubmissions.reduce(
+      (sum, sub) => sum + (sub.amount || 15),
+      0
+    );
 
-    const calculatedTotal = fbTotal + ytTotal + reviewTotal;
+    const calculatedTotal = fbTotal + ytTotal + reviewTotal + commentTotal;
 
     // Update earnings if needed
     if (earnings.totalEarned !== calculatedTotal) {

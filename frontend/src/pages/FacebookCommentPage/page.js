@@ -6,9 +6,8 @@ import Header from "@/components/Header/Header";
 import api from "@/lib/api";
 import { useAuth } from "@/Context/AuthContext";
 import DuplicateWarningModal from "@/components/DuplicateWarningModal";
-import ReviewTaskLinks from "@/components/ReviewLink/ReviewLink";
 
-export default function FacebookReview() {
+export default function FacebookComment() {
   const [file, setFile] = useState(null);
   const [preview, setPreview] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -115,9 +114,9 @@ export default function FacebookReview() {
       const apiUrl =
         process.env.NEXT_PUBLIC_API_URL ||
         "https://rithu-bl-web-side.vercel.app";
-      console.log("Submitting to:", `${apiUrl}/api/fb-reviews`);
+      console.log("Submitting to:", `${apiUrl}/api/fb-comments`);
       console.log("Token exists:", !!token);
-      const response = await fetch(`${apiUrl}/api/fb-reviews`, {
+      const response = await fetch(`${apiUrl}/api/fb-comments`, {
         method: "POST",
         body: formData,
         credentials: "include", // Important for cookies/auth
@@ -205,7 +204,7 @@ export default function FacebookReview() {
             </div>
             <h2 className="text-2xl font-bold mb-2">Submission Successful!</h2>
             <p className="text-gray-600 mb-6">
-              You've earned Rs 30.00! Your balance has been updated.
+              You've earned Rs 15.00! Your balance has been updated.
             </p>
             <button
               onClick={() => router.push("/Profile/page")}
@@ -233,8 +232,8 @@ export default function FacebookReview() {
                 <div className="absolute inset-0 bg-gradient-to-r from-blue-400 to-blue-300 rounded-2xl blur-sm opacity-60 animate-pulse"></div>
                 <div className="relative w-16 h-16 sm:w-20 sm:h-20 bg-white rounded-2xl flex items-center justify-center shadow-lg transform hover:scale-105 transition-transform duration-300">
                   <img
-                    src="/review.png"
-                    alt="Facebook Icon"
+                    src="/comment.png"
+                    alt="Facebook Comment Icon"
                     className="w-12 h-12 sm:w-16 sm:h-16 object-contain"
                   />
                 </div>
@@ -244,15 +243,16 @@ export default function FacebookReview() {
               <div className="flex-1 text-center sm:text-left">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-3 mb-2">
                   <h1 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
-                    Facebook Page Review
+                    Facebook Comments
                   </h1>
                   <div className="mt-2 sm:mt-0 px-3 py-1 bg-green-500 text-white text-sm font-semibold rounded-full shadow-md animate-bounce w-max mx-auto sm:mx-0">
-                    Rs 30.00
+                    Rs 15.00/=
                   </div>
                 </div>
 
                 <p className="text-blue-100 text-base sm:text-lg font-medium">
-                  Earn money by reviewing Facebook pages
+                  Earn money by Facebook Comment in Facebook Post or Facebook
+                  pages
                 </p>
 
                 <div className="flex flex-col sm:flex-row items-center sm:items-center justify-center sm:justify-start space-y-2 sm:space-y-0 sm:space-x-4 mt-3">
@@ -293,19 +293,19 @@ export default function FacebookReview() {
                     <span className="flex-shrink-0 w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-bold">
                       2
                     </span>
-                    <span>Review the page on Facebook</span>
+                    <span>Comment on the post or page on Facebook</span>
                   </li>
                   <li className="flex items-start space-x-3">
                     <span className="flex-shrink-0 w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-bold">
                       3
                     </span>
-                    <span>Take a screenshot showing your review</span>
+                    <span>Take a screenshot showing your Comment</span>
                   </li>
                   <li className="flex items-start space-x-3">
                     <span className="flex-shrink-0 w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-bold">
                       4
                     </span>
-                    <span>Upload the screenshot to earn Rs 30.00</span>
+                    <span>Upload the screenshot to earn Rs 15.00/=</span>
                   </li>
                 </ol>
               </div>
@@ -443,7 +443,7 @@ export default function FacebookReview() {
                   ) : (
                     <div className="flex items-center justify-center space-x-2">
                       <Upload className="w-5 h-5" />
-                      <span>Submit Screenshot & Earn Rs 30.00</span>
+                      <span>Submit Screenshot & Earn Rs 15.00/=</span>
                     </div>
                   )}
                 </button>

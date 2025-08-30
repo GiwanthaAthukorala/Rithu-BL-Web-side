@@ -1,0 +1,51 @@
+const mongoose = require("mongoose");
+
+const fbCommentSubmissionSchema = new mongoose.Schema(
+  {
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+    platform: {
+      type: String,
+      required: true,
+      enum: ["facebook", "instagram", "tiktok", "youtube", "whatsapp"],
+      default: "facebook Comments",
+    },
+    screenshot: {
+      type: String,
+      required: true,
+    },
+    imageHash: {
+      type: String,
+    },
+    status: {
+      type: String,
+      enum: ["pending", "approved", "rejected"],
+      default: "approved", // Auto-approve for now
+    },
+    amount: {
+      type: Number,
+      default: 15.0, // Rs 30 for FB reviews
+    },
+    submissionCount: {
+      type: Number,
+      default: 1,
+    },
+    // Optional: Link to the review link that was clicked
+    reviewLinkId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "CommentsLink",
+    },
+  },
+  { timestamps: true }
+);
+
+// Add index for better performance
+fbCommentSubmissionSchema.index({ user: 1, createdAt: -1 });
+
+module.exports = mongoose.model(
+  "FbCommentSubmission",
+  fbCommentSubmissionSchema
+);

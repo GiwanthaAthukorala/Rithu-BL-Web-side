@@ -60,6 +60,7 @@ export const endpoints = {
   earnings: "/earnings",
   youtubeSubmission: "/youtubeSubmissions",
   fbReviews: "/fb-reviews",
+  FacebookComments: "/fb-comments",
 };
 
 export const register = async (userData) => {
