@@ -23,17 +23,16 @@ const fbCommentSubmissionSchema = new mongoose.Schema(
     status: {
       type: String,
       enum: ["pending", "approved", "rejected"],
-      default: "approved", // Auto-approve for now
+      default: "approved",
     },
     amount: {
       type: Number,
-      default: 15.0, // Rs 30 for FB reviews
+      default: 15.0,
     },
     submissionCount: {
       type: Number,
       default: 1,
     },
-    // Optional: Link to the review link that was clicked
     reviewLinkId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "CommentsLink",

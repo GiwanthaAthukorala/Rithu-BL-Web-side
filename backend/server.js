@@ -95,7 +95,7 @@ app.use("/api/auth", require("./routes/passwordResetRoutes"));
 app.use("/api/links", require("./routes/linkRoutes"));
 app.use("/api/review-links", require("./routes/ReviewLink")); // For link management
 app.use("/api/fb-reviews", require("./routes/ReviewRoutes")); // For submissions
-app.use("/api/fb-comments", require("./routes/CommentRoutes")); // Fixed route
+app.use("/api/fb-comments", require("./routes/CommentRoutes"));
 // === Health Check ===
 app.get("/health", (req, res) => {
   res.status(200).json({ status: "ok" });
