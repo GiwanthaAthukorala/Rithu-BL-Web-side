@@ -1,5 +1,5 @@
 const Earnings = require("../models/Earnings");
-const FbCommentSubmission = require("../models/fbCommentSubmission");
+const FbCommentSubmission = require("../models/FbCommentSubmission");
 const generateImageHash = require("../utils/generateImageHash");
 const isSimilarHash = require("../utils/isSimilarHash");
 

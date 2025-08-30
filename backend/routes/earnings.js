@@ -5,7 +5,7 @@ const Submission = require("../models/Submission");
 const { protect } = require("../middleware/authMiddleware");
 const YoutubeSubmission = require("../models/YoutubeSubmission");
 const FbReviewSubmission = require("../models/FbReviewSubmission");
-const fbCommentSubmission = require("../models/fbCommentSubmission");
+const FbCommentSubmission = require("../models/FbCommentSubmission");
 
 router.get("/", protect, async (req, res) => {
   try {
@@ -49,7 +49,7 @@ router.get("/", protect, async (req, res) => {
         user: req.user._id,
         status: "approved",
       }),
-      fbCommentSubmission.find({
+      FbCommentSubmission.find({
         user: req.user._id,
         status: "approved",
       }),

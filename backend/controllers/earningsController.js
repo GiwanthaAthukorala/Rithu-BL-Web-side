@@ -3,14 +3,14 @@ const Transaction = require("../models/Transaction");
 const Submission = require("../models/Submission");
 const YoutubeSubmission = require("../models/YoutubeSubmission");
 const FbReviewSubmission = require("../models/FbReviewSubmission");
-const FbCommentSubmission = require("../models/fbCommentSubmission");
+const FbCommentSubmission = require("../models/FbCommentSubmission");
 
 exports.getUserEarnings = async (req, res) => {
   try {
     const [
       earnings,
       transactions,
-      fbSubmissions,
+      fbSubmissions,s
       ytSubmissions,
       reviewSubmissions,
       commentSubmissions,
