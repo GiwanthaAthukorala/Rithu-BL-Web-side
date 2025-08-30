@@ -10,7 +10,7 @@ exports.getUserEarnings = async (req, res) => {
     const [
       earnings,
       transactions,
-      fbSubmissions,s
+      fbSubmissions,
       ytSubmissions,
       reviewSubmissions,
       commentSubmissions,
