@@ -99,7 +99,7 @@ export default function FacebookComment() {
     try {
       const formData = new FormData();
       formData.append("screenshot", file);
-      formData.append("platform", "facebook");
+      formData.append("platform", "comments");
 
       /* if (selectedLinkId) {
         formData.append("linkId", selectedLinkId);
