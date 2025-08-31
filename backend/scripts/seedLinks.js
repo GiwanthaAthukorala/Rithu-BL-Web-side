@@ -25,6 +25,22 @@ const connectDB = async () => {
 
 const facebookLinks = [
   {
+    url: "https://www.facebook.com/share/16ucsqbY8q/?mibextid=wwXIfr",
+    title:
+      "Yasara Dinithi Beauty Hair Acadamy  - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න",
+    platform: "facebook",
+    earnings: 1.0,
+  },
+
+  {
+    url: "https://www.facebook.com/share/14N2PE5vGu5/",
+    title:
+      "Ritigala Hair oil රිටිගල හෙයා ඔයිල් - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න",
+    platform: "facebook",
+    earnings: 1.0,
+  },
+
+  {
     url: "https://www.facebook.com/profile.php?id=61579587938161&mibextid=ZbWKwL",
     title: "Naturelle - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න",
     platform: "facebook",
@@ -57,12 +73,6 @@ const facebookLinks = [
   {
     url: "https://www.facebook.com/Trendziilk",
     title: "Trendzii - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න",
-    platform: "facebook",
-    earnings: 1.0,
-  },
-  {
-    url: "https://www.facebook.com/share/175gmnG5MQ/",
-    title: "Ammta.Hudu ツ - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න",
     platform: "facebook",
     earnings: 1.0,
   },
