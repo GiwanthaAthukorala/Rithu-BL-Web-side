@@ -25,6 +25,36 @@ const connectDB = async () => {
 
 const facebookLinks = [
   {
+    url: "https://www.facebook.com/share/v/1VMTkCAtAn/?mibextid=wwXIfr",
+    title: "ෆෙස්බුක් පොස්ට් ලයික් කරන්න",
+    platform: "facebook",
+    earnings: 1.0,
+  },
+  {
+    url: "https://www.facebook.com/share/p/14JMwaMUS4k/?mibextid=wwXIfr",
+    title: "ෆෙස්බුක් පොස්ට් ලයික් කරන්න",
+    platform: "facebook",
+    earnings: 1.0,
+  },
+  {
+    url: "https://www.facebook.com/share/r/1EruyA1Ud7/?mibextid=wwXIfr",
+    title: "ෆෙස්බුක් පොස්ට් ලයික් කරන්න",
+    platform: "facebook",
+    earnings: 1.0,
+  },
+  {
+    url: "https://www.facebook.com/share/1Y41H1Ta1L/",
+    title: "Ayurvee Herbal - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න",
+    platform: "facebook",
+    earnings: 1.0,
+  },
+  {
+    url: "https://web.facebook.com/profile.php?id=61577843314744",
+    title: "Blooms Bell - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න",
+    platform: "facebook",
+    earnings: 1.0,
+  },
+  {
     url: "https://www.facebook.com/share/16ucsqbY8q/?mibextid=wwXIfr",
     title:
       "Yasara Dinithi Beauty Hair Acadamy  - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න",
@@ -36,43 +66,6 @@ const facebookLinks = [
     url: "https://www.facebook.com/share/14N2PE5vGu5/",
     title:
       "Ritigala Hair oil රිටිගල හෙයා ඔයිල් - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න",
-    platform: "facebook",
-    earnings: 1.0,
-  },
-
-  {
-    url: "https://www.facebook.com/profile.php?id=61579587938161&mibextid=ZbWKwL",
-    title: "Naturelle - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න",
-    platform: "facebook",
-    earnings: 1.0,
-  },
-  {
-    url: "https://www.facebook.com/share/1MiD2SrShK/",
-    title: "Geeth Art Studio  - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න",
-    platform: "facebook",
-    earnings: 1.0,
-  },
-  {
-    url: "https://www.facebook.com/profile.php?id=61578272048469",
-    title: "N2 Mobile Plus - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න",
-    platform: "facebook",
-    earnings: 1.0,
-  },
-  {
-    url: "https://www.facebook.com/profile.php?id=61579607229950",
-    title: "pretty Brides & acadamy - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න",
-    platform: "facebook",
-    earnings: 1.0,
-  },
-  {
-    url: "https://web.facebook.com/Firstcontinentallogistics/",
-    title: "First Continental Logistics - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න",
-    platform: "facebook",
-    earnings: 1.0,
-  },
-  {
-    url: "https://www.facebook.com/Trendziilk",
-    title: "Trendzii - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න",
     platform: "facebook",
     earnings: 1.0,
   },
