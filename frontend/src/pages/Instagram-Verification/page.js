@@ -216,7 +216,7 @@ export default function InstagramVerificationTask() {
                 Instagram Profile) <ExternalLink className="w-4 h-4 ml-1" />
               </a>
             </li>{" "}
-            <li>
+            {/* <li>
               {" "}
               <a
                 href="https://www.instagram.com/noirelle_premium?igsh=bXM4ajMyanFmN2xl&utm_source=qr"
@@ -229,7 +229,7 @@ export default function InstagramVerificationTask() {
                 <ExternalLink className="w-4 h-4 ml-1" />
               </a>
             </li>
-            {/*<li>
+           <li>
               {" "}
               <a
                 href=""
