@@ -25,47 +25,45 @@ const connectDB = async () => {
 
 const facebookLinks = [
   {
-    url: "https://www.facebook.com/share/v/1VMTkCAtAn/?mibextid=wwXIfr",
+    url: "https://www.facebook.com/share/12Lcxsxr9Fp/",
+    title: "Ras TV - රැස් TV - ෆෙස්බුක් පෙජ් ඒක විතරක් ලයික් ෆලෝ කරන්න",
+    platform: "facebook",
+    earnings: 1.0,
+  },
+  {
+    url: "https://www.facebook.com/share/173QwA81Yv/?mibextid=wwXIfr",
+    title: "Mayan Cosmetic - ෆෙස්බුක් පෙජ් ඒක විතරක් ලයික් ෆලෝ කරන්න",
+    platform: "facebook",
+    earnings: 1.0,
+  },
+  {
+    url: "https://www.facebook.com/share/v/16s3J8qLCU/?mibextid=wwXIfr",
     title: "ෆෙස්බුක් පොස්ට් ලයික් කරන්න",
     platform: "facebook",
     earnings: 1.0,
   },
   {
-    url: "https://www.facebook.com/share/p/14JMwaMUS4k/?mibextid=wwXIfr",
+    url: "https://www.facebook.com/share/p/19Lr7DXimv/?mibextid=wwXIfr",
     title: "ෆෙස්බුක් පොස්ට් ලයික් කරන්න",
     platform: "facebook",
     earnings: 1.0,
   },
   {
-    url: "https://www.facebook.com/share/r/1EruyA1Ud7/?mibextid=wwXIfr",
+    url: "https://www.facebook.com/share/v/178rXPngjx/?mibextid=wwXIfr",
     title: "ෆෙස්බුක් පොස්ට් ලයික් කරන්න",
-    platform: "facebook",
-    earnings: 1.0,
-  },
-  {
-    url: "https://www.facebook.com/share/1Y41H1Ta1L/",
-    title: "Ayurvee Herbal - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න",
-    platform: "facebook",
-    earnings: 1.0,
-  },
-  {
-    url: "https://web.facebook.com/profile.php?id=61577843314744",
-    title: "Blooms Bell - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න",
-    platform: "facebook",
-    earnings: 1.0,
-  },
-  {
-    url: "https://www.facebook.com/share/16ucsqbY8q/?mibextid=wwXIfr",
-    title:
-      "Yasara Dinithi Beauty Hair Acadamy  - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න",
     platform: "facebook",
     earnings: 1.0,
   },
 
   {
-    url: "https://www.facebook.com/share/14N2PE5vGu5/",
-    title:
-      "Ritigala Hair oil රිටිගල හෙයා ඔයිල් - ෆෙස්බුක් පෙජ් එක ලයික් ෆලෝ කරන්න",
+    url: "https://www.facebook.com/share/p/1aNr334GHe/?mibextid=wwXIfr",
+    title: "ෆෙස්බුක් පොස්ට් ලයික් කරන්න",
+    platform: "facebook",
+    earnings: 1.0,
+  },
+  {
+    url: "https://www.facebook.com/share/1B5nVKDUfY/",
+    title: "The TravelDoc Global - ෆෙස්බුක් පෙජ් ඒක විතරක් ලයික් ෆලෝ කරන්න",
     platform: "facebook",
     earnings: 1.0,
   },

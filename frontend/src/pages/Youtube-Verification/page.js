@@ -188,6 +188,38 @@ export default function YouTubeVerificationTask() {
           </div>
 
           {/* Admin Message */}
+          <div className="mb-8 bg-blue-50 p-4 rounded-lg">
+            <p className="text-gray-700 mb-3">
+              Please visit this link and take a screenshot as proof:
+            </p>
+            <a
+              href="https://youtube.com/@echorush44?si=kIRHbmeNuzAOhH-u"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-between p-4 bg-white rounded-lg hover:bg-blue-50 transition-colors duration-200 border border-gray-200 hover:border-blue-300 group"
+            >
+              <span className="text-gray-700 group-hover:text-blue-700">
+                EchoRush - යූ ටියුබ් චැනල් එක සබ්ක්‍රයිබ් කරන්න
+              </span>
+              <ExternalLink className="w-4 h-4 text-blue-600 group-hover:scale-110 transition-transform" />
+            </a>
+          </div>
+          <div className="mb-8 bg-blue-50 p-4 rounded-lg">
+            <p className="text-gray-700 mb-3">
+              Please visit this link and take a screenshot as proof:
+            </p>
+            <a
+              href="https://youtu.be/_TBh5qGQdrk?si=gvpG5fOHGwE45nNE"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-between p-4 bg-white rounded-lg hover:bg-blue-50 transition-colors duration-200 border border-gray-200 hover:border-blue-300 group"
+            >
+              <span className="text-gray-700 group-hover:text-blue-700">
+                Muditha Rodrigo - යූ ටියුබ් චැනල් එක සබ්ක්‍රයිබ් කරන්න
+              </span>
+              <ExternalLink className="w-4 h-4 text-blue-600 group-hover:scale-110 transition-transform" />
+            </a>
+          </div>
 
           <div className="mb-8 bg-blue-50 p-4 rounded-lg">
             <p className="text-gray-700 mb-3">
@@ -217,22 +249,6 @@ export default function YouTubeVerificationTask() {
             >
               <span className="text-gray-700 group-hover:text-blue-700">
                 Sadu you tube chennel - යූ ටියුබ් චැනල් එක සබ්ක්‍රයිබ් කරන්න
-              </span>
-              <ExternalLink className="w-4 h-4 text-blue-600 group-hover:scale-110 transition-transform" />
-            </a>
-          </div>
-          <div className="mb-8 bg-blue-50 p-4 rounded-lg">
-            <p className="text-gray-700 mb-3">
-              Please visit this link and take a screenshot as proof:
-            </p>
-            <a
-              href="https://www.youtube.com/@mudthaRodrigo"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center justify-between p-4 bg-white rounded-lg hover:bg-blue-50 transition-colors duration-200 border border-gray-200 hover:border-blue-300 group"
-            >
-              <span className="text-gray-700 group-hover:text-blue-700">
-                Muditha Rodrigo - යූ ටියුබ් චැනල් එක සබ්ක්‍රයිබ් කරන්න
               </span>
               <ExternalLink className="w-4 h-4 text-blue-600 group-hover:scale-110 transition-transform" />
             </a>
