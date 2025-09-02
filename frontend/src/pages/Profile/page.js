@@ -22,7 +22,7 @@ import { useAuth } from "@/Context/AuthContext";
 import { useRouter } from "next/navigation";
 import api from "@/lib/api";
 import { useSocket } from "@/Context/SocketContext";
-import ProfileEditModal from "./ProfileEditModal";
+import ProfileEditModal from "@/components/Profile/profileModel";
 
 export default function Profile() {
   const [earnings, setEarnings] = useState({
