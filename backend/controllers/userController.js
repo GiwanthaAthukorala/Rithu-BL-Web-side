@@ -159,6 +159,187 @@ const getUserProfile = async (req, res) => {
   }
 };
 
+const updateUserProfile = async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const {
+      firstName,
+      lastName,
+      email,
+      phoneNumber,
+      bankName,
+      bankBranch,
+      bankAccountNo,
+      currentPassword,
+      newPassword,
+    } = req.body;
+
+    // Find the user
+    const user = await User.findById(userId).select("+password");
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    // Check if email is being changed and if it's already taken
+    if (email && email !== user.email) {
+      const emailExists = await User.findOne({ email, _id: { $ne: userId } });
+      if (emailExists) {
+        return res.status(400).json({
+          success: false,
+          errorType: "email",
+          message: "Email is already registered",
+        });
+      }
+    }
+
+    // Check if phone number is being changed and if it's already taken
+    if (phoneNumber && phoneNumber !== user.phoneNumber) {
+      const phoneExists = await User.findOne({
+        phoneNumber,
+        _id: { $ne: userId },
+      });
+      if (phoneExists) {
+        return res.status(400).json({
+          success: false,
+          errorType: "phone",
+          message: "Phone number is already registered",
+        });
+      }
+    }
+
+    // Check if bank account is being changed and if it's already taken
+    if (bankAccountNo && bankAccountNo !== user.bankAccountNo) {
+      const accountExists = await User.findOne({
+        bankAccountNo,
+        _id: { $ne: userId },
+      });
+      if (accountExists) {
+        return res.status(400).json({
+          success: false,
+          errorType: "bankAccount",
+          message: "Bank account number is already registered",
+        });
+      }
+    }
+
+    // Handle password change
+    if (newPassword) {
+      if (!currentPassword) {
+        return res.status(400).json({
+          success: false,
+          errorType: "password",
+          message: "Current password is required to set new password",
+        });
+      }
+
+      // Verify current password
+      const isCurrentPasswordValid = await user.matchPassword(currentPassword);
+      if (!isCurrentPasswordValid) {
+        return res.status(400).json({
+          success: false,
+          errorType: "currentPassword",
+          message: "Current password is incorrect",
+        });
+      }
+
+      // Update password (will be hashed by the pre-save middleware)
+      user.password = newPassword;
+    }
+
+    // Update other fields
+    if (firstName) user.firstName = firstName;
+    if (lastName) user.lastName = lastName;
+    if (email) user.email = email;
+    if (phoneNumber) user.phoneNumber = phoneNumber;
+    if (bankName) user.bankName = bankName;
+    if (bankBranch) user.bankBranch = bankBranch;
+    if (bankAccountNo) user.bankAccountNo = bankAccountNo;
+
+    await user.save();
+
+    // Return updated user data (without password)
+    const updatedUser = await User.findById(userId).select("-password");
+
+    res.status(200).json({
+      success: true,
+      message: "Profile updated successfully",
+      user: updatedUser,
+    });
+  } catch (error) {
+    console.error("Update profile error:", error);
+
+    // Handle mongoose validation errors
+    if (error.name === "ValidationError") {
+      const errors = Object.values(error.errors).map((err) => err.message);
+      return res.status(400).json({
+        success: false,
+        message: errors[0] || "Validation error",
+      });
+    }
+
+    res.status(500).json({
+      success: false,
+      message: "Server error while updating profile",
+    });
+  }
+};
+
+// Upload profile picture
+const uploadProfilePicture = async (req, res) => {
+  try {
+    const userId = req.user._id;
+
+    if (!req.file) {
+      return res.status(400).json({
+        success: false,
+        message: "No image file provided",
+      });
+    }
+
+    // Find the user
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    // Delete old profile picture if it exists
+    if (user.profilePicture && user.profilePicture.public_id) {
+      try {
+        await cloudinary.uploader.destroy(user.profilePicture.public_id);
+      } catch (deleteError) {
+        console.error("Error deleting old profile picture:", deleteError);
+        // Continue even if deletion fails
+      }
+    }
+
+    // Update user with new profile picture
+    user.profilePicture = {
+      url: req.file.path,
+      public_id: req.file.filename,
+    };
+
+    await user.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Profile picture uploaded successfully",
+      profilePicture: user.profilePicture,
+    });
+  } catch (error) {
+    console.error("Upload profile picture error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error while uploading profile picture",
+    });
+  }
+};
+
 // Admin login
 const adminLogin = async (req, res) => {
   try {
@@ -206,4 +387,11 @@ const adminLogin = async (req, res) => {
   }
 };
 
-module.exports = { registerUser, loginUser, getUserProfile, adminLogin };
+module.exports = {
+  registerUser,
+  loginUser,
+  getUserProfile,
+  adminLogin,
+  updateUserProfile,
+  uploadProfilePicture,
+};

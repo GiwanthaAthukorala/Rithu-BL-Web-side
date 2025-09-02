@@ -108,7 +108,7 @@ const SupportedPlatforms = () => {
           </div>
         </Link>
 
-        {/* WhatsApp */}
+        {/* Google Review */}
         <Link href="/Google-Review/pages">
           <div className="cursor-pointer bg-white shadow-md rounded-lg p-6 border-0 hover:shadow-lg transition">
             <div className="flex items-center mb-4">
@@ -128,7 +128,7 @@ const SupportedPlatforms = () => {
               customers to leave Review.
             </p>
             <div className="text-sm text-[#000000] font-medium ">
-              Rs 40/= like • Whatsapp payouts
+              Rs 40/= like • Google Review payouts
             </div>
           </div>
         </Link>

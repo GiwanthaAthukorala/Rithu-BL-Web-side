@@ -16,7 +16,8 @@ export default function LandingPage() {
               Get Paid for Your Social Media Activity
             </h1>
             <p className="text-lg sm:text-xl text-blue-100 max-w-lg mx-auto lg:mx-0 px-2 lg:px-0">
-              Earn 80¢ for every like on your content across multiple platforms.
+              Earn Rs 1/= for every like on your content across multiple
+              platforms.
             </p>
           </div>
 

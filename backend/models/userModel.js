@@ -31,6 +31,16 @@ const userSchema = new mongoose.Schema(
       minlength: 8,
       select: false,
     },
+    profilePicture: {
+      url: {
+        type: String,
+        default: null,
+      },
+      public_id: {
+        type: String,
+        default: null,
+      },
+    },
     role: {
       type: String,
       enum: ["user", "admin", "superadmin"],
@@ -170,6 +180,16 @@ userSchema.pre("save", async function (next) {
 // Method to compare passwords
 userSchema.methods.matchPassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
+};
+// Method to get profile picture URL or default
+userSchema.methods.getProfilePictureUrl = function () {
+  if (this.profilePicture && this.profilePicture.url) {
+    return this.profilePicture.url;
+  }
+  // Return a default avatar URL or initials-based avatar
+  return `https://ui-avatars.com/api/?name=${encodeURIComponent(
+    this.firstName + "+" + this.lastName
+  )}&background=3B82F6&color=ffffff&size=400`;
 };
 
 module.exports = mongoose.model("User", userSchema);
