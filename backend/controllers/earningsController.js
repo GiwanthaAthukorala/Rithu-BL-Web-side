@@ -4,6 +4,7 @@ const Submission = require("../models/Submission");
 const YoutubeSubmission = require("../models/YoutubeSubmission");
 const FbReviewSubmission = require("../models/FbReviewSubmission");
 const FbCommentSubmission = require("../models/FbCommentSubmission");
+const GoogleReviewModel = require("../models/GoogleReviewModel");
 
 exports.getUserEarnings = async (req, res) => {
   try {
@@ -14,6 +15,7 @@ exports.getUserEarnings = async (req, res) => {
       ytSubmissions,
       reviewSubmissions,
       commentSubmissions,
+      googleReviewsSubmissions,
     ] = await Promise.all([
       Earnings.findOne({ user: req.user._id }),
       Transaction.find({ user: req.user._id })
@@ -23,6 +25,7 @@ exports.getUserEarnings = async (req, res) => {
       YoutubeSubmission.find({ user: req.user._id, status: "approved" }),
       FbReviewSubmission.find({ user: req.user._id, status: "approved" }),
       FbCommentSubmission.find({ user: req.user._id, status: "approved" }),
+      GoogleReviewModel.find({ user: req.user._id, status: "approved" }),
     ]);
 
     // Calculate total from both submission types
@@ -43,8 +46,13 @@ exports.getUserEarnings = async (req, res) => {
       (sum, sub) => sum + (sub.amount || 15),
       0
     );
+    const googleTotal = googleReviewsSubmissions.reduce(
+      (sum, sub) => sum + (sub.amount || 40),
+      0
+    );
 
-    const calculatedTotal = fbTotal + ytTotal + reviewTotal + commentTotal;
+    const calculatedTotal =
+      fbTotal + ytTotal + reviewTotal + commentTotal + googleTotal;
 
     // Create earnings record if doesn't exist
     let earningsData = earnings;

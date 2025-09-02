@@ -6,6 +6,7 @@ const { protect } = require("../middleware/authMiddleware");
 const YoutubeSubmission = require("../models/YoutubeSubmission");
 const FbReviewSubmission = require("../models/FbReviewSubmission");
 const FbCommentSubmission = require("../models/FbCommentSubmission");
+const GoogleReviewModel = require("../models/GoogleReviewModel");
 
 router.get("/", protect, async (req, res) => {
   try {
@@ -36,6 +37,7 @@ router.get("/", protect, async (req, res) => {
       ytSubmissions,
       reviewSubmissions,
       commmentSubmissions,
+      googleReviewSubmissions,
     ] = await Promise.all([
       Submission.find({
         user: req.user._id,
@@ -53,7 +55,12 @@ router.get("/", protect, async (req, res) => {
         user: req.user._id,
         status: "approved",
       }),
+      GoogleReviewModel.find({
+        user: req.user._id,
+        status: "approved",
+      }),
     ]);
+
     const fbTotal = fbSubmissions.reduce(
       (sum, sub) => sum + (sub.amount || 1),
       0
@@ -70,8 +77,13 @@ router.get("/", protect, async (req, res) => {
       (sum, sub) => sum + (sub.amount || 15),
       0
     );
+    const googleTotal = googleReviewSubmissions.reduce(
+      (sum, sub) => sum + (sub.amount || 40),
+      0
+    );
 
-    const calculatedTotal = fbTotal + ytTotal + reviewTotal + commentTotal;
+    const calculatedTotal =
+      fbTotal + ytTotal + reviewTotal + commentTotal + googleTotal;
 
     // Update earnings if needed
     if (earnings.totalEarned !== calculatedTotal) {

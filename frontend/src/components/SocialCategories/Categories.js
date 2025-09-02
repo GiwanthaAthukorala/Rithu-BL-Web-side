@@ -109,23 +109,26 @@ const SupportedPlatforms = () => {
         </Link>
 
         {/* WhatsApp */}
-        <Link href="">
+        <Link href="/Google-Review/pages">
           <div className="cursor-pointer bg-white shadow-md rounded-lg p-6 border-0 hover:shadow-lg transition">
             <div className="flex items-center mb-4">
               <div className="w-16 h-16 flex items-center justify-center mr-3 overflow-hidden">
                 <img
-                  src="/whatsapp.png"
+                  src="/google.png"
                   alt="Whatsapp Icon"
                   className="w-16 h-16 object-contain"
                 />
               </div>
-              <h3 className="text-lg font-semibold text-gray-900">WhatsApp</h3>
+              <h3 className="text-lg font-semibold text-gray-900">
+                Google Review
+              </h3>
             </div>
             <p className="text-[#000000]  font-bold mb-4 text-[18px] ">
-              Monetize your business messages and group interactions.
+              The content of a Google review itself or a caption used to prompt
+              customers to leave Review.
             </p>
             <div className="text-sm text-[#000000] font-medium ">
-              Rs 0.80 like • Whatsapp payouts
+              Rs 40/= like • Whatsapp payouts
             </div>
           </div>
         </Link>

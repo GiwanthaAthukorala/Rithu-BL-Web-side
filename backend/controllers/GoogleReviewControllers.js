@@ -1,10 +1,10 @@
 const Earnings = require("../models/Earnings");
-const FbCommentSubmission = require("../models/FbCommentSubmission");
+const GoogleReviewModel = require("../models/GoogleReviewModel");
 const generateImageHash = require("../utils/generateImageHash");
 const isSimilarHash = require("../utils/isSimilarHash");
 
-const createFbCommentSubmission = async (req, res) => {
-  console.log("==== FB REVIEW SUBMISSION REQUEST RECEIVED ====");
+const createGoogleReviewSubmission = async (req, res) => {
+  console.log("==== Google Review SUBMISSION REQUEST RECEIVED ====");
   console.log("User ID:", req.user?._id);
   console.log("Uploaded file:", req.file);
 
@@ -18,7 +18,7 @@ const createFbCommentSubmission = async (req, res) => {
         message: "File upload failed. No file received from client.",
       });
     }
- 
+
     const userId = req.user._id;
     const cloudinaryUrl = req.file.path;
 
@@ -35,7 +35,7 @@ const createFbCommentSubmission = async (req, res) => {
     }
 
     // Check for duplicates
-    const previousSubmissions = await FbCommentSubmission.find({
+    const previousSubmissions = await GoogleReviewModel.find({
       user: userId,
       imageHash: { $ne: null },
     }).limit(10);
@@ -56,13 +56,13 @@ const createFbCommentSubmission = async (req, res) => {
     console.log("Hashing took", Date.now() - startTime, "ms");
 
     // Create the submission
-    const submission = await FbCommentSubmission.create({
+    const submission = await GoogleReviewModel.create({
       user: req.user._id,
-      platform: "comments",
+      platform: "GoogleReview",
       screenshot: cloudinaryUrl,
       imageHash: uploadedImageHash,
       status: "approved", // Auto-approve for now
-      amount: 15.0,
+      amount: 40.0,
     });
 
     // Update earnings
@@ -70,14 +70,14 @@ const createFbCommentSubmission = async (req, res) => {
     if (!earnings) {
       earnings = await Earnings.create({
         user: req.user._id,
-        totalEarned: 15.0,
-        availableBalance: 15.0,
+        totalEarned: 40.0,
+        availableBalance: 40.0,
         pendingWithdrawal: 0,
         withdrawnAmount: 0,
       });
     } else {
-      earnings.totalEarned += 15.0;
-      earnings.availableBalance += 15.0;
+      earnings.totalEarned += 40.0;
+      earnings.availableBalance += 40.0;
       await earnings.save();
     }
 
@@ -90,12 +90,12 @@ const createFbCommentSubmission = async (req, res) => {
 
     res.status(201).json({
       success: true,
-      message: "Facebook Comments submission created successfully",
+      message: "Google Review submission created successfully",
       data: submission,
       earnings,
     });
   } catch (error) {
-    console.error("Facebook Comments submission error:", error);
+    console.error("Google Review submission error:", error);
     res.status(500).json({
       success: false,
       message: "Internal server error",
@@ -104,26 +104,26 @@ const createFbCommentSubmission = async (req, res) => {
   }
 };
 
-const getUserCommentSubmissions = async (req, res) => {
+const getUserGoogleReviewSubmissions = async (req, res) => {
   try {
-    const submissions = await FbCommentSubmission.find({ user: req.user._id });
+    const submissions = await GoogleReviewModel.find({ user: req.user._id });
     res.status(200).json({ success: true, data: submissions });
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: "Failed to get FB Review submissions",
+      message: "Failed to get Google Review submissions",
       error: error.message,
     });
   }
 };
 
-const approveCommentSubmission = async (req, res) => {
+const approveGoogleReviewSubmission = async (req, res) => {
   try {
-    const submission = await FbCommentSubmission.findById(req.params.id);
+    const submission = await GoogleReviewModel.findById(req.params.id);
     if (!submission) {
       return res
         .status(404)
-        .json({ message: "Facebook Comment submission not found" });
+        .json({ message: "Google Review submission not found" });
     }
     if (submission.status !== "pending") {
       return res.status(400).json({ message: "Already processed" });
@@ -137,14 +137,14 @@ const approveCommentSubmission = async (req, res) => {
     if (!earnings) {
       earnings = await Earnings.create({
         user: submission.user,
-        totalEarned: 15.0,
-        availableBalance: 15.0,
+        totalEarned: 40.0,
+        availableBalance: 40.0,
         pendingWithdrawal: 0,
         withdrawnAmount: 0,
       });
     } else {
-      earnings.totalEarned += 15.0;
-      earnings.availableBalance += 15.0;
+      earnings.totalEarned += 40.0;
+      earnings.availableBalance += 40.0;
       await earnings.save();
     }
 
@@ -161,7 +161,7 @@ const approveCommentSubmission = async (req, res) => {
 
     res.json({
       success: true,
-      message: "Facebook Comment submission approved and earnings updated",
+      message: "Google Review submission approved and earnings updated",
       data: {
         submission,
         earnings,
@@ -172,11 +172,11 @@ const approveCommentSubmission = async (req, res) => {
   }
 };
 
-const rejectCommentSubmission = async (req, res) => {
+const rejectGoogleReviewSubmission = async (req, res) => {
   try {
-    const submission = await FbCommentSubmission.findById(req.params.id);
+    const submission = await GoogleReviewModel.findById(req.params.id);
     if (!submission) {
-      return res.status(404).json({ message: "Facebook comment not found" });
+      return res.status(404).json({ message: "Google Review not found" });
     }
 
     if (submission.status !== "pending") {
@@ -188,18 +188,18 @@ const rejectCommentSubmission = async (req, res) => {
 
     res.json({
       success: true,
-      message: "Facebook Comment rejected",
+      message: "Google Review rejected",
       data: submission,
     });
   } catch (error) {
-    console.error("Facebook Comments Error:", error);
+    console.error("Google Review Error:", error);
     res.status(500).json({ message: "Rejection failed", error: error.message });
   }
 };
 
 module.exports = {
-  createFbCommentSubmission,
-  getUserCommentSubmissions,
-  approveCommentSubmission,
-  rejectCommentSubmission,
+  createGoogleReviewSubmission,
+  getUserGoogleReviewSubmissions,
+  approveGoogleReviewSubmission,
+  rejectGoogleReviewSubmission,
 };
