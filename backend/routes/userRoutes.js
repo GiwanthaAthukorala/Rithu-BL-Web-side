@@ -41,13 +41,13 @@ const upload = multer({
 router.post("/register", registerUser);
 router.post("/login", loginUser);
 router.get("/profile", protect, getUserProfile);
+router.put("/profile", protect, updateUserProfile);
 router.post(
   "/profile/upload-picture",
   protect,
   upload.single("profilePicture"),
   uploadProfilePicture
 );
-router.put("/profile", protect, updateUserProfile);
 
 router.get("/admin", protect, admin, (req, res) => {
   res.json({ message: "Admin dashboard" });

@@ -141,23 +141,15 @@ const ProfileEditModal = ({
       );
 
       if (!response.ok) {
-        throw new Error(
-          `Server returned ${response.status}: ${response.statusText}`
-        );
+        const errorText = await response.text();
+        throw new Error(`Server returned ${response.status}: ${errorText}`);
       }
       // Check if response has content before parsing
-      const contentType = response.headers.get("content-type");
-      if (contentType && contentType.includes("application/json")) {
-        const data = await response.json();
-        if (!data.success) {
-          throw new Error(data.message || "Upload failed");
-        }
-        return data.profilePicture;
-      } else {
-        // Handle non-JSON response
-        const text = await response.text();
-        throw new Error(text || "Upload failed - invalid response from server");
+      const data = await response.json();
+      if (!data.success) {
+        throw new Error(data.message || "Upload failed");
       }
+      return data.profilePicture;
     } catch (error) {
       console.error("Image upload error:", error);
       setErrors((prev) => ({
@@ -247,7 +239,7 @@ const ProfileEditModal = ({
       }
 
       const response = await fetch(`${apiBaseUrl}/users/profile`, {
-        method: "PUT",
+        method: "PUT", // Changed from POST to PUT
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
