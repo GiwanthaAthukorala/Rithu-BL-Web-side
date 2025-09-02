@@ -22,7 +22,7 @@ import { useAuth } from "@/Context/AuthContext";
 import { useRouter } from "next/navigation";
 import api from "@/lib/api";
 import { useSocket } from "@/Context/SocketContext";
-import ProfileEditModal from "@/components/Profile/profileModel";
+import ProfileEditModal from "./ProfileEditModal";
 
 export default function Profile() {
   const [earnings, setEarnings] = useState({
@@ -461,185 +461,275 @@ export default function Profile() {
 
               <div className="p-6">
                 {isFetching ? (
-                  <div className="flex justify-center items-center py-12">
-                    <Loader2
-                      className="animate-spin text-green-600"
-                      size={32}
-                    />
+                  <div className="flex items-center justify-center py-16">
+                    <div className="text-center">
+                      <div className="animate-spin rounded-full h-12 w-12 border-4 border-blue-500 border-t-transparent mx-auto mb-4"></div>
+                      <p className="text-gray-600 font-medium">
+                        Loading earnings data...
+                      </p>
+                    </div>
                   </div>
                 ) : (
                   <>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                      <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-6 rounded-xl border border-blue-100">
-                        <div className="flex items-center justify-between mb-4">
-                          <h3 className="text-lg font-semibold text-blue-900">
-                            Total Earned
-                          </h3>
-                          <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
-                            <DollarSign className="text-blue-600" size={24} />
+                    {/* Stats Grid */}
+                    <div className="grid md:grid-cols-2 gap-6 mb-8">
+                      <div className="bg-gradient-to-br from-blue-50 to-indigo-100 rounded-xl p-6 border border-blue-200">
+                        <div className="flex items-center justify-between mb-3">
+                          <p className="text-sm font-semibold text-blue-700">
+                            Total Approved Tasks
+                          </p>
+                          <div className="w-8 h-8 bg-blue-200 rounded-lg flex items-center justify-center">
+                            <TrendingUp size={16} className="text-blue-700" />
                           </div>
                         </div>
                         <p className="text-3xl font-bold text-blue-900">
+                          {Math.round(earnings.totalEarned / 1.0)}
+                        </p>
+                        <p className="text-xs text-blue-600 mt-1">
+                          Tasks completed
+                        </p>
+                      </div>
+
+                      <div className="bg-gradient-to-br from-purple-50 to-violet-100 rounded-xl p-6 border border-purple-200">
+                        <div className="flex items-center justify-between mb-3">
+                          <p className="text-sm font-semibold text-purple-700">
+                            Total Earned
+                          </p>
+                          <div className="w-8 h-8 bg-purple-200 rounded-lg flex items-center justify-center">
+                            <DollarSign size={16} className="text-purple-700" />
+                          </div>
+                        </div>
+                        <p className="text-3xl font-bold text-purple-900">
                           Rs {formatCurrency(earnings.totalEarned)}
                         </p>
-                        <p className="text-sm text-blue-600 mt-2">
+                        <p className="text-xs text-purple-600 mt-1">
                           Lifetime earnings
                         </p>
                       </div>
 
-                      <div className="bg-gradient-to-br from-green-50 to-emerald-50 p-6 rounded-xl border border-green-100">
-                        <div className="flex items-center justify-between mb-4">
-                          <h3 className="text-lg font-semibold text-green-900">
+                      <div className="bg-gradient-to-br from-green-50 to-emerald-100 rounded-xl p-6 border border-green-200">
+                        <div className="flex items-center justify-between mb-3">
+                          <p className="text-sm font-semibold text-green-700">
                             Available Balance
-                          </h3>
-                          <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
-                            <Wallet className="text-green-600" size={24} />
+                          </p>
+                          <div className="w-8 h-8 bg-green-200 rounded-lg flex items-center justify-center">
+                            <Wallet size={16} className="text-green-700" />
                           </div>
                         </div>
                         <p className="text-3xl font-bold text-green-900">
                           Rs {formatCurrency(earnings.availableBalance)}
                         </p>
-                        <p className="text-sm text-green-600 mt-2">
+                        <p className="text-xs text-green-600 mt-1">
                           Ready to withdraw
                         </p>
                       </div>
 
-                      <div className="bg-gradient-to-br from-amber-50 to-orange-50 p-6 rounded-xl border border-amber-100">
-                        <div className="flex items-center justify-between mb-4">
-                          <h3 className="text-lg font-semibold text-amber-900">
-                            Pending Withdrawal
-                          </h3>
-                          <div className="w-12 h-12 bg-amber-100 rounded-full flex items-center justify-center">
-                            <Loader2 className="text-amber-600" size={24} />
+                      <div className="bg-gradient-to-br from-amber-50 to-orange-100 rounded-xl p-6 border border-amber-200">
+                        <div className="flex items-center justify-between mb-3">
+                          <p className="text-sm font-semibold text-amber-700">
+                            Total Withdrawn
+                          </p>
+                          <div className="w-8 h-8 bg-amber-200 rounded-lg flex items-center justify-center">
+                            <DollarSign size={16} className="text-amber-700" />
                           </div>
                         </div>
                         <p className="text-3xl font-bold text-amber-900">
-                          Rs {formatCurrency(earnings.pendingWithdrawal)}
-                        </p>
-                        <p className="text-sm text-amber-600 mt-2">
-                          Processing requests
-                        </p>
-                      </div>
-
-                      <div className="bg-gradient-to-br from-purple-50 to-violet-50 p-6 rounded-xl border border-purple-100">
-                        <div className="flex items-center justify-between mb-4">
-                          <h3 className="text-lg font-semibold text-purple-900">
-                            Withdrawn
-                          </h3>
-                          <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center">
-                            <CreditCard className="text-purple-600" size={24} />
-                          </div>
-                        </div>
-                        <p className="text-3xl font-bold text-purple-900">
                           Rs {formatCurrency(earnings.withdrawnAmount)}
                         </p>
-                        <p className="text-sm text-purple-600 mt-2">
-                          Total withdrawn
+                        <p className="text-xs text-amber-600 mt-1">
+                          Successfully withdrawn
                         </p>
                       </div>
                     </div>
 
-                    <div className="bg-gradient-to-r from-gray-50 to-blue-50 p-6 rounded-xl border border-gray-200">
-                      <h3 className="text-xl font-semibold text-gray-900 mb-4">
-                        Withdraw Funds
-                      </h3>
-                      <p className="text-gray-600 mb-6">
-                        Transfer your earnings directly to your bank account.
-                        Minimum withdrawal amount is Rs 500.
-                      </p>
-
-                      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-                        <div className="flex-1">
-                          <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Withdrawal Amount (Rs)
-                          </label>
-                          <input
-                            type="number"
-                            min="500"
-                            step="100"
-                            value={withdrawAmount}
-                            onChange={(e) => setWithdrawAmount(e.target.value)}
-                            className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200"
-                            placeholder="Enter amount"
-                          />
+                    {earnings.pendingWithdrawal > 0 && (
+                      <div className="bg-gradient-to-r from-yellow-50 to-orange-50 border-2 border-yellow-200 rounded-xl p-4 mb-6">
+                        <div className="flex items-center">
+                          <div className="w-4 h-4 bg-yellow-400 rounded-full mr-3 animate-pulse"></div>
+                          <div className="flex-1">
+                            <p className="text-sm font-semibold text-yellow-800">
+                              Pending Withdrawal
+                            </p>
+                            <p className="text-xl font-bold text-yellow-900">
+                              Rs {formatCurrency(earnings.pendingWithdrawal)}
+                            </p>
+                            <p className="text-xs text-yellow-700 mt-1">
+                              Processing within 3-5 business days
+                            </p>
+                          </div>
                         </div>
-                        <button
-                          onClick={() => setIsWithdrawModalOpen(true)}
-                          disabled={earnings.availableBalance < 500}
-                          className="px-8 py-3 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-semibold rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
-                        >
-                          Withdraw Now
-                        </button>
                       </div>
-                    </div>
+                    )}
+
+                    {/* Withdraw Button */}
+                    <button
+                      onClick={() => {
+                        setIsWithdrawModalOpen(true);
+                        setError(null);
+                      }}
+                      disabled={earnings.availableBalance < 500}
+                      className={`w-full py-4 px-6 rounded-xl font-bold text-lg flex items-center justify-center transition-all duration-300 ${
+                        earnings.availableBalance >= 500
+                          ? "bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white shadow-lg hover:shadow-xl transform hover:scale-105"
+                          : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                      }`}
+                    >
+                      <DollarSign size={24} className="mr-2" />
+                      {earnings.availableBalance >= 500
+                        ? "Withdraw Funds"
+                        : "Insufficient Balance"}
+                    </button>
+
+                    {earnings.availableBalance < 500 && (
+                      <p className="text-center text-sm text-gray-500 mt-2">
+                        Minimum withdrawal amount is Rs 500
+                      </p>
+                    )}
                   </>
                 )}
+              </div>
+            </div>
+
+            {/* Withdrawal Rules */}
+            <div className="bg-white rounded-2xl shadow-xl mt-6 p-6 border border-gray-100">
+              <h3 className="text-lg font-bold text-gray-900 mb-6 flex items-center">
+                <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
+                  <Settings size={16} className="text-blue-600" />
+                </div>
+                Withdrawal Information
+              </h3>
+              <div className="grid md:grid-cols-3 gap-4">
+                <div className="text-center p-6 bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl border border-green-200">
+                  <div className="w-16 h-16 bg-green-200 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span className="text-green-700 font-bold text-lg">
+                      500
+                    </span>
+                  </div>
+                  <p className="font-semibold text-green-800 mb-1">
+                    Minimum Amount
+                  </p>
+                  <p className="text-sm text-green-600">
+                    Rs 500 minimum withdrawal
+                  </p>
+                </div>
+
+                <div className="text-center p-6 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl border border-blue-200">
+                  <div className="w-16 h-16 bg-blue-200 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span className="text-blue-700 font-bold text-lg">3-5</span>
+                  </div>
+                  <p className="font-semibold text-blue-800 mb-1">
+                    Processing Time
+                  </p>
+                  <p className="text-sm text-blue-600">
+                    Business days to process
+                  </p>
+                </div>
+
+                <div className="text-center p-6 bg-gradient-to-br from-purple-50 to-violet-50 rounded-xl border border-purple-200">
+                  <div className="w-16 h-16 bg-purple-200 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span className="text-purple-700 font-bold text-lg">
+                      0%
+                    </span>
+                  </div>
+                  <p className="font-semibold text-purple-800 mb-1">No Fees</p>
+                  <p className="text-sm text-purple-600">
+                    Free withdrawals always
+                  </p>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </main>
 
-      {/* Withdrawal Modal */}
+      {/* Enhanced Withdrawal Modal */}
       {isWithdrawModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-bold text-gray-900">
-                Confirm Withdrawal
-              </h2>
-              <button
-                onClick={() => setIsWithdrawModalOpen(false)}
-                className="p-2 text-gray-400 hover:text-gray-600 rounded-full hover:bg-gray-100 transition-all duration-200"
-                disabled={isLoading}
-              >
-                <X size={20} />
-              </button>
-            </div>
-
-            <div className="space-y-4 mb-6">
-              <div className="bg-blue-50 p-4 rounded-lg">
-                <p className="text-blue-800 text-sm">
-                  Funds will be transferred to your registered bank account
-                  within 3-5 business days.
+          <div className="bg-white rounded-2xl max-w-md w-full shadow-2xl transform animate-in fade-in-0 zoom-in-95 border border-gray-200">
+            <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-6 rounded-t-2xl relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-white bg-opacity-10 rounded-full -mr-16 -mt-16"></div>
+              <div className="relative z-10">
+                <h3 className="text-xl font-bold flex items-center">
+                  <Wallet className="mr-3" size={24} />
+                  Withdraw Funds
+                </h3>
+                <p className="text-blue-100 text-sm mt-2">
+                  Request a withdrawal to your bank account
                 </p>
               </div>
-
-              <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-                <span className="text-gray-600">Amount to withdraw:</span>
-                <span className="text-xl font-bold text-green-600">
-                  Rs {withdrawAmount}
-                </span>
-              </div>
-
-              <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-                <span className="text-gray-600">Bank Account:</span>
-                <span className="font-medium">{user?.bankAccountNo}</span>
-              </div>
             </div>
 
-            <div className="flex space-x-4">
-              <button
-                onClick={() => setIsWithdrawModalOpen(false)}
-                className="flex-1 px-6 py-3 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg font-medium transition-all duration-200"
-                disabled={isLoading}
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleWithdraw}
-                disabled={isLoading}
-                className="flex-1 px-6 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium flex items-center justify-center transition-all duration-200 disabled:opacity-50"
-              >
-                {isLoading ? (
-                  <>
-                    <Loader2 size={20} className="animate-spin mr-2" />
-                    Processing...
-                  </>
-                ) : (
-                  "Confirm Withdrawal"
-                )}
-              </button>
+            <div className="p-6">
+              {error && (
+                <div className="mb-6 p-4 bg-red-50 border-2 border-red-200 text-red-700 rounded-xl">
+                  <div className="flex items-center">
+                    <div className="w-4 h-4 bg-red-400 rounded-full mr-3"></div>
+                    {error}
+                  </div>
+                </div>
+              )}
+
+              <label className="block text-sm font-bold text-gray-700 mb-3">
+                Amount to withdraw
+              </label>
+              <div className="relative mb-6">
+                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 font-bold text-lg">
+                  Rs
+                </span>
+                <input
+                  type="number"
+                  value={withdrawAmount}
+                  onChange={(e) => setWithdrawAmount(e.target.value)}
+                  min="500"
+                  max={earnings.availableBalance}
+                  className="w-full pl-12 pr-4 py-4 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-lg font-semibold transition-all duration-200"
+                  placeholder={`Max: Rs${formatCurrency(
+                    earnings.availableBalance
+                  )}`}
+                />
+              </div>
+
+              <div className="bg-gradient-to-r from-gray-50 to-blue-50 rounded-xl p-4 mb-6 border border-gray-200">
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-gray-600">
+                    Available balance
+                  </span>
+                  <span className="text-xl font-bold text-gray-900">
+                    Rs {formatCurrency(earnings.availableBalance)}
+                  </span>
+                </div>
+              </div>
+
+              <div className="flex space-x-3">
+                <button
+                  onClick={() => {
+                    setIsWithdrawModalOpen(false);
+                    setError(null);
+                    setWithdrawAmount("500");
+                  }}
+                  className="flex-1 py-3 px-4 border-2 border-gray-300 rounded-xl text-gray-700 font-semibold hover:bg-gray-50 hover:border-gray-400 transition-all duration-200"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleWithdraw}
+                  disabled={isLoading}
+                  className={`flex-1 py-3 px-4 rounded-xl font-bold text-white transition-all duration-200 ${
+                    isLoading
+                      ? "bg-blue-400 cursor-not-allowed"
+                      : "bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 transform hover:scale-105 shadow-lg"
+                  }`}
+                >
+                  {isLoading ? (
+                    <div className="flex items-center justify-center">
+                      <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent mr-2"></div>
+                      Processing...
+                    </div>
+                  ) : (
+                    "Request Withdrawal"
+                  )}
+                </button>
+              </div>
             </div>
           </div>
         </div>

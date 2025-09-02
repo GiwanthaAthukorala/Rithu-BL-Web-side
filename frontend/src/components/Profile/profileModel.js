@@ -140,12 +140,24 @@ const ProfileEditModal = ({
         }
       );
 
-      const data = await response.json();
-      if (!data.success) {
-        throw new Error(data.message);
+      if (!response.ok) {
+        throw new Error(
+          `Server returned ${response.status}: ${response.statusText}`
+        );
       }
-
-      return data.profilePicture;
+      // Check if response has content before parsing
+      const contentType = response.headers.get("content-type");
+      if (contentType && contentType.includes("application/json")) {
+        const data = await response.json();
+        if (!data.success) {
+          throw new Error(data.message || "Upload failed");
+        }
+        return data.profilePicture;
+      } else {
+        // Handle non-JSON response
+        const text = await response.text();
+        throw new Error(text || "Upload failed - invalid response from server");
+      }
     } catch (error) {
       console.error("Image upload error:", error);
       setErrors((prev) => ({
@@ -212,7 +224,10 @@ const ProfileEditModal = ({
     setIsLoading(true);
     try {
       // Upload profile picture first if there's a new one
-      await uploadProfilePicture();
+      let profilePictureData = null;
+      if (profileImage) {
+        profilePictureData = await uploadProfilePicture();
+      }
 
       const token = localStorage.getItem("token");
       const updateData = { ...formData };
@@ -226,6 +241,11 @@ const ProfileEditModal = ({
         delete updateData.confirmPassword; // Don't send confirm password to backend
       }
 
+      // If we have a new profile picture, include it in the update
+      if (profilePictureData) {
+        updateData.profilePicture = profilePictureData;
+      }
+
       const response = await fetch(`${apiBaseUrl}/users/profile`, {
         method: "PUT",
         headers: {
@@ -235,26 +255,43 @@ const ProfileEditModal = ({
         body: JSON.stringify(updateData),
       });
 
-      const data = await response.json();
+      // Check if response is OK before trying to parse JSON
+      if (!response.ok) {
+        throw new Error(
+          `Server returned ${response.status}: ${response.statusText}`
+        );
+      }
 
-      if (!data.success) {
-        if (data.errorType && data.message) {
-          setErrors({ [data.errorType]: data.message });
-        } else {
-          setErrors({ general: data.message || "Failed to update profile" });
+      // Check if response has content before parsing
+      const contentType = response.headers.get("content-type");
+      if (contentType && contentType.includes("application/json")) {
+        const data = await response.json();
+
+        if (!data.success) {
+          if (data.errorType && data.message) {
+            setErrors({ [data.errorType]: data.message });
+          } else {
+            setErrors({ general: data.message || "Failed to update profile" });
+          }
+          return;
         }
-        return;
-      }
 
-      // Call the success callback with updated user data
-      if (onUpdateSuccess) {
-        onUpdateSuccess(data.user);
-      }
+        // Call the success callback with updated user data
+        if (onUpdateSuccess) {
+          onUpdateSuccess(data.user);
+        }
 
-      onClose();
+        onClose();
+      } else {
+        // Handle non-JSON response
+        const text = await response.text();
+        throw new Error(text || "Update failed - invalid response from server");
+      }
     } catch (error) {
       console.error("Profile update error:", error);
-      setErrors({ general: "Failed to update profile. Please try again." });
+      setErrors({
+        general: error.message || "Failed to update profile. Please try again.",
+      });
     } finally {
       setIsLoading(false);
     }
