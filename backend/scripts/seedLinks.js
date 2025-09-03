@@ -25,45 +25,28 @@ const connectDB = async () => {
 
 const facebookLinks = [
   {
-    url: "https://www.facebook.com/share/12Lcxsxr9Fp/",
-    title: "Ras TV - රැස් TV - ෆෙස්බුක් පෙජ් ඒක විතරක් ලයික් ෆලෝ කරන්න",
+    url: "https://www.facebook.com/profile.php?id=100091539043388&mibextid=ZbWKwL",
+    title: "Kalana Gold House - ෆෙස්බුක් පෙජ් ඒක විතරක් ලයික් ෆලෝ කරන්න",
     platform: "facebook",
     earnings: 1.0,
   },
   {
-    url: "https://www.facebook.com/share/173QwA81Yv/?mibextid=wwXIfr",
-    title: "Mayan Cosmetic - ෆෙස්බුක් පෙජ් ඒක විතරක් ලයික් ෆලෝ කරන්න",
+    url: "https://www.facebook.com/share/1GGVytLsBT/?mibextid=wwXIfr",
+    title: "Syllora Education - ෆෙස්බුක් පෙජ් ඒක විතරක් ලයික් ෆලෝ කරන්න",
     platform: "facebook",
     earnings: 1.0,
   },
   {
-    url: "https://www.facebook.com/share/v/16s3J8qLCU/?mibextid=wwXIfr",
-    title: "ෆෙස්බුක් පොස්ට් ලයික් කරන්න",
-    platform: "facebook",
-    earnings: 1.0,
-  },
-  {
-    url: "https://www.facebook.com/share/p/19Lr7DXimv/?mibextid=wwXIfr",
-    title: "ෆෙස්බුක් පොස්ට් ලයික් කරන්න",
-    platform: "facebook",
-    earnings: 1.0,
-  },
-  {
-    url: "https://www.facebook.com/share/v/178rXPngjx/?mibextid=wwXIfr",
-    title: "ෆෙස්බුක් පොස්ට් ලයික් කරන්න",
+    url: "https://www.facebook.com/share/1B67T5SjA6/",
+    title: "Weekend rood - ෆෙස්බුක් පෙජ් ඒක විතරක් ලයික් ෆලෝ කරන්න",
     platform: "facebook",
     earnings: 1.0,
   },
 
   {
-    url: "https://www.facebook.com/share/p/1aNr334GHe/?mibextid=wwXIfr",
-    title: "ෆෙස්බුක් පොස්ට් ලයික් කරන්න",
-    platform: "facebook",
-    earnings: 1.0,
-  },
-  {
-    url: "https://www.facebook.com/share/1B5nVKDUfY/",
-    title: "The TravelDoc Global - ෆෙස්බුක් පෙජ් ඒක විතරක් ලයික් ෆලෝ කරන්න",
+    url: "https://www.facebook.com/share/1AsFo5TgLY/",
+    title:
+      "ලංක මුදියන්සේ Lanka Mudiyanse - ෆෙස්බුක් පෙජ් ඒක විතරක් ලයික් ෆලෝ කරන්න",
     platform: "facebook",
     earnings: 1.0,
   },
