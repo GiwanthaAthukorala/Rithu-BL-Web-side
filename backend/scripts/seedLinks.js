@@ -25,22 +25,33 @@ const connectDB = async () => {
 
 const facebookLinks = [
   {
-    url: "https://www.facebook.com/share/1CLcbjnLQf/",
-    title: "IMED - ෆෙස්බුක් පෙජ් ඒක විතරක් ලයික් ෆලෝ කරන්න",
+    url: "https://www.facebook.com/profile.php?id=61579745357840&mibextid=wwXIfr&mibextid=wwXIfr",
+    title: "Kolumbus කොලොම්බස් - පෙජ් එකට ලයික් කරන්න  ",
     platform: "facebook",
     earnings: 1.0,
   },
   {
-    url: "https://web.facebook.com/GrandWellnessJobs/",
-    title:
-      "Grand Wellness & Spa Job Vacancies - ෆෙස්බුක් පෙජ් ඒක විතරක් ලයික් ෆලෝ කරන්න",
+    url: "https://www.facebook.com/share/19ho1X61DX/",
+    title: "පෝස්ට් එකට ලයික් කරන්න ",
     platform: "facebook",
     earnings: 1.0,
   },
   {
-    url: "https://web.facebook.com/victoriaglobalinstitute/",
+    url: "https://www.facebook.com/share/1FgRCVx5Lm/?mibextid=wwXIfr",
+    title: "Serena Fernando - ෆෙස්බුක් පෙජ් ඒක විතරක් ලයික් ෆලෝ කරන්න",
+    platform: "facebook",
+    earnings: 1.0,
+  },
+  {
+    url: "https://www.facebook.com/share/16KogoGGyE/",
     title:
-      "Victoria Global Institute - ෆෙස්බුක් පෙජ් ඒක විතරක් ලයික් ෆලෝ කරන්න",
+      "සිංහල සහ ඉතිහාසය with Kaushalya මිස් - ෆෙස්බුක් පෙජ් ඒක විතරක් ලයික් ෆලෝ කරන්න",
+    platform: "facebook",
+    earnings: 1.0,
+  },
+  {
+    url: "https://www.facebook.com/share/174Fpd7BJr/?mibextid=wwXIfr",
+    title: "Namal S Fonseka - ෆෙස්බුක් පෙජ් ඒක විතරක් ලයික් ෆලෝ කරන්න",
     platform: "facebook",
     earnings: 1.0,
   },
