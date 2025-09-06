@@ -192,19 +192,19 @@ export default function InstagramVerificationTask() {
             <p className="text-gray-700 mb-3">
               Please visit this link and take a screenshot as proof:
             </p>
-            {/*   <li>
+            <li>
               {" "}
               <a
-                href="https://www.instagram.com/bellisa_clothing?igsh=Nnh4dHNkMDRkNGh4&utm_source=qr"
+                href="https://www.instagram.com/yash._wick?igsh=czVvNHRienUzc2dk&utm_source=qr"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium"
               >
-                Bellisa Clothing (brand) - ඉන්ස්ට්‍ර ග්‍රෑම් එකව්න්ට් එක
+                Yashod Wickramaedirisooriya 🌀 - ඉන්ස්ට්‍ර ග්‍රෑම් එකව්න්ට් එක
                 ෆලෝ කරන්න <ExternalLink className="w-4 h-4 ml-1" />
               </a>
             </li>
-              <li>
+            {/*   <li>
               {" "}
               <a
                 href="https://www.instagram.com/beetle.clothingsl?igsh=MWF0b3A2OHczYTJqNw%3D%3D&utm_source=qr"
