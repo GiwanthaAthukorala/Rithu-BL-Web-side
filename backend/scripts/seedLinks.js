@@ -25,38 +25,20 @@ const connectDB = async () => {
 
 const facebookLinks = [
   {
-    url: "https://www.facebook.com/share/1AzfeArF4m/?mibextid=wwXIfr",
-    title: "Noirrage - පෙජ් එකට ලයික් කරන්න  ",
+    url: "https://www.facebook.com/share/1A4t6PLTc3/",
+    title: "Truth Sri Lanka - පෙජ් එකට ලයික් කරන්න  ",
     platform: "facebook",
     earnings: 1.0,
   },
 
   {
-    url: "https://www.facebook.com/share/19e8xcHk2Z/",
-    title: "Trending ලංකා - පෙජ් එකට ලයික් කරන්න  ",
+    url: "https://www.facebook.com/share/1C1GviJ631/",
+    title: "Ruu Ceylon Marketing - පෙජ් එකට ලයික් කරන්න  ",
     platform: "facebook",
     earnings: 1.0,
   },
   {
-    url: "https://www.facebook.com/share/p/1B5Dr84mBV/?mibextid=wwXIfr",
-    title: "පොස්ට් ඒකට ලයික් කරන්න  ",
-    platform: "facebook",
-    earnings: 1.0,
-  },
-  {
-    url: "https://www.facebook.com/share/p/1AgZDbMHMq/?mibextid=wwXIfr",
-    title: "පොස්ට් ඒකට ලයික් කරන්න  ",
-    platform: "facebook",
-    earnings: 1.0,
-  },
-  {
-    url: "https://www.facebook.com/share/p/16wTJzeiAT/?mibextid=wwXIfr",
-    title: "පොස්ට් ඒකට ලයික් කරන්න  ",
-    platform: "facebook",
-    earnings: 1.0,
-  },
-  {
-    url: "https://www.facebook.com/share/p/1BjHiKjALU/?mibextid=wwXIfr",
+    url: "https://www.facebook.com/share/p/1JVzFdmKkW/?mibextid=wwXIfr",
     title: "පොස්ට් ඒකට ලයික් කරන්න  ",
     platform: "facebook",
     earnings: 1.0,

@@ -107,4 +107,6 @@ router.get("/", protect, async (req, res) => {
   }
 });
 
+router.post("/withdraw", protect, withdrawEarnings);
+
 module.exports = router;

@@ -93,23 +93,27 @@ exports.withdrawEarnings = async (req, res) => {
     const { amount } = req.body;
     const minWithdrawal = 500;
 
-    if (amount < minWithdrawal) {
+    if (!amount || amount < minWithdrawal) {
       return res.status(400).json({
+        success: false,
         message: `Minimum withdrawal amount is Rs ${minWithdrawal}`,
       });
     }
 
+    // Find user's earnings
     const earnings = await Earnings.findOne({ user: req.user._id });
 
     if (!earnings || earnings.availableBalance < amount) {
       return res.status(400).json({
+        success: false,
         message: "Insufficient balance for withdrawal",
       });
     }
 
+    // Create transaction record
     const transaction = await Transaction.create({
       user: req.user._id,
-      type: "debit",
+      type: "withdrawal",
       amount,
       status: "pending",
       reference: `WD-${Date.now()}`,
@@ -120,20 +124,27 @@ exports.withdrawEarnings = async (req, res) => {
       },
     });
 
+    // Update earnings
     earnings.availableBalance -= amount;
     earnings.pendingWithdrawal += amount;
     await earnings.save();
 
+    // Emit socket event if needed
     const io = req.app.get("io");
-    io.emit("newWithdrawal", transaction);
+    if (io) {
+      io.to(req.user._id.toString()).emit("earningsUpdate", earnings);
+    }
 
     res.json({
       success: true,
-      message: "Withdrawal request submitted",
-      data: transaction,
+      message: "Withdrawal request submitted successfully",
+      earnings: earnings,
+      transaction: transaction,
     });
   } catch (error) {
+    console.error("Withdrawal error:", error);
     res.status(500).json({
+      success: false,
       message: "Withdrawal failed",
       error: error.message,
     });

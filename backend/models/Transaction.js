@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const bcrypt = require("bcryptjs");
 
 const transactionSchema = new mongoose.Schema(
   {
@@ -10,7 +9,7 @@ const transactionSchema = new mongoose.Schema(
     },
     type: {
       type: String,
-      enum: ["credit", "debit"],
+      enum: ["withdrawal", "deposit"],
       required: true,
     },
     amount: {
@@ -18,18 +17,16 @@ const transactionSchema = new mongoose.Schema(
       required: true,
       min: 0,
     },
-    description: String,
+    status: {
+      type: String,
+      enum: ["pending", "approved", "rejected", "completed"],
+      default: "pending",
+    },
     reference: {
       type: String,
       required: true,
       unique: true,
     },
-    status: {
-      type: String,
-      enum: ["pending", "completed", "failed"],
-      default: "pending",
-    },
-    rejectionReason: String,
     bankDetails: {
       name: String,
       branch: String,
