@@ -86,6 +86,34 @@ exports.getUserEarnings = async (req, res) => {
       error: error.message,
     });
   }
+  try {
+    // Your existing earnings calculation logic here
+    let earnings = await Earnings.findOne({ user: req.user._id });
+
+    if (!earnings) {
+      earnings = await Earnings.create({
+        user: req.user._id,
+        totalEarned: 0,
+        availableBalance: 0,
+        pendingWithdrawal: 0,
+        withdrawnAmount: 0,
+      });
+    }
+
+    // ... rest of your earnings calculation logic ...
+
+    res.json({
+      success: true,
+      data: earnings,
+    });
+  } catch (error) {
+    console.error("Earnings route error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to get earnings",
+      error: error.message,
+    });
+  }
 };
 
 exports.withdrawEarnings = async (req, res) => {
@@ -99,8 +127,6 @@ exports.withdrawEarnings = async (req, res) => {
         message: `Minimum withdrawal amount is Rs ${minWithdrawal}`,
       });
     }
-
-    // Find user's earnings
     const earnings = await Earnings.findOne({ user: req.user._id });
 
     if (!earnings || earnings.availableBalance < amount) {
@@ -110,7 +136,6 @@ exports.withdrawEarnings = async (req, res) => {
       });
     }
 
-    // Create transaction record
     const transaction = await Transaction.create({
       user: req.user._id,
       type: "withdrawal",
@@ -124,7 +149,6 @@ exports.withdrawEarnings = async (req, res) => {
       },
     });
 
-    // Update earnings
     earnings.availableBalance -= amount;
     earnings.pendingWithdrawal += amount;
     await earnings.save();
