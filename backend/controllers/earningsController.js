@@ -45,6 +45,7 @@ exports.getUserEarnings = async (req, res) => {
         .sort({ createdAt: -1 })
         .limit(18),
     ]);
+
     console.log("📊 Earnings data:", earnings);
     console.log("📊 FB submissions:", fbSubmissions.length);
     console.log("📊 YT submissions:", ytSubmissions.length);
@@ -54,7 +55,7 @@ exports.getUserEarnings = async (req, res) => {
       googleReviewsSubmissions.length
     );
 
-    // Calculate total from both submission types
+    // Calculate total from all submission types
     const fbTotal = fbSubmissions.reduce(
       (sum, sub) => sum + (sub.amount || 1),
       0
@@ -64,10 +65,9 @@ exports.getUserEarnings = async (req, res) => {
       0
     );
     const reviewTotal = reviewSubmissions.reduce(
-      (sum, sub) => sum + (sub.amount || 30), // Should be 30, not 1
+      (sum, sub) => sum + (sub.amount || 30),
       0
     );
-
     const commentTotal = commentSubmissions.reduce(
       (sum, sub) => sum + (sub.amount || 15),
       0
@@ -80,14 +80,7 @@ exports.getUserEarnings = async (req, res) => {
     const calculatedTotal =
       fbTotal + ytTotal + reviewTotal + commentTotal + googleTotal;
 
-    // Create earnings record if doesn't exist
-    // Update earnings if needed
-    if (earnings.totalEarned !== calculatedTotal) {
-      earnings.totalEarned = calculatedTotal;
-      earnings.availableBalance =
-        calculatedTotal - earnings.withdrawnAmount - earnings.pendingWithdrawal;
-      await earnings.save();
-    } // Update earnings if needed
+    // Update earnings if needed - REMOVED DUPLICATE BLOCK
     if (earnings.totalEarned !== calculatedTotal) {
       earnings.totalEarned = calculatedTotal;
       earnings.availableBalance =
@@ -98,7 +91,6 @@ exports.getUserEarnings = async (req, res) => {
     res.json({
       success: true,
       data: earnings,
-      // Optional: include transactions if needed
       transactions: userTransactions,
     });
   } catch (error) {
