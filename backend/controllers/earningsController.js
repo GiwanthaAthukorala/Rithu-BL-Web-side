@@ -8,52 +8,25 @@ const GoogleReviewModel = require("../models/GoogleReviewModel");
 
 exports.getUserEarnings = async (req, res) => {
   try {
-    if (!req.user?._id) {
-      return res.status(400).json({
-        success: false,
-        message: "User not authenticated",
-      });
-    }
-
-    // Find or create earnings record
-    let earnings = await Earnings.findOne({ user: req.user._id });
-
-    if (!earnings) {
-      earnings = await Earnings.create({
-        user: req.user._id,
-        totalEarned: 0,
-        availableBalance: 0,
-        pendingWithdrawal: 0,
-        withdrawnAmount: 0,
-      });
-    }
-
     const [
+      earnings,
+      transactions,
       fbSubmissions,
       ytSubmissions,
       reviewSubmissions,
       commentSubmissions,
       googleReviewsSubmissions,
-      userTransactions,
     ] = await Promise.all([
+      Earnings.findOne({ user: req.user._id }),
+      Transaction.find({ user: req.user._id })
+        .sort({ createdAt: -1 })
+        .limit(18),
       Submission.find({ user: req.user._id, status: "approved" }),
       YoutubeSubmission.find({ user: req.user._id, status: "approved" }),
       FbReviewSubmission.find({ user: req.user._id, status: "approved" }),
       FbCommentSubmission.find({ user: req.user._id, status: "approved" }),
       GoogleReviewModel.find({ user: req.user._id, status: "approved" }),
-      Transaction.find({ user: req.user._id })
-        .sort({ createdAt: -1 })
-        .limit(18),
     ]);
-
-    console.log("📊 Earnings data:", earnings);
-    console.log("📊 FB submissions:", fbSubmissions.length);
-    console.log("📊 YT submissions:", ytSubmissions.length);
-    console.log("📊 Facebook Comment Submission ", commentSubmissions.length);
-    console.log(
-      "📊 Google Review submissions",
-      googleReviewsSubmissions.length
-    );
 
     // Calculate total from all submission types
     const fbTotal = fbSubmissions.reduce(
@@ -80,25 +53,38 @@ exports.getUserEarnings = async (req, res) => {
     const calculatedTotal =
       fbTotal + ytTotal + reviewTotal + commentTotal + googleTotal;
 
-    // Update earnings if needed - REMOVED DUPLICATE BLOCK
-    if (earnings.totalEarned !== calculatedTotal) {
-      earnings.totalEarned = calculatedTotal;
-      earnings.availableBalance =
-        calculatedTotal - earnings.withdrawnAmount - earnings.pendingWithdrawal;
-      await earnings.save();
+    // Create earnings record if doesn't exist
+    let earningsData = earnings;
+    if (!earningsData) {
+      earningsData = await Earnings.create({
+        user: req.user._id,
+        totalEarned: calculatedTotal,
+        availableBalance: calculatedTotal,
+        pendingWithdrawal: 0,
+        withdrawnAmount: 0,
+      });
+    } else if (earningsData.totalEarned !== calculatedTotal) {
+      // Update if calculation differs
+      earningsData.totalEarned = calculatedTotal;
+      earningsData.availableBalance =
+        calculatedTotal -
+        (earningsData.withdrawnAmount + earningsData.pendingWithdrawal);
+      await earningsData.save();
     }
 
     res.json({
       success: true,
-      data: earnings,
-      transactions: userTransactions,
+      data: {
+        ...earningsData.toObject(),
+        transactions: transactions || [],
+      },
     });
   } catch (error) {
-    console.error("❌ Earnings controller error:", error);
+    console.error("Earnings route error:", error);
     res.status(500).json({
       success: false,
       message: "Failed to get earnings",
-      error: process.env.NODE_ENV === "development" ? error.message : undefined,
+      error: error.message,
     });
   }
 };
@@ -114,6 +100,7 @@ exports.withdrawEarnings = async (req, res) => {
         message: `Minimum withdrawal amount is Rs ${minWithdrawal}`,
       });
     }
+
     const earnings = await Earnings.findOne({ user: req.user._id });
 
     if (!earnings || earnings.availableBalance < amount) {
