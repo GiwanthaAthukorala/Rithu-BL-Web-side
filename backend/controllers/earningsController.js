@@ -27,6 +27,14 @@ exports.getUserEarnings = async (req, res) => {
       FbCommentSubmission.find({ user: req.user._id, status: "approved" }),
       GoogleReviewModel.find({ user: req.user._id, status: "approved" }),
     ]);
+    console.log("Database query results:", {
+      earnings: !!earnings,
+      fbSubmissions: fbSubmissions.length,
+      ytSubmissions: ytSubmissions.length,
+      reviewSubmissions: reviewSubmissions.length,
+      commentSubmissions: commentSubmissions.length,
+      googleReviewsSubmissions: googleReviewsSubmissions.length,
+    });
 
     // Calculate total from both submission types
     const fbTotal = fbSubmissions.reduce(
@@ -81,6 +89,8 @@ exports.getUserEarnings = async (req, res) => {
       },
     });
   } catch (error) {
+    console.error("❌ Earnings controller error:", error);
+    console.error("Error stack:", error.stack);
     res.status(500).json({
       message: "Failed to get earnings",
       error: error.message,
