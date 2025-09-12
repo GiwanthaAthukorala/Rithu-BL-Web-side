@@ -74,6 +74,10 @@ export default function Profile() {
         pendingWithdrawal: 0,
         withdrawnAmount: 0,
       });
+
+      if (err.response?.status !== 500) {
+        setError(err.response?.data?.message || "Failed to load earnings");
+      }
     } finally {
       setIsFetching(false);
     }

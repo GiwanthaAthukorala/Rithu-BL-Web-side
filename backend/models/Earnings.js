@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const bcrypt = require("bcryptjs");
 
 const earningsSchema = new mongoose.Schema(
   {
@@ -34,5 +33,8 @@ const earningsSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
+
+// Add index for better performance
+earningsSchema.index({ user: 1 });
 
 module.exports = mongoose.model("Earnings", earningsSchema);

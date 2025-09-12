@@ -8,77 +8,100 @@ const GoogleReviewModel = require("../models/GoogleReviewModel");
 
 exports.getUserEarnings = async (req, res) => {
   try {
-    const [
-      earnings,
-      transactions,
-      fbSubmissions,
-      ytSubmissions,
-      reviewSubmissions,
-      commentSubmissions,
-      googleReviewsSubmissions,
-    ] = await Promise.all([
-      Earnings.findOne({ user: req.user._id }),
-      Transaction.find({ user: req.user._id })
-        .sort({ createdAt: -1 })
-        .limit(18),
-      Submission.find({ user: req.user._id, status: "approved" }),
-      YoutubeSubmission.find({ user: req.user._id, status: "approved" }),
-      FbReviewSubmission.find({ user: req.user._id, status: "approved" }),
-      FbCommentSubmission.find({ user: req.user._id, status: "approved" }),
-      GoogleReviewModel.find({ user: req.user._id, status: "approved" }),
-    ]);
+    console.log("Fetching earnings for user:", req.user._id);
 
-    // Calculate total from all submission types
-    const fbTotal = fbSubmissions.reduce(
-      (sum, sub) => sum + (sub.amount || 1),
-      0
-    );
-    const ytTotal = ytSubmissions.reduce(
-      (sum, sub) => sum + (sub.amount || 2),
-      0
-    );
-    const reviewTotal = reviewSubmissions.reduce(
-      (sum, sub) => sum + (sub.amount || 30),
-      0
-    );
-    const commentTotal = commentSubmissions.reduce(
-      (sum, sub) => sum + (sub.amount || 15),
-      0
-    );
-    const googleTotal = googleReviewsSubmissions.reduce(
-      (sum, sub) => sum + (sub.amount || 40),
-      0
-    );
+    // First, try to find existing earnings
+    let earnings = await Earnings.findOne({ user: req.user._id });
 
-    const calculatedTotal =
-      fbTotal + ytTotal + reviewTotal + commentTotal + googleTotal;
-
-    // Create earnings record if doesn't exist
-    let earningsData = earnings;
-    if (!earningsData) {
-      earningsData = await Earnings.create({
+    // If no earnings record exists, create one
+    if (!earnings) {
+      console.log("No earnings record found, creating new one");
+      earnings = await Earnings.create({
         user: req.user._id,
-        totalEarned: calculatedTotal,
-        availableBalance: calculatedTotal,
+        totalEarned: 0,
+        availableBalance: 0,
         pendingWithdrawal: 0,
         withdrawnAmount: 0,
       });
-    } else if (earningsData.totalEarned !== calculatedTotal) {
-      // Update if calculation differs
-      earningsData.totalEarned = calculatedTotal;
-      earningsData.availableBalance =
-        calculatedTotal -
-        (earningsData.withdrawnAmount + earningsData.pendingWithdrawal);
-      await earningsData.save();
     }
 
-    res.json({
-      success: true,
-      data: {
-        ...earningsData.toObject(),
-        transactions: transactions || [],
-      },
-    });
+    // Calculate earnings from all submission types
+    try {
+      const [
+        fbSubmissions,
+        ytSubmissions,
+        reviewSubmissions,
+        commentSubmissions,
+        googleReviewsSubmissions,
+      ] = await Promise.all([
+        Submission.find({ user: req.user._id, status: "approved" }).catch(
+          () => []
+        ),
+        YoutubeSubmission.find({
+          user: req.user._id,
+          status: "approved",
+        }).catch(() => []),
+        FbReviewSubmission.find({
+          user: req.user._id,
+          status: "approved",
+        }).catch(() => []),
+        FbCommentSubmission.find({
+          user: req.user._id,
+          status: "approved",
+        }).catch(() => []),
+        GoogleReviewModel.find({
+          user: req.user._id,
+          status: "approved",
+        }).catch(() => []),
+      ]);
+
+      // Calculate totals with fallbacks
+      const fbTotal = (fbSubmissions || []).reduce(
+        (sum, sub) => sum + (sub.amount || 1),
+        0
+      );
+      const ytTotal = (ytSubmissions || []).reduce(
+        (sum, sub) => sum + (sub.amount || 2),
+        0
+      );
+      const reviewTotal = (reviewSubmissions || []).reduce(
+        (sum, sub) => sum + (sub.amount || 30),
+        0
+      );
+      const commentTotal = (commentSubmissions || []).reduce(
+        (sum, sub) => sum + (sub.amount || 15),
+        0
+      );
+      const googleTotal = (googleReviewsSubmissions || []).reduce(
+        (sum, sub) => sum + (sub.amount || 40),
+        0
+      );
+
+      const calculatedTotal =
+        fbTotal + ytTotal + reviewTotal + commentTotal + googleTotal;
+
+      // Update earnings if needed
+      if (earnings.totalEarned !== calculatedTotal) {
+        earnings.totalEarned = calculatedTotal;
+        earnings.availableBalance =
+          calculatedTotal -
+          earnings.withdrawnAmount -
+          earnings.pendingWithdrawal;
+        await earnings.save();
+      }
+
+      res.json({
+        success: true,
+        data: earnings,
+      });
+    } catch (calculationError) {
+      console.error("Earnings calculation error:", calculationError);
+      // Still return the basic earnings data even if calculation fails
+      res.json({
+        success: true,
+        data: earnings,
+      });
+    }
   } catch (error) {
     console.error("Earnings route error:", error);
     res.status(500).json({
