@@ -8,24 +8,42 @@ const GoogleReviewModel = require("../models/GoogleReviewModel");
 
 exports.getUserEarnings = async (req, res) => {
   try {
+    if (!req.user?._id) {
+      return res.status(400).json({
+        success: false,
+        message: "User not authenticated",
+      });
+    }
+
+    // Find or create earnings record
+    let earnings = await Earnings.findOne({ user: req.user._id });
+
+    if (!earnings) {
+      earnings = await Earnings.create({
+        user: req.user._id,
+        totalEarned: 0,
+        availableBalance: 0,
+        pendingWithdrawal: 0,
+        withdrawnAmount: 0,
+      });
+    }
+
     const [
-      earnings,
-      transactions,
       fbSubmissions,
       ytSubmissions,
       reviewSubmissions,
       commentSubmissions,
       googleReviewsSubmissions,
+      userTransactions,
     ] = await Promise.all([
-      Earnings.findOne({ user: req.user._id }),
-      Transaction.find({ user: req.user._id })
-        .sort({ createdAt: -1 })
-        .limit(18),
       Submission.find({ user: req.user._id, status: "approved" }),
       YoutubeSubmission.find({ user: req.user._id, status: "approved" }),
       FbReviewSubmission.find({ user: req.user._id, status: "approved" }),
       FbCommentSubmission.find({ user: req.user._id, status: "approved" }),
       GoogleReviewModel.find({ user: req.user._id, status: "approved" }),
+      Transaction.find({ user: req.user._id })
+        .sort({ createdAt: -1 })
+        .limit(18),
     ]);
     console.log("📊 Earnings data:", earnings);
     console.log("📊 FB submissions:", fbSubmissions.length);
@@ -63,38 +81,32 @@ exports.getUserEarnings = async (req, res) => {
       fbTotal + ytTotal + reviewTotal + commentTotal + googleTotal;
 
     // Create earnings record if doesn't exist
-    let earningsData = earnings;
-    if (!earningsData) {
-      earningsData = await Earnings.create({
-        user: req.user._id,
-        totalEarned: calculatedTotal,
-        availableBalance: calculatedTotal,
-        pendingWithdrawal: 0,
-        withdrawnAmount: 0,
-      });
-    } else if (earningsData.totalEarned !== calculatedTotal) {
-      // Update if calculation differs
-      earningsData.totalEarned = calculatedTotal;
-      earningsData.availableBalance =
-        calculatedTotal -
-        (earningsData.withdrawnAmount + earningsData.pendingWithdrawal);
-      await earningsData.save();
+    // Update earnings if needed
+    if (earnings.totalEarned !== calculatedTotal) {
+      earnings.totalEarned = calculatedTotal;
+      earnings.availableBalance =
+        calculatedTotal - earnings.withdrawnAmount - earnings.pendingWithdrawal;
+      await earnings.save();
+    } // Update earnings if needed
+    if (earnings.totalEarned !== calculatedTotal) {
+      earnings.totalEarned = calculatedTotal;
+      earnings.availableBalance =
+        calculatedTotal - earnings.withdrawnAmount - earnings.pendingWithdrawal;
+      await earnings.save();
     }
 
     res.json({
       success: true,
-      data: {
-        ...earningsData.toObject(),
-        transactions: transactions || [],
-      },
+      data: earnings,
+      // Optional: include transactions if needed
+      transactions: userTransactions,
     });
   } catch (error) {
     console.error("❌ Earnings controller error:", error);
-    console.error("❌ Error stack:", error.stack);
     res.status(500).json({
       success: false,
       message: "Failed to get earnings",
-      error: error.message,
+      error: process.env.NODE_ENV === "development" ? error.message : undefined,
     });
   }
 };
