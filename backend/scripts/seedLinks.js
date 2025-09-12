@@ -25,21 +25,56 @@ const connectDB = async () => {
 
 const facebookLinks = [
   {
-    url: "https://www.facebook.com/share/1A4t6PLTc3/",
-    title: "Truth Sri Lanka - පෙජ් එකට ලයික් කරන්න  ",
-    platform: "facebook",
-    earnings: 1.0,
-  },
-
-  {
-    url: "https://www.facebook.com/share/1C1GviJ631/",
-    title: "Ruu Ceylon Marketing - පෙජ් එකට ලයික් කරන්න  ",
+    url: "https://www.facebook.com/share/14DZYSVoFtN/",
+    title: "Shaliya's Apex Aura   (Shaliya Nasik) - පෙජ් එකට ලයික් කරන්න  ",
     platform: "facebook",
     earnings: 1.0,
   },
   {
-    url: "https://www.facebook.com/share/p/1JVzFdmKkW/?mibextid=wwXIfr",
+    url: "https://www.facebook.com/share/p/19n1oebTqS/?mibextid=wwXIfr",
     title: "පොස්ට් ඒකට ලයික් කරන්න  ",
+    platform: "facebook",
+    earnings: 1.0,
+  },
+  {
+    url: "https://www.facebook.com/share/p/17RgZ3RuQm/?mibextid=wwXIfr",
+    title: "පොස්ට් ඒකට ලයික් කරන්න  ",
+    platform: "facebook",
+    earnings: 1.0,
+  },
+  {
+    url: "https://www.facebook.com/share/p/1CWU4YYedW/?mibextid=wwXIfr",
+    title: "පොස්ට් ඒකට ලයික් කරන්න  ",
+    platform: "facebook",
+    earnings: 1.0,
+  },
+  {
+    url: "https://www.facebook.com/share/p/1CU1YHSG1J/?mibextid=wwXIfr",
+    title: "පොස්ට් ඒකට ලයික් කරන්න  ",
+    platform: "facebook",
+    earnings: 1.0,
+  },
+  {
+    url: "https://www.facebook.com/share/v/19BEZfn4fW/?mibextid=wwXIfr",
+    title: "පොස්ට් ඒකට ලයික් කරන්න  ",
+    platform: "facebook",
+    earnings: 1.0,
+  },
+  {
+    url: "https://www.facebook.com/share/r/1B8B7mproE/?mibextid=wwXIfr",
+    title: "පොස්ට් ඒකට ලයික් කරන්න  ",
+    platform: "facebook",
+    earnings: 1.0,
+  },
+  {
+    url: "https://www.facebook.com/share/1EaWUrBRqQ/?mibextid=wwXIfr",
+    title: "අපි Magazine - පෙජ් එකට ලයික් කරන්න  ",
+    platform: "facebook",
+    earnings: 1.0,
+  },
+  {
+    url: "https://www.facebook.com/share/17FatNA9t2/?mibextid=wwXIfr",
+    title: "Fluent Flow Books - පෙජ් එකට ලයික් කරන්න  ",
     platform: "facebook",
     earnings: 1.0,
   },
