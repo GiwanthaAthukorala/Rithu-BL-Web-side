@@ -195,16 +195,17 @@ export default function InstagramVerificationTask() {
             <li>
               {" "}
               <a
-                href="https://www.instagram.com/yash._wick?igsh=czVvNHRienUzc2dk&utm_source=qr"
+                href="https://www.instagram.com/japan_cosmetic_mart_lk?igsh=dHdiaHVmOGM3Z2g4"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium"
               >
-                Yashod Wickramaedirisooriya 🌀 - ඉන්ස්ට්‍ර ග්‍රෑම් එකව්න්ට් එක
-                ෆලෝ කරන්න <ExternalLink className="w-4 h-4 ml-1" />
+                Japan Cosmetic Mart LK Beauty, cosmetic & personal care -
+                ඉන්ස්ට්‍ර ග්‍රෑම් එකව්න්ට් එක ෆලෝ කරන්න ෆලෝ කරන්න{" "}
+                <ExternalLink className="w-4 h-4 ml-1" />
               </a>
             </li>
-            <li>
+            {/* <li>
               {" "}
               <a
                 href="https://www.instagram.com/aromadrops.lk?igsh=MTRwMDQ1bXVlYmw1Mw%3D%3D&utm_source=qr"
@@ -216,7 +217,7 @@ export default function InstagramVerificationTask() {
                 Instagram Profile) <ExternalLink className="w-4 h-4 ml-1" />
               </a>
             </li>{" "}
-            {/*  <li>
+          <li>
               {" "}
               <a
                 href="https://www.instagram.com/noirelle_premium?igsh=bXM4ajMyanFmN2xl&utm_source=qr"
