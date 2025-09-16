@@ -195,14 +195,13 @@ export default function InstagramVerificationTask() {
             <li>
               {" "}
               <a
-                href="https://www.instagram.com/japan_cosmetic_mart_lk?igsh=dHdiaHVmOGM3Z2g4"
+                href="https://www.instagram.com/pelaceylonteas?utm_source=qr&igsh=MndyZzYyY2JheHRs"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium"
               >
-                Japan Cosmetic Mart LK Beauty, cosmetic & personal care -
-                ඉන්ස්ට්‍ර ග්‍රෑම් එකව්න්ට් එක ෆලෝ කරන්න ෆලෝ කරන්න{" "}
-                <ExternalLink className="w-4 h-4 ml-1" />
+                Pela Ceylon Teas - ඉන්ස්ට්‍ර ග්‍රෑම් එකව්න්ට් එක ෆලෝ කරන්න
+                ෆලෝ කරන්න <ExternalLink className="w-4 h-4 ml-1" />
               </a>
             </li>
             {/* <li>
