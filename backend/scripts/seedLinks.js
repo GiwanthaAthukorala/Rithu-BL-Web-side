@@ -25,82 +25,58 @@ const connectDB = async () => {
 
 const facebookLinks = [
   {
-    url: "https://www.facebook.com/share/1WGHN8QW1x/?mibextid=wwXIfr",
-    title: "€ • N • F Brand - පෙජ් එක ලයික් (Like) කරන්න  ",
+    url: "https://www.facebook.com/share/r/19qVYG9CYc/?mibextid=wwXIfr",
+    title: "පොස්ට් ලයික් (Like) කරන්න",
+    platform: "facebook",
+    earnings: 1.0,
+  },
+  {
+    url: "https://www.facebook.com/share/p/171BRb8eYy/?mibextid=wwXIfr",
+    title: "පොස්ට් ලයික් (Like) කරන්න",
+    platform: "facebook",
+    earnings: 1.0,
+  },
+  {
+    url: "https://www.facebook.com/share/r/16zSLxpcUu/?mibextid=wwXIfr",
+    title: "පොස්ට් ලයික් (Like) කරන්න",
+    platform: "facebook",
+    earnings: 1.0,
+  },
+  {
+    url: "https://www.facebook.com/share/r/1AGdDQWd9s/?mibextid=wwXIfr",
+    title: "පොස්ට් ලයික් (Like) කරන්න",
+    platform: "facebook",
+    earnings: 1.0,
+  },
+  {
+    url: "https://www.facebook.com/share/1BJGx4QXrx/",
+    title: "Adhi Art & Craft - පෙජ් එක ලයික් (Like) කරන්න  ",
+    platform: "facebook",
+    earnings: 1.0,
+  },
+  {
+    url: "https://www.facebook.com/profile.php?id=61571265939105&mibextid=ZbWKwL",
+    title: "Biyumini fashion - පෙජ් එක ලයික් (Like) කරන්න  ",
+    platform: "facebook",
+    earnings: 1.0,
+  },
+  {
+    url: "https://www.facebook.com/share/1frkM8ZLsF/",
+    title: "Debian-X Solutions - පෙජ් එක ලයික් (Like) කරන්න  ",
     platform: "facebook",
     earnings: 1.0,
   },
 
   {
-    url: "https://www.facebook.com/share/p/1PN9D8unQo/?mibextid=wwXIfr",
-    title: "පොස්ට් ලයික් (Like) කරන්න",
-    platform: "facebook",
-    earnings: 1.0,
-  },
-  {
-    url: "https://www.facebook.com/share/1CHDtYm9oU/",
-    title: "OLASH Beauty Hub - පෙජ් එක ෆලො(Follow) කරන්න  ",
-    platform: "facebook",
-    earnings: 1.0,
-  },
-  {
-    url: "https://www.facebook.com/share/17Pd71ySzA/",
-    title: "Bike sale  - පෙජ් එක ෆලො(Follow) කරන්න  ",
-    platform: "facebook",
-    earnings: 1.0,
-  },
-  {
-    url: "https://www.facebook.com/share/16zcRxNTai/",
-    title: "Delonix Creations - පෙජ් එක ෆලො(Follow) කරන්න  ",
-    platform: "facebook",
-    earnings: 1.0,
-  },
-  {
-    url: "https://www.facebook.com/share/16z1MR7146/",
-    title: "Dye Bath - පෙජ් එක ෆලො(Follow) කරන්න  ",
+    url: "https://www.facebook.com/share/1CS4QapoyN/?mibextid=wwXIfr",
+    title: "STEPS IN beauty academy - පෙජ් එක ලයික් (Like) කරන්න  ",
     platform: "facebook",
     earnings: 1.0,
   },
 
   {
-    url: "https://www.facebook.com/share/v/1T31N9Gd6L/?mibextid=wwXIfr",
-    title: "විඩියො පොස්ට් ලයික් (Like) කරන්න",
-    platform: "facebook",
-    earnings: 1.0,
-  },
-  {
-    url: "https://www.facebook.com/share/r/196YRZrXw7/?mibextid=wwXIfr",
+    url: "https://www.facebook.com/profile.php?id=61571265939105&mibextid=ZbWKwL",
     title: "පොස්ට් ලයික් (Like) කරන්න",
-    platform: "facebook",
-    earnings: 1.0,
-  },
-  {
-    url: "https://www.facebook.com/share/r/19mB5Z6W6P/?mibextid=wwXIfr",
-    title: "පොස්ට් ලයික් (Like) කරන්න",
-    platform: "facebook",
-    earnings: 1.0,
-  },
-  {
-    url: "https://www.facebook.com/share/r/1GGwCV4cAy/?mibextid=wwXIfr",
-    title: "පොස්ට් ලයික් (Like) කරන්න",
-    platform: "facebook",
-    earnings: 1.0,
-  },
-  {
-    url: "https://www.facebook.com/share/1AYStumVNd/",
-    title: "GS sandaruwan piyathissa Photography - පෙජ් එක ෆලො(Follow) කරන්න  ",
-    platform: "facebook",
-    earnings: 1.0,
-  },
-  {
-    url: "https://www.facebook.com/share/1BbCfgmjys/?mibextid=wwXIfr",
-    title: "Royal whitening - පෙජ් එක ෆලො(Follow) කරන්න  ",
-    platform: "facebook",
-    earnings: 1.0,
-  },
-  {
-    url: "https://www.facebook.com/profile.php?id=61563999916386",
-    title: "Madhu&Ishara - පෙජ් එකට  ෆලො(Follow) කරන්න  ",
     platform: "facebook",
     earnings: 1.0,
   },
