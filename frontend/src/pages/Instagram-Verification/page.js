@@ -188,35 +188,59 @@ export default function InstagramVerificationTask() {
           </div>
 
           {/* Admin Message */}
-          {/*  <div className="mb-8 bg-blue-50 p-4 rounded-lg">
+          <div className="mb-8 bg-blue-50 p-4 rounded-lg">
             <p className="text-gray-700 mb-3">
               Please visit this link and take a screenshot as proof:
             </p>
             <li>
               {" "}
               <a
-                href="https://www.instagram.com/pelaceylonteas?utm_source=qr&igsh=MndyZzYyY2JheHRs"
+                href="https://www.instagram.com/noa_sands?igsh=MXhzcTlvbHdtbmo4OQ=="
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium"
               >
-                Pela Ceylon Teas - ඉන්ස්ට්‍ර ග්‍රෑම් එකව්න්ට් එක ෆලෝ කරන්න
+                Noa Sands Talpe - ඉන්ස්ට්‍ර ග්‍රෑම් එකව්න්ට් එක ෆලෝ කරන්න
                 ෆලෝ කරන්න <ExternalLink className="w-4 h-4 ml-1" />
               </a>
             </li>
-           <li>
+            <li>
               {" "}
               <a
-                href="https://www.instagram.com/aromadrops.lk?igsh=MTRwMDQ1bXVlYmw1Mw%3D%3D&utm_source=qr"
+                href="https://www.instagram.com/wedamadura29/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium"
               >
-                Aroma Drops - ඉන්ස්ට්‍රග්‍රැම් එකව්න්ට් එක ෆලෝ කරන්න (Visit our
-                Instagram Profile) <ExternalLink className="w-4 h-4 ml-1" />
+                Weda Madura - ඉන්ස්ට්‍ර ග්‍රෑම් එකව්න්ට් එක ෆලෝ කරන්න ෆලෝ කරන්න{" "}
+                <ExternalLink className="w-4 h-4 ml-1" />
+              </a>
+            </li>
+            <li>
+              {" "}
+              <a
+                href="https://www.instagram.com/zaccai.lk?igsh=YndkdmI4N2l6ZGdt&utm_source=qr"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium"
+              >
+                ZACCAI - ඉන්ස්ට්‍ර ග්‍රෑම් එකව්න්ට් එක ෆලෝ කරන්න ෆලෝ කරන්න{" "}
+                <ExternalLink className="w-4 h-4 ml-1" />
+              </a>
+            </li>
+            <li>
+              {" "}
+              <a
+                href="https://www.instagram.com/kaveesha_ru?igsh=MW15OXQwenNla2YweA%3D%3D&utm_source=qr"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium"
+              >
+                Kaveesha Rukshan - ඉන්ස්ට්‍රග්‍රැම් එකව්න්ට් එක ෆලෝ කරන්න (Visit
+                our Instagram Profile) <ExternalLink className="w-4 h-4 ml-1" />
               </a>
             </li>{" "}
-          <li>
+            <li>
               {" "}
               <a
                 href="https://www.instagram.com/noirelle_premium?igsh=bXM4ajMyanFmN2xl&utm_source=qr"
@@ -229,18 +253,6 @@ export default function InstagramVerificationTask() {
                 <ExternalLink className="w-4 h-4 ml-1" />
               </a>
             </li>
-           <li>
-              {" "}
-              <a
-                href=""
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium"
-              >
-                Visit our Instagram Profile{" "}
-                <ExternalLink className="w-4 h-4 ml-1" />
-              </a>
-            </li>
             <li>
               {" "}
               <a
@@ -252,96 +264,110 @@ export default function InstagramVerificationTask() {
                 Visit our Instagram Profile{" "}
                 <ExternalLink className="w-4 h-4 ml-1" />
               </a>
-            </li>*/}
-        </div>
+            </li>
+            {/*  <li>
+              {" "}
+              <a
+                href=""
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium"
+              >
+                Visit our Instagram Profile{" "}
+                <ExternalLink className="w-4 h-4 ml-1" />
+              </a>
+            </li>{" "}
+              */}
+          </div>
 
-        <div className="mb-8 bg-yellow-50 p-4 rounded-lg border border-yellow-200">
-          <h3 className="text-md font-medium mb-2 text-yellow-800">
-            Screenshot Requirements
-          </h3>
-          <ul className="list-disc list-inside space-y-1 text-yellow-700">
-            <li>Must clearly show the followed Account</li>
-            <li>Must show your profile or browser context</li>
-            <li>No edited or cropped images</li>
-            <li>File size under 5MB</li>
-          </ul>
-        </div>
+          <div className="mb-8 bg-yellow-50 p-4 rounded-lg border border-yellow-200">
+            <h3 className="text-md font-medium mb-2 text-yellow-800">
+              Screenshot Requirements
+            </h3>
+            <ul className="list-disc list-inside space-y-1 text-yellow-700">
+              <li>Must clearly show the followed Account</li>
+              <li>Must show your profile or browser context</li>
+              <li>No edited or cropped images</li>
+              <li>File size under 5MB</li>
+            </ul>
+          </div>
 
-        {/* Upload Section */}
-        <div>
-          <h3 className="text-lg font-medium mb-4">Upload Screenshot</h3>
-          <form onSubmit={handleSubmit}>
-            <div className="mb-6">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Screenshot File
-              </label>
+          {/* Upload Section */}
+          <div>
+            <h3 className="text-lg font-medium mb-4">Upload Screenshot</h3>
+            <form onSubmit={handleSubmit}>
+              <div className="mb-6">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Screenshot File
+                </label>
 
-              {preview ? (
-                <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center">
-                  <img
-                    src={preview}
-                    alt="Screenshot preview"
-                    className="max-h-64 mx-auto mb-4 rounded"
-                  />
-                  <p className="text-green-600 font-medium">{file.name}</p>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setFile(null);
-                      setPreview(null);
-                    }}
-                    className="mt-3 text-sm text-red-600 hover:text-red-800"
-                  >
-                    Remove file
-                  </button>
-                </div>
-              ) : (
-                <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
-                  <Upload className="w-12 h-12 text-gray-400 mx-auto mb-3" />
-                  <p className="text-gray-600 mb-2">
-                    Drag and drop your screenshot here or click to browse
-                  </p>
-                  <p className="text-sm text-gray-500 mb-4">
-                    Supported formats: PNG, JPG, JPEG (max 5MB)
-                  </p>
-                  <label className="inline-block bg-blue-600 text-white px-4 py-2 rounded-md cursor-pointer hover:bg-blue-700">
-                    Choose File
-                    <input
-                      type="file"
-                      accept=".png,.jpg,.jpeg"
-                      onChange={handleFileChange}
-                      className="hidden"
+                {preview ? (
+                  <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center">
+                    <img
+                      src={preview}
+                      alt="Screenshot preview"
+                      className="max-h-64 mx-auto mb-4 rounded"
                     />
-                  </label>
-                </div>
+                    <p className="text-green-600 font-medium">{file.name}</p>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setFile(null);
+                        setPreview(null);
+                      }}
+                      className="mt-3 text-sm text-red-600 hover:text-red-800"
+                    >
+                      Remove file
+                    </button>
+                  </div>
+                ) : (
+                  <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+                    <Upload className="w-12 h-12 text-gray-400 mx-auto mb-3" />
+                    <p className="text-gray-600 mb-2">
+                      Drag and drop your screenshot here or click to browse
+                    </p>
+                    <p className="text-sm text-gray-500 mb-4">
+                      Supported formats: PNG, JPG, JPEG (max 5MB)
+                    </p>
+                    <label className="inline-block bg-blue-600 text-white px-4 py-2 rounded-md cursor-pointer hover:bg-blue-700">
+                      Choose File
+                      <input
+                        type="file"
+                        accept=".png,.jpg,.jpeg"
+                        onChange={handleFileChange}
+                        className="hidden"
+                      />
+                    </label>
+                  </div>
+                )}
+
+                {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
+              </div>
+
+              <button
+                type="submit"
+                disabled={!file || isSubmitting}
+                className={`w-full py-3 rounded-lg font-semibold ${
+                  file
+                    ? "bg-green-600 hover:bg-green-700 text-white"
+                    : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                }`}
+              >
+                {isSubmitting ? "Submitting..." : "Submit Screenshot"}
+              </button>
+
+              {showDuplicateModal && (
+                <DuplicateWarningModal
+                  onClose={() => {
+                    setShowDuplicateModal(false);
+                    setFile(null);
+                    setPreview(null);
+                  }}
+                  previousDate={previousSubmissionDate}
+                />
               )}
-
-              {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
-            </div>
-
-            <button
-              type="submit"
-              disabled={!file || isSubmitting}
-              className={`w-full py-3 rounded-lg font-semibold ${
-                file
-                  ? "bg-green-600 hover:bg-green-700 text-white"
-                  : "bg-gray-300 text-gray-500 cursor-not-allowed"
-              }`}
-            >
-              {isSubmitting ? "Submitting..." : "Submit Screenshot"}
-            </button>
-
-            {showDuplicateModal && (
-              <DuplicateWarningModal
-                onClose={() => {
-                  setShowDuplicateModal(false);
-                  setFile(null);
-                  setPreview(null);
-                }}
-                previousDate={previousSubmissionDate}
-              />
-            )}
-          </form>
+            </form>
+          </div>
         </div>
       </div>
     </div>

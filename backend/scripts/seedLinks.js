@@ -25,29 +25,37 @@ const connectDB = async () => {
 
 const facebookLinks = [
   {
-    url: "https://www.facebook.com/share/1B11xkbvxB/",
-    title: "Minu Anthurium - පෙජ් එක ෆලො (Follow ) කරන්න",
+    url: "https://www.facebook.com/share/p/1A6oqQ4pq2/?mibextid=WC7FNe",
+    title: "පොස්ට් ලයික් කරන්න",
     platform: "facebook",
     earnings: 1.0,
   },
   {
-    url: "https://www.facebook.com/profile.php?id=61553480813114&mibextid=ZbWKwL",
-    title: "Gem Gild of Ceylon - පෙජ් එක ලයික් (Like) කරන්න  ",
+    url: "https://www.facebook.com/share/p/15vSCNwfSY/?mibextid=WC7FNe",
+    title: "පොස්ට් ලයික් කරන්න",
     platform: "facebook",
     earnings: 1.0,
   },
   {
-    url: "https://www.facebook.com/share/1G51CGDPBs/?mibextid=wwXIfr",
-    title: "English with Gihan Kanishka - පෙජ් එක ලයික් (Like) කරන්න  ",
+    url: "https://www.facebook.com/share/p/1EJd9Jfz9q/?mibextid=WC7FNe",
+    title: "පොස්ට් ලයික් කරන්න",
     platform: "facebook",
     earnings: 1.0,
   },
+  {
+    url: "https://www.facebook.com/share/p/16yBZtKufk/?mibextid=WC7FNe",
+    title: "පොස්ට් ලයික් කරන්න",
+    platform: "facebook",
+    earnings: 1.0,
+  },
+
+  /*
   {
     url: "https://www.facebook.com/share/1ARA89E5H1/",
     title: "Cylora Fashion - පෙජ් එක ලයික් (Like) කරන්න  ",
     platform: "facebook",
     earnings: 1.0,
-  },
+  },*/
 ];
 async function seedLinks() {
   try {
