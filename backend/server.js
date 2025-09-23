@@ -97,6 +97,7 @@ app.use("/api/review-links", require("./routes/ReviewLink")); // For link manage
 app.use("/api/fb-reviews", require("./routes/ReviewRoutes")); // For submissions
 app.use("/api/fb-comments", require("./routes/CommentRoutes"));
 app.use("/api/googlereviews", require("./routes/GoogleReviewRoutes"));
+app.use("/api/admin", require("./routes/adminRoutes"));
 
 // === Health Check ===
 app.get("/health", (req, res) => {

@@ -185,10 +185,9 @@ export default function InstagramVerificationTask() {
                 <li>Upload the screenshot below</li>
               </ol>
             </ul>
-          </div>
 
-          {/* Admin Message */}
-          <div className="mb-8 bg-blue-50 p-4 rounded-lg">
+            {/* Admin Message */}
+            {/*    <div className="mb-8 bg-blue-50 p-4 rounded-lg">
             <p className="text-gray-700 mb-3">
               Please visit this link and take a screenshot as proof:
             </p>
@@ -265,7 +264,7 @@ export default function InstagramVerificationTask() {
                 <ExternalLink className="w-4 h-4 ml-1" />
               </a>
             </li>
-            {/*  <li>
+            <li>
               {" "}
               <a
                 href=""
