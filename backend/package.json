@@ -32,7 +32,6 @@
     "mongodb": "^6.18.0",
     "mongoose": "^8.18.2",
     "multer": "^2.0.2",
-    "multer-storage-cloudinary": "^4.0.0",
     "nodemailer": "^7.0.6",
     "page": "^1.11.6",
     "path-to-regexp": "^3.2.0",
