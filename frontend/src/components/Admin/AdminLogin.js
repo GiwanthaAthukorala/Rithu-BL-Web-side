@@ -1,6 +1,6 @@
 "use client";
-import { useState } from "react";
-import { useAuth } from "@/Context/AuthContext";
+import { useState, useEffect } from "react";
+import { useAdminAuth } from "@/Context/AdminAuthContext";
 import { useRouter } from "next/navigation";
 
 export default function AdminLogin() {
@@ -8,8 +8,14 @@ export default function AdminLogin() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const { login } = useAuth();
+  const { adminLogin, isAuthenticated } = useAdminAuth();
   const router = useRouter();
+
+  useEffect(() => {
+    if (isAuthenticated()) {
+      router.push("/admin/dashboard");
+    }
+  }, [isAuthenticated, router]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -17,8 +23,8 @@ export default function AdminLogin() {
     setError("");
 
     try {
-      await login({ email, password });
-      router.push("/admin/dashboard");
+      await adminLogin({ email, password });
+      // No need to push here, the useEffect will handle redirect
     } catch (err) {
       setError(err.message || "Login failed");
     } finally {
@@ -30,6 +36,21 @@ export default function AdminLogin() {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
         <div>
+          <div className="mx-auto h-12 w-12 bg-blue-600 rounded-lg flex items-center justify-center">
+            <svg
+              className="h-8 w-8 text-white"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"
+              />
+            </svg>
+          </div>
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
             Admin Dashboard
           </h2>

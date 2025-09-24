@@ -1,45 +1,154 @@
+const User = require("../models/userModel");
 const Submission = require("../models/Submission");
 const YoutubeSubmission = require("../models/YoutubeSubmission");
 const FbReviewSubmission = require("../models/FbReviewSubmission");
 const FbCommentSubmission = require("../models/FbCommentSubmission");
 const GoogleReviewSubmission = require("../models/GoogleReviewModel");
-const User = require("../models/userModel");
+const jwt = require("jsonwebtoken");
 
-// Get all submissions with pagination and filtering
+// Admin Login
+const adminLogin = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json({
+        success: false,
+        message: "Please provide email and password",
+      });
+    }
+
+    // Find user with password selected
+    const user = await User.findOne({ email }).select("+password");
+
+    if (!user) {
+      return res.status(401).json({
+        success: false,
+        message: "Invalid credentials",
+      });
+    }
+
+    // Check if user is admin
+    if (!user.isAdmin()) {
+      return res.status(403).json({
+        success: false,
+        message: "Access denied. Admin privileges required.",
+      });
+    }
+
+    // Check if user is active
+    if (!user.isActive) {
+      return res.status(403).json({
+        success: false,
+        message: "Account deactivated. Please contact super admin.",
+      });
+    }
+
+    // Verify password
+    const isPasswordValid = await user.matchPassword(password);
+
+    if (!isPasswordValid) {
+      return res.status(401).json({
+        success: false,
+        message: "Invalid credentials",
+      });
+    }
+
+    // Generate token
+    const token = jwt.sign(
+      { id: user._id, role: user.role },
+      process.env.JWT_SECRET,
+      { expiresIn: "24h" }
+    );
+
+    // Return user data without password
+    const userData = {
+      _id: user._id,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+      role: user.role,
+      isActive: user.isActive,
+      createdAt: user.createdAt,
+    };
+
+    res.json({
+      success: true,
+      message: "Admin login successful",
+      token,
+      user: userData,
+    });
+  } catch (error) {
+    console.error("Admin login error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error during login",
+    });
+  }
+};
+
+// Admin Logout
+const adminLogout = (req, res) => {
+  res.json({
+    success: true,
+    message: "Admin logout successful",
+  });
+};
+
+// Get all submissions with enhanced filtering
 const getAllSubmissions = async (req, res) => {
   try {
     const {
       page = 1,
       limit = 20,
       platform,
+      platformType,
       status,
       dateFrom,
       dateTo,
       userId,
+      search,
     } = req.query;
 
     const pageNum = parseInt(page);
     const limitNum = parseInt(limit);
     const skip = (pageNum - 1) * limitNum;
 
-    // Build filter object
-    const filter = {};
-    if (platform) filter.platform = platform;
-    if (status) filter.status = status;
-    if (userId) filter.user = userId;
+    // Build filter object for each model
+    const buildFilter = (baseFilter = {}) => {
+      const filter = { ...baseFilter };
+      if (status && status !== "all") filter.status = status;
+      if (userId) filter.user = userId;
 
-    // Date range filter
-    if (dateFrom || dateTo) {
-      filter.createdAt = {};
-      if (dateFrom) filter.createdAt.$gte = new Date(dateFrom);
-      if (dateTo) {
-        const endDate = new Date(dateTo);
-        endDate.setHours(23, 59, 59, 999);
-        filter.createdAt.$lte = endDate;
+      // Date range filter
+      if (dateFrom || dateTo) {
+        filter.createdAt = {};
+        if (dateFrom) filter.createdAt.$gte = new Date(dateFrom);
+        if (dateTo) {
+          const endDate = new Date(dateTo);
+          endDate.setHours(23, 59, 59, 999);
+          filter.createdAt.$lte = endDate;
+        }
       }
+
+      return filter;
+    };
+
+    // Search by user name or email
+    let userFilter = {};
+    if (search) {
+      const users = await User.find({
+        $or: [
+          { firstName: { $regex: search, $options: "i" } },
+          { lastName: { $regex: search, $options: "i" } },
+          { email: { $regex: search, $options: "i" } },
+        ],
+      }).select("_id");
+
+      userFilter.user = { $in: users.map((u) => u._id) };
     }
 
-    // Get submissions from all platforms
+    // Get submissions from all platforms with proper filtering
     const [
       fbSubmissions,
       youtubeSubmissions,
@@ -47,89 +156,196 @@ const getAllSubmissions = async (req, res) => {
       fbCommentSubmissions,
       googleReviewSubmissions,
     ] = await Promise.all([
-      Submission.find(filter)
+      // Facebook Page Submissions
+      Submission.find(
+        buildFilter({
+          ...userFilter,
+          platform: platform === "all" ? undefined : platform,
+        })
+      )
         .populate("user", "firstName lastName email phoneNumber")
         .sort({ createdAt: -1 })
         .skip(skip)
-        .limit(limitNum),
+        .limit(limitNum)
+        .lean(),
 
-      YoutubeSubmission.find(filter)
+      // YouTube Submissions
+      YoutubeSubmission.find(buildFilter(userFilter))
         .populate("user", "firstName lastName email phoneNumber")
         .sort({ createdAt: -1 })
         .skip(skip)
-        .limit(limitNum),
+        .limit(limitNum)
+        .lean(),
 
-      FbReviewSubmission.find(filter)
+      // Facebook Review Submissions
+      FbReviewSubmission.find(
+        buildFilter({
+          ...userFilter,
+          platform: platform === "all" ? undefined : platform,
+        })
+      )
         .populate("user", "firstName lastName email phoneNumber")
         .sort({ createdAt: -1 })
         .skip(skip)
-        .limit(limitNum),
+        .limit(limitNum)
+        .lean(),
 
-      FbCommentSubmission.find(filter)
+      // Facebook Comment Submissions
+      FbCommentSubmission.find(
+        buildFilter({
+          ...userFilter,
+          platform: platform === "all" ? undefined : platform,
+        })
+      )
         .populate("user", "firstName lastName email phoneNumber")
         .sort({ createdAt: -1 })
         .skip(skip)
-        .limit(limitNum),
+        .limit(limitNum)
+        .lean(),
 
-      GoogleReviewSubmission.find(filter)
+      // Google Review Submissions
+      GoogleReviewSubmission.find(buildFilter(userFilter))
         .populate("user", "firstName lastName email phoneNumber")
         .sort({ createdAt: -1 })
         .skip(skip)
-        .limit(limitNum),
+        .limit(limitNum)
+        .lean(),
     ]);
 
-    // Combine all submissions
+    // Combine all submissions with platform type and proper identification
     const allSubmissions = [
       ...fbSubmissions.map((sub) => ({
-        ...sub.toObject(),
+        ...sub,
         platformType: "facebook",
+        submissionType: "page",
+        combinedId: `facebook_page_${sub._id}`,
+        _id: `facebook_page_${sub._id}`, // Use combined ID as main ID
       })),
       ...youtubeSubmissions.map((sub) => ({
-        ...sub.toObject(),
+        ...sub,
         platformType: "youtube",
+        submissionType: "video",
+        combinedId: `youtube_video_${sub._id}`,
+        _id: `youtube_video_${sub._id}`,
       })),
       ...fbReviewSubmissions.map((sub) => ({
-        ...sub.toObject(),
-        platformType: "fb-review",
+        ...sub,
+        platformType: "facebook",
+        submissionType: "review",
+        combinedId: `facebook_review_${sub._id}`,
+        _id: `facebook_review_${sub._id}`,
       })),
       ...fbCommentSubmissions.map((sub) => ({
-        ...sub.toObject(),
-        platformType: "fb-comment",
+        ...sub,
+        platformType: "facebook",
+        submissionType: "comment",
+        combinedId: `facebook_comment_${sub._id}`,
+        _id: `facebook_comment_${sub._id}`,
       })),
       ...googleReviewSubmissions.map((sub) => ({
-        ...sub.toObject(),
-        platformType: "google-review",
+        ...sub,
+        platformType: "google",
+        submissionType: "review",
+        combinedId: `google_review_${sub._id}`,
+        _id: `google_review_${sub._id}`,
       })),
     ].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
+    // Apply platform filter after combining
+    let filteredSubmissions = allSubmissions;
+    if (platform && platform !== "all") {
+      filteredSubmissions = allSubmissions.filter(
+        (sub) => sub.platformType === platform
+      );
+    }
+
     // Get counts for each platform
     const counts = await Promise.all([
-      Submission.countDocuments(filter),
-      YoutubeSubmission.countDocuments(filter),
-      FbReviewSubmission.countDocuments(filter),
-      FbCommentSubmission.countDocuments(filter),
-      GoogleReviewSubmission.countDocuments(filter),
+      Submission.countDocuments(
+        buildFilter({ platform: platform === "all" ? undefined : platform })
+      ),
+      YoutubeSubmission.countDocuments(buildFilter()),
+      FbReviewSubmission.countDocuments(
+        buildFilter({ platform: platform === "all" ? undefined : platform })
+      ),
+      FbCommentSubmission.countDocuments(
+        buildFilter({ platform: platform === "all" ? undefined : platform })
+      ),
+      GoogleReviewSubmission.countDocuments(buildFilter()),
     ]);
 
     const totalCount = counts.reduce((sum, count) => sum + count, 0);
 
+    // Get status counts for statistics
+    const statusCounts = await Promise.all([
+      Submission.aggregate([
+        {
+          $match: buildFilter({
+            platform: platform === "all" ? undefined : platform,
+          }),
+        },
+        { $group: { _id: "$status", count: { $sum: 1 } } },
+      ]),
+      YoutubeSubmission.aggregate([
+        { $match: buildFilter() },
+        { $group: { _id: "$status", count: { $sum: 1 } } },
+      ]),
+      FbReviewSubmission.aggregate([
+        {
+          $match: buildFilter({
+            platform: platform === "all" ? undefined : platform,
+          }),
+        },
+        { $group: { _id: "$status", count: { $sum: 1 } } },
+      ]),
+      FbCommentSubmission.aggregate([
+        {
+          $match: buildFilter({
+            platform: platform === "all" ? undefined : platform,
+          }),
+        },
+        { $group: { _id: "$status", count: { $sum: 1 } } },
+      ]),
+      GoogleReviewSubmission.aggregate([
+        { $match: buildFilter() },
+        { $group: { _id: "$status", count: { $sum: 1 } } },
+      ]),
+    ]);
+
+    // Combine status counts
+    const combinedStatusCounts = {
+      pending: 0,
+      approved: 0,
+      rejected: 0,
+    };
+
+    statusCounts.flat().forEach((item) => {
+      if (item._id && combinedStatusCounts[item._id] !== undefined) {
+        combinedStatusCounts[item._id] += item.count;
+      }
+    });
+
+    // Paginate the filtered results
+    const paginatedSubmissions = filteredSubmissions.slice(0, limitNum);
+
     res.json({
       success: true,
       data: {
-        submissions: allSubmissions.slice(0, limitNum),
+        submissions: paginatedSubmissions,
         pagination: {
           currentPage: pageNum,
-          totalPages: Math.ceil(totalCount / limitNum),
-          totalSubmissions: totalCount,
-          hasNext: pageNum < Math.ceil(totalCount / limitNum),
+          totalPages: Math.ceil(filteredSubmissions.length / limitNum),
+          totalSubmissions: filteredSubmissions.length,
+          hasNext: pageNum < Math.ceil(filteredSubmissions.length / limitNum),
           hasPrev: pageNum > 1,
         },
-        platformCounts: {
-          facebook: counts[0],
-          youtube: counts[1],
-          fbReview: counts[2],
-          fbComment: counts[3],
-          googleReview: counts[4],
+        statusCounts: combinedStatusCounts,
+        filters: {
+          platform: platform || "all",
+          status: status || "all",
+          search: search || "",
+          dateFrom: dateFrom || "",
+          dateTo: dateTo || "",
         },
       },
     });
@@ -143,8 +359,210 @@ const getAllSubmissions = async (req, res) => {
   }
 };
 
-// Get submission statistics
-const getSubmissionStats = async (req, res) => {
+// Get submission by ID
+const getSubmissionById = async (req, res) => {
+  try {
+    const { platformType, submissionId } = req.params;
+
+    let Model;
+    let submissionType;
+
+    // Determine model based on platformType
+    switch (platformType) {
+      case "facebook_page":
+        Model = Submission;
+        submissionType = "page";
+        break;
+      case "youtube_video":
+        Model = YoutubeSubmission;
+        submissionType = "video";
+        break;
+      case "facebook_review":
+        Model = FbReviewSubmission;
+        submissionType = "review";
+        break;
+      case "facebook_comment":
+        Model = FbCommentSubmission;
+        submissionType = "comment";
+        break;
+      case "google_review":
+        Model = GoogleReviewSubmission;
+        submissionType = "review";
+        break;
+      default:
+        return res.status(400).json({
+          success: false,
+          message: "Invalid platform type",
+        });
+    }
+
+    const submission = await Model.findById(submissionId).populate("user");
+
+    if (!submission) {
+      return res.status(404).json({
+        success: false,
+        message: "Submission not found",
+      });
+    }
+
+    // Add platform info to submission
+    const submissionWithPlatform = {
+      ...submission.toObject(),
+      platformType: platformType.split("_")[0],
+      submissionType: submissionType,
+      combinedId: `${platformType}_${submission._id}`,
+    };
+
+    res.json({
+      success: true,
+      data: submissionWithPlatform,
+    });
+  } catch (error) {
+    console.error("Get submission error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch submission",
+      error: error.message,
+    });
+  }
+};
+
+// Update submission status
+const updateSubmissionStatus = async (req, res) => {
+  try {
+    const { combinedId, status, rejectionReason } = req.body;
+
+    if (!combinedId || !["approved", "rejected", "pending"].includes(status)) {
+      return res.status(400).json({
+        success: false,
+        message:
+          "Valid combinedId and status (approved/rejected/pending) are required",
+      });
+    }
+
+    // Parse combinedId to get platformType and actual ID
+    const [platform, type, ...idParts] = combinedId.split("_");
+    const platformType = `${platform}_${type}`;
+    const actualId = idParts.join("_");
+
+    let Model;
+
+    // Determine which model to use based on platform type
+    switch (platformType) {
+      case "facebook_page":
+        Model = Submission;
+        break;
+      case "youtube_video":
+        Model = YoutubeSubmission;
+        break;
+      case "facebook_review":
+        Model = FbReviewSubmission;
+        break;
+      case "facebook_comment":
+        Model = FbCommentSubmission;
+        break;
+      case "google_review":
+        Model = GoogleReviewSubmission;
+        break;
+      default:
+        return res.status(400).json({
+          success: false,
+          message: "Invalid platform type",
+        });
+    }
+
+    const submission = await Model.findById(actualId).populate("user");
+
+    if (!submission) {
+      return res.status(404).json({
+        success: false,
+        message: "Submission not found",
+      });
+    }
+
+    submission.status = status;
+    if (status === "rejected" && rejectionReason) {
+      submission.rejectionReason = rejectionReason;
+    } else {
+      submission.rejectionReason = undefined;
+    }
+
+    await submission.save();
+
+    res.json({
+      success: true,
+      message: `Submission ${status} successfully`,
+      data: submission,
+    });
+  } catch (error) {
+    console.error("Update submission error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to update submission",
+      error: error.message,
+    });
+  }
+};
+
+// Delete submission
+const deleteSubmission = async (req, res) => {
+  try {
+    const { platformType, submissionId } = req.params;
+
+    let Model;
+    let actualId = submissionId;
+
+    // Determine which model to use based on platform type
+    switch (platformType) {
+      case "facebook_page":
+        Model = Submission;
+        break;
+      case "youtube_video":
+        Model = YoutubeSubmission;
+        break;
+      case "facebook_review":
+        Model = FbReviewSubmission;
+        break;
+      case "facebook_comment":
+        Model = FbCommentSubmission;
+        break;
+      case "google_review":
+        Model = GoogleReviewSubmission;
+        break;
+      default:
+        return res.status(400).json({
+          success: false,
+          message: "Invalid platform type",
+        });
+    }
+
+    console.log(`Deleting ${platformType} submission:`, actualId);
+
+    const submission = await Model.findByIdAndDelete(actualId);
+
+    if (!submission) {
+      return res.status(404).json({
+        success: false,
+        message: "Submission not found",
+      });
+    }
+
+    res.json({
+      success: true,
+      message: "Submission deleted successfully",
+    });
+  } catch (error) {
+    console.error("Delete submission error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to delete submission",
+      error: error.message,
+    });
+  }
+};
+
+// Get admin statistics
+const getAdminStats = async (req, res) => {
   try {
     const thirtyDaysAgo = new Date();
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
@@ -257,6 +675,7 @@ const getSubmissionStats = async (req, res) => {
             firstName: 1,
             lastName: 1,
             email: 1,
+            phoneNumber: 1,
             totalSubmissions: {
               $add: [
                 { $size: "$fbSubmissions" },
@@ -264,6 +683,55 @@ const getSubmissionStats = async (req, res) => {
                 { $size: "$fbReviewSubmissions" },
                 { $size: "$fbCommentSubmissions" },
                 { $size: "$googleReviewSubmissions" },
+              ],
+            },
+            approvedSubmissions: {
+              $add: [
+                {
+                  $size: {
+                    $filter: {
+                      input: "$fbSubmissions",
+                      as: "sub",
+                      cond: { $eq: ["$$sub.status", "approved"] },
+                    },
+                  },
+                },
+                {
+                  $size: {
+                    $filter: {
+                      input: "$ytSubmissions",
+                      as: "sub",
+                      cond: { $eq: ["$$sub.status", "approved"] },
+                    },
+                  },
+                },
+                {
+                  $size: {
+                    $filter: {
+                      input: "$fbReviewSubmissions",
+                      as: "sub",
+                      cond: { $eq: ["$$sub.status", "approved"] },
+                    },
+                  },
+                },
+                {
+                  $size: {
+                    $filter: {
+                      input: "$fbCommentSubmissions",
+                      as: "sub",
+                      cond: { $eq: ["$$sub.status", "approved"] },
+                    },
+                  },
+                },
+                {
+                  $size: {
+                    $filter: {
+                      input: "$googleReviewSubmissions",
+                      as: "sub",
+                      cond: { $eq: ["$$sub.status", "approved"] },
+                    },
+                  },
+                },
               ],
             },
           },
@@ -282,6 +750,10 @@ const getSubmissionStats = async (req, res) => {
         rejectedSubmissions,
         recentSubmissions,
         topUsers,
+        earnings: {
+          totalEarned: approvedSubmissions * 1.0,
+          pendingAmount: pendingSubmissions * 1.0,
+        },
       },
     });
   } catch (error) {
@@ -294,102 +766,207 @@ const getSubmissionStats = async (req, res) => {
   }
 };
 
-// Approve/reject submission from any platform
-const updateSubmissionStatus = async (req, res) => {
+// Get all users (super admin only)
+const getAllUsers = async (req, res) => {
   try {
-    const { submissionId, platformType, status, rejectionReason } = req.body;
+    const { page = 1, limit = 20, search = "" } = req.query;
 
-    if (!["approved", "rejected"].includes(status)) {
-      return res.status(400).json({
-        success: false,
-        message: "Status must be 'approved' or 'rejected'",
-      });
+    const pageNum = parseInt(page);
+    const limitNum = parseInt(limit);
+    const skip = (pageNum - 1) * limitNum;
+
+    const filter = {};
+    if (search) {
+      filter.$or = [
+        { firstName: { $regex: search, $options: "i" } },
+        { lastName: { $regex: search, $options: "i" } },
+        { email: { $regex: search, $options: "i" } },
+      ];
     }
 
-    let submission;
-    let Model;
+    const users = await User.find(filter)
+      .select("-password")
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limitNum);
 
-    // Determine which model to use based on platform type
-    switch (platformType) {
-      case "facebook":
-        Model = Submission;
-        break;
-      case "youtube":
-        Model = YoutubeSubmission;
-        break;
-      case "fb-review":
-        Model = FbReviewSubmission;
-        break;
-      case "fb-comment":
-        Model = FbCommentSubmission;
-        break;
-      case "google-review":
-        Model = GoogleReviewSubmission;
-        break;
-      default:
-        return res.status(400).json({
-          success: false,
-          message: "Invalid platform type",
-        });
-    }
-
-    submission = await Model.findById(submissionId).populate("user");
-
-    if (!submission) {
-      return res.status(404).json({
-        success: false,
-        message: "Submission not found",
-      });
-    }
-
-    submission.status = status;
-    if (rejectionReason) submission.rejectionReason = rejectionReason;
-
-    await submission.save();
-
-    // Update earnings if approved
-    if (status === "approved") {
-      const Earnings = require("../models/Earnings");
-      let earnings = await Earnings.findOne({ user: submission.user._id });
-
-      if (!earnings) {
-        earnings = await Earnings.create({
-          user: submission.user._id,
-          totalEarned: submission.amount || 0,
-          availableBalance: submission.amount || 0,
-          pendingWithdrawal: 0,
-          withdrawnAmount: 0,
-        });
-      } else {
-        earnings.totalEarned += submission.amount || 0;
-        earnings.availableBalance += submission.amount || 0;
-        await earnings.save();
-      }
-
-      // Emit update to user
-      const io = req.app.get("io");
-      if (io) {
-        io.to(submission.user._id.toString()).emit("earningsUpdate", earnings);
-      }
-    }
+    const totalUsers = await User.countDocuments(filter);
 
     res.json({
       success: true,
-      message: `Submission ${status} successfully`,
-      data: submission,
+      data: {
+        users,
+        pagination: {
+          currentPage: pageNum,
+          totalPages: Math.ceil(totalUsers / limitNum),
+          totalUsers,
+          hasNext: pageNum < Math.ceil(totalUsers / limitNum),
+          hasPrev: pageNum > 1,
+        },
+      },
     });
   } catch (error) {
-    console.error("Update submission error:", error);
+    console.error("Get users error:", error);
     res.status(500).json({
       success: false,
-      message: "Failed to update submission",
+      message: "Failed to fetch users",
+      error: error.message,
+    });
+  }
+};
+
+// Toggle user status (super admin only)
+const toggleUserStatus = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    // Prevent deactivating super admin
+    if (
+      user.isSuperAdmin() &&
+      req.user._id.toString() !== user._id.toString()
+    ) {
+      return res.status(403).json({
+        success: false,
+        message: "Cannot deactivate another super admin",
+      });
+    }
+
+    user.isActive = !user.isActive;
+    await user.save();
+
+    res.json({
+      success: true,
+      message: `User ${
+        user.isActive ? "activated" : "deactivated"
+      } successfully`,
+      data: user,
+    });
+  } catch (error) {
+    console.error("Toggle user status error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to update user status",
+      error: error.message,
+    });
+  }
+};
+
+// Create admin user (super admin only)
+const createAdminUser = async (req, res) => {
+  try {
+    const {
+      firstName,
+      lastName,
+      email,
+      password,
+      phoneNumber,
+      role = "admin",
+    } = req.body;
+
+    if (!["admin", "superadmin"].includes(role)) {
+      return res.status(400).json({
+        success: false,
+        message: "Role must be either 'admin' or 'superadmin'",
+      });
+    }
+
+    // Check if user already exists
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({
+        success: false,
+        message: "User with this email already exists",
+      });
+    }
+
+    const adminUser = new User({
+      firstName,
+      lastName,
+      email,
+      password,
+      phoneNumber,
+      role,
+      isActive: true,
+      bankName: "Admin Bank",
+      bankBranch: "Admin Branch",
+      bankAccountNo: "0000000000000000",
+    });
+
+    await adminUser.save();
+
+    // Return user without password
+    const userResponse = {
+      _id: adminUser._id,
+      firstName: adminUser.firstName,
+      lastName: adminUser.lastName,
+      email: adminUser.email,
+      role: adminUser.role,
+      isActive: adminUser.isActive,
+      createdAt: adminUser.createdAt,
+    };
+
+    res.status(201).json({
+      success: true,
+      message: `${role} user created successfully`,
+      data: userResponse,
+    });
+  } catch (error) {
+    console.error("Create admin user error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to create admin user",
+      error: error.message,
+    });
+  }
+};
+
+// Add this method if it was referenced but missing
+const getSystemStats = async (req, res) => {
+  try {
+    // Basic system statistics
+    const totalUsers = await User.countDocuments();
+    const activeUsers = await User.countDocuments({ isActive: true });
+    const adminUsers = await User.countDocuments({
+      role: { $in: ["admin", "superadmin"] },
+    });
+
+    res.json({
+      success: true,
+      data: {
+        totalUsers,
+        activeUsers,
+        adminUsers,
+        inactiveUsers: totalUsers - activeUsers,
+      },
+    });
+  } catch (error) {
+    console.error("Get system stats error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch system statistics",
       error: error.message,
     });
   }
 };
 
 module.exports = {
+  adminLogin,
+  adminLogout,
   getAllSubmissions,
-  getSubmissionStats,
+  getSubmissionById,
   updateSubmissionStatus,
+  deleteSubmission,
+  getAdminStats,
+  getAllUsers,
+  toggleUserStatus,
+  createAdminUser,
+  getSystemStats, // Add this if you want to use it
 };

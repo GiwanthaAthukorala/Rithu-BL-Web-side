@@ -85,6 +85,7 @@ app.use((req, res, next) => {
   console.log("Auth header:", req.headers.authorization);
   next();
 });
+const adminRoutes = require("./routes/adminRoutes");
 
 // === Routes ===
 app.use("/api/users", require("./routes/userRoutes"));
@@ -97,7 +98,7 @@ app.use("/api/review-links", require("./routes/ReviewLink")); // For link manage
 app.use("/api/fb-reviews", require("./routes/ReviewRoutes")); // For submissions
 app.use("/api/fb-comments", require("./routes/CommentRoutes"));
 app.use("/api/googlereviews", require("./routes/GoogleReviewRoutes"));
-app.use("/api/admin", require("./routes/adminRoutes"));
+app.use("/api/admin", adminRoutes); // Use the imported adminRoutes
 
 // === Health Check ===
 app.get("/health", (req, res) => {

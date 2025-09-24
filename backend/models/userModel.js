@@ -46,6 +46,11 @@ const userSchema = new mongoose.Schema(
       enum: ["user", "admin", "superadmin"],
       default: "user",
     },
+    isActive: {
+      type: Boolean,
+      default: true,
+    },
+
     clickedLinks: [
       {
         linkId: {
@@ -163,6 +168,14 @@ const userSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+// Admin-specific methods
+userSchema.methods.isAdmin = function () {
+  return this.role === "admin" || this.role === "superadmin";
+};
+
+userSchema.methods.isSuperAdmin = function () {
+  return this.role === "superadmin";
+};
 // Hash password before saving
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();

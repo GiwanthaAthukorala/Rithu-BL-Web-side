@@ -61,9 +61,6 @@ export const endpoints = {
   youtubeSubmission: "/youtubeSubmissions",
   fbReviews: "/fb-reviews",
   FacebookComments: "/fb-comments",
-  adminSubmissions: "/admin/submissions",
-  adminStats: "/admin/stats",
-  adminUpdateStatus: "/admin/submissions/status",
 };
 
 export const register = async (userData) => {
@@ -112,23 +109,6 @@ export const getProfile = async () => {
     console.error("Profile error:", error);
     throw error;
   }
-};
-
-// Admin API functions
-export const getAdminSubmissions = async (filters = {}) => {
-  const params = new URLSearchParams(filters).toString();
-  const response = await api.get(`/admin/submissions?${params}`);
-  return response.data;
-};
-
-export const getAdminStats = async () => {
-  const response = await api.get("/admin/stats");
-  return response.data;
-};
-
-export const updateSubmissionStatus = async (data) => {
-  const response = await api.put("/admin/submissions/status", data);
-  return response.data;
 };
 
 export default api;

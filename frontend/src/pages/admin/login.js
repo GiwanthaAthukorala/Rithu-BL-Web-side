@@ -1,18 +1,36 @@
 "use client";
-import AdminLogin from "@/components/Admin/AdminLogin";
-import { useAuth } from "@/Context/AuthContext";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/router";
+import AdminLogin from "@/components/Admin/adminLogin";
+import { AdminAuthProvider, useAdminAuth } from "@/Context/AdminAuthContext";
 
-export default function AdminLoginPage() {
-  const { user } = useAuth();
+// Wrapper component that uses the hook
+function AdminLoginContent() {
+  const { isAuthenticated, loading } = useAdminAuth();
   const router = useRouter();
 
   useEffect(() => {
-    if (user && (user.role === "admin" || user.role === "superadmin")) {
+    if (!loading && isAuthenticated()) {
       router.push("/admin/dashboard");
     }
-  }, [user, router]);
+  }, [isAuthenticated, loading, router]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+      </div>
+    );
+  }
 
   return <AdminLogin />;
+}
+
+// Main page component wrapped with provider
+export default function AdminLoginPage() {
+  return (
+    <AdminAuthProvider>
+      <AdminLoginContent />
+    </AdminAuthProvider>
+  );
 }
