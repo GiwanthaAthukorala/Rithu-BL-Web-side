@@ -6,7 +6,6 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js",
     "dev": "nodemon server.js",
-     "build": "echo 'No build step required for Node.js backend'",
     "seed-links": "node scripts/seedLinks.js",
     "create-superadmin": "node scripts/createSuperAdmin.js",
     "create-admin": "node scripts/createSuperAdminAlternative.js",
