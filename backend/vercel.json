@@ -1,15 +1,9 @@
 {
   "version": 2,
-  "builds": [
-    {
-      "src": "server.js",
-      "use": "@vercel/node"
-    }
-  ],
   "routes": [
     {
       "src": "/api/(.*)",
-      "dest": "server.js",
+      "dest": "/api/server.js",
       "headers": {
         "Access-Control-Allow-Origin": "https://rithu-business-client-side-2131.vercel.app",
         "Access-Control-Allow-Credentials": "true",
@@ -19,7 +13,12 @@
     },
     {
       "src": "/(.*)",
-      "dest": "server.js"
+      "dest": "/api/server.js"
     }
-  ]
+  ],
+  "functions": {
+    "api/server.js": {
+      "maxDuration": 60
+    }
+  }
 }
