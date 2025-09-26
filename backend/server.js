@@ -158,14 +158,6 @@ app.use((err, req, res, next) => {
     message: err.message || "Internal server error",
   });
 });
-app.use((error, req, res, next) => {
-  console.error("Error stack:", error.stack);
-  res.status(500).json({
-    success: false,
-    message: error.message,
-    stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
-  });
-});
 
 // === Export Handler for Vercel or Start Server Locally ===
 if (process.env.VERCEL) {
