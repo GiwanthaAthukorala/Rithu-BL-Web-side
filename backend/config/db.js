@@ -1,74 +1,31 @@
 const mongoose = require("mongoose");
 
-const MONGODB_URI = process.env.MONGO_URI;
-
-if (!MONGODB_URI) {
-  throw new Error(
-    "Please define the MONGODB_URI environment variable inside .env"
-  );
-}
-
-/**
- * Global is used here to maintain a cached connection across hot reloads
- * in development. This prevents connections growing exponentially
- * during API Route usage.
- */
-let cached = global.mongoose;
-
-if (!cached) {
-  cached = global.mongoose = { conn: null, promise: null };
-}
-
-async function connectDB() {
-  if (cached.conn) {
-    return cached.conn;
-  }
-
-  if (!cached.promise) {
-    const opts = {
-      bufferCommands: false,
-    };
-
-    cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongoose) => {
-      return mongoose;
-    });
-  }
-
+const connectDB = async () => {
   try {
-    cached.conn = await cached.promise;
-    console.log("✅ MongoDB Connected successfully");
-  } catch (e) {
-    cached.promise = null;
-    console.error("❌ MongoDB connection error:", e);
-    throw e;
+    if (!process.env.MONGO_URI) {
+      throw new Error("MONGO_URI is not defined in environment variables");
+    }
+
+    await mongoose.connect(process.env.MONGO_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      serverSelectionTimeoutMS: 5000,
+      socketTimeoutMS: 30000,
+    });
+    console.log("MongoDB connected successfully");
+  } catch (error) {
+    console.error("MongoDB connection failed:", error.message);
+    throw error;
   }
+};
 
-  return cached.conn;
-}
-
-// MongoDB connection events
-mongoose.connection.on("connected", () => {
-  console.log("✅ Mongoose connected to MongoDB");
-});
-
-mongoose.connection.on("error", (err) => {
-  console.error("❌ Mongoose connection error:", err);
-});
-
-mongoose.connection.on("disconnected", () => {
-  console.log("⚠️ Mongoose disconnected from MongoDB");
-});
-
-// Only add graceful shutdown for non-serverless environments
+// Prevent premature closing in serverless
 if (!process.env.VERCEL) {
-  const gracefulShutdown = async () => {
+  process.on("SIGTERM", async () => {
     await mongoose.connection.close();
-    console.log("✅ MongoDB connection closed gracefully");
+    console.log("MongoDB connection closed gracefully");
     process.exit(0);
-  };
-
-  process.on("SIGINT", gracefulShutdown);
-  process.on("SIGTERM", gracefulShutdown);
+  });
 }
 
 module.exports = connectDB;
