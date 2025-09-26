@@ -6,26 +6,37 @@ const connectDB = async () => {
       throw new Error("MONGO_URI is not defined in environment variables");
     }
 
-    await mongoose.connect(process.env.MONGO_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-      serverSelectionTimeoutMS: 5000,
-      socketTimeoutMS: 30000,
-    });
-    console.log("MongoDB connected successfully");
+    const conn = await mongoose.connect(process.env.MONGO_URI);
+    console.log(`✅ MongoDB Connected: ${conn.connection.host}`);
   } catch (error) {
-    console.error("MongoDB connection failed:", error.message);
-    throw error;
+    console.error("❌ MongoDB connection failed:", error.message);
+    process.exit(1);
   }
 };
 
-// Prevent premature closing in serverless
+// MongoDB connection events
+mongoose.connection.on("connected", () => {
+  console.log("✅ Mongoose connected to MongoDB");
+});
+
+mongoose.connection.on("error", (err) => {
+  console.error("❌ Mongoose connection error:", err);
+});
+
+mongoose.connection.on("disconnected", () => {
+  console.log("⚠️ Mongoose disconnected from MongoDB");
+});
+
+// Graceful shutdown
+const gracefulShutdown = async () => {
+  await mongoose.connection.close();
+  console.log("✅ MongoDB connection closed gracefully");
+  process.exit(0);
+};
+
 if (!process.env.VERCEL) {
-  process.on("SIGTERM", async () => {
-    await mongoose.connection.close();
-    console.log("MongoDB connection closed gracefully");
-    process.exit(0);
-  });
+  process.on("SIGINT", gracefulShutdown);
+  process.on("SIGTERM", gracefulShutdown);
 }
 
 module.exports = connectDB;
