@@ -25,13 +25,27 @@ const connectDB = async () => {
 
 const facebookLinks = [
   {
-    url: "https://www.facebook.com/share/1EWWXxEMsT/?mibextid=wwXIfr",
-    title: "PH Tools Master - පෙජ් එක ලයික් (Like) කරන්න  ",
+    url: "https://www.facebook.com/share/1ARA89E5H1/",
+    title: "Life - ජිවිතේ  - පෙජ් එක ලයික් (Like) කරන්න  ",
     platform: "facebook",
     earnings: 1.0,
   },
   {
-    url: "https://www.facebook.com/share/p/1D59Zg9TDc/?mibextid=wwXIfr",
+    url: "https://www.facebook.com/share/p/14J5x1z7hq9/?mibextid=wwXIfr",
+    title: "පොස්ට් ලයික් කරන්න",
+    platform: "facebook",
+    earnings: 1.0,
+  },
+
+  {
+    url: "https://www.facebook.com/share/p/16UfbAcJt8/?mibextid=wwXIfr",
+    title: "පොස්ට් ලයික් කරන්න",
+    platform: "facebook",
+    earnings: 1.0,
+  },
+
+  {
+    url: "https://www.facebook.com/share/r/1AM6Ga78PX/?mibextid=wwXIfr",
     title: "පොස්ට් ලයික් කරන්න",
     platform: "facebook",
     earnings: 1.0,

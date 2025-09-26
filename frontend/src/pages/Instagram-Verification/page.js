@@ -171,39 +171,40 @@ export default function InstagramVerificationTask() {
           </h1>
           <p className="text-blue-100">Earn Rs 1/= per valid screenshot</p>
         </div>
+      </div>
 
-        {/* Main Content */}
-        <div className="bg-white p-6 rounded-b-lg shadow-sm">
-          {/* Instructions Section */}
-          <div className="mb-8">
-            <h2 className="text-lg font-medium mb-4">Instructions</h2>
-            <ul className="space-y-2 text-gray-700">
-              <ol className="list-decimal list-inside space-y-2 text-gray-700">
-                <li>Visit our Instagram page using the link below</li>
-                <li>Follow our Instagram Account</li>
-                <li>Take a clear screenshot showing your engagement</li>
-                <li>Upload the screenshot below</li>
-              </ol>
-            </ul>
+      {/* Main Content */}
+      <div className="bg-white p-6 rounded-b-lg shadow-sm">
+        {/* Instructions Section */}
+        <div className="mb-8">
+          <h2 className="text-lg font-medium mb-4">Instructions</h2>
+          <ul className="space-y-2 text-gray-700">
+            <ol className="list-decimal list-inside space-y-2 text-gray-700">
+              <li>Visit our Instagram page using the link below</li>
+              <li>Follow our Instagram Account</li>
+              <li>Take a clear screenshot showing your engagement</li>
+              <li>Upload the screenshot below</li>
+            </ol>
+          </ul>
 
-            {/* Admin Message */}
-            {/*    <div className="mb-8 bg-blue-50 p-4 rounded-lg">
+          {/* Admin Message */}
+          <div className="mb-8 bg-blue-50 p-4 rounded-lg">
             <p className="text-gray-700 mb-3">
               Please visit this link and take a screenshot as proof:
             </p>
             <li>
               {" "}
               <a
-                href="https://www.instagram.com/noa_sands?igsh=MXhzcTlvbHdtbmo4OQ=="
+                href="https://www.instagram.com/shishananuruddika/profilecard/?igsh=dDZrbm10Z3Z1bWhi"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium"
               >
-                Noa Sands Talpe - ඉන්ස්ට්‍ර ග්‍රෑම් එකව්න්ට් එක ෆලෝ කරන්න
+                Shishan Anuruddika - ඉන්ස්ට්‍ර ග්‍රෑම් එකව්න්ට් එක ෆලෝ කරන්න
                 ෆලෝ කරන්න <ExternalLink className="w-4 h-4 ml-1" />
               </a>
             </li>
-            <li>
+            {/*  <li>
               {" "}
               <a
                 href="https://www.instagram.com/wedamadura29/"
