@@ -25,33 +25,39 @@ const connectDB = async () => {
 
 const facebookLinks = [
   {
-    url: "https://www.facebook.com/share/r/19dnXfq4VB/?mibextid=wwXIfr",
+    url: "https://www.facebook.com/share/r/1EPq9zURyR/?mibextid=wwXIfr",
     title: "පොස්ට් ලයික් කරන්න",
     platform: "facebook",
     earnings: 1.0,
   },
   {
-    url: "https://www.facebook.com/share/p/1BEX3EBjxw/?mibextid=wwXIfr",
+    url: "https://www.facebook.com/share/r/19oRHZPcRk/?mibextid=wwXIfr",
     title: "පොස්ට් ලයික් කරන්න",
     platform: "facebook",
     earnings: 1.0,
   },
   {
-    url: "https://www.facebook.com/share/p/14J5x1z7hq9/?mibextid=wwXIfr",
+    url: "https://www.facebook.com/share/p/17K69akWnq/?mibextid=wwXIfr",
     title: "පොස්ට් ලයික් කරන්න",
     platform: "facebook",
     earnings: 1.0,
   },
   {
-    url: "https://www.facebook.com/share/p/16UfbAcJt8/?mibextid=wwXIfr",
+    url: "https://www.facebook.com/share/r/19sbb8j2XF/?mibextid=wwXIfr",
     title: "පොස්ට් ලයික් කරන්න",
     platform: "facebook",
     earnings: 1.0,
   },
-
   {
-    url: "https://www.facebook.com/share/r/1AM6Ga78PX/?mibextid=wwXIfr",
+    url: "https://www.facebook.com/share/r/1Vczf4UHEB/?mibextid=wwXIfr",
     title: "පොස්ට් ලයික් කරන්න",
+    platform: "facebook",
+    earnings: 1.0,
+  },
+  {
+    url: "https://www.facebook.com/share/17n1ao92EK/?mibextid=wwXIfr",
+    title:
+      "RK Luxury Wedding Cars - පෙජ් එක ලයික් (Like) or ෆලෝ (follow) in 1 Screen Shot කරන්න  ",
     platform: "facebook",
     earnings: 1.0,
   },

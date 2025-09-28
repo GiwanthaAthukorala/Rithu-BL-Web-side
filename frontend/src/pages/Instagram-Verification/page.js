@@ -192,7 +192,7 @@ export default function InstagramVerificationTask() {
             <p className="text-gray-700 mb-3">
               Please visit this link and take a screenshot as proof:
             </p>
-            <li>
+            {/* <li>
               {" "}
               <a
                 href="https://www.instagram.com/shishananuruddika/profilecard/?igsh=dDZrbm10Z3Z1bWhi"
@@ -204,7 +204,7 @@ export default function InstagramVerificationTask() {
                 ෆලෝ කරන්න <ExternalLink className="w-4 h-4 ml-1" />
               </a>
             </li>
-            {/*  <li>
+             <li>
               {" "}
               <a
                 href="https://www.instagram.com/wedamadura29/"
