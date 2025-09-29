@@ -538,6 +538,7 @@ export default function AdminDashboard() {
                   >
                     <option value="all">All Platforms</option>
                     <option value="facebook">Facebook</option>
+                    <option value="comment">Comment</option>
                     <option value="youtube">YouTube</option>
                     <option value="google">Google</option>
                   </select>
