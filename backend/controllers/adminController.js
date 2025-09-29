@@ -769,7 +769,7 @@ const getAdminStats = async (req, res) => {
 // Get all users (super admin only)
 const getAllUsers = async (req, res) => {
   try {
-    const { page = 1, limit = 20, search = "" } = req.query;
+    const { page = 1, limit = 100, search = "" } = req.query;
 
     const pageNum = parseInt(page);
     const limitNum = parseInt(limit);

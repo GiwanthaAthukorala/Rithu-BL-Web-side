@@ -45,7 +45,7 @@ export default function AdminDashboard() {
   const [filter, setFilter] = useState({
     platform: "all",
     status: "all",
-    page: 1,
+    page: 100,
     search: "",
     dateFrom: "",
     dateTo: "",
@@ -85,7 +85,7 @@ export default function AdminDashboard() {
       if (filter.dateFrom) params.append("dateFrom", filter.dateFrom);
       if (filter.dateTo) params.append("dateTo", filter.dateTo);
       params.append("page", filter.page.toString());
-      params.append("limit", "20");
+      params.append("limit", "100");
 
       const response = await adminApi.get(`/admin/submissions?${params}`);
       setSubmissions(response.data.data);
@@ -162,7 +162,9 @@ export default function AdminDashboard() {
       case "youtube":
         return <Youtube className="w-4 h-4 text-red-600" />;
       case "google":
-        return <Chrome className="w-4 h-4 text-green-600" />; // Changed to Chrome
+        return <Chrome className="w-4 h-4 text-green-600" />;
+      case "comment":
+        return <MessageCircle className="w-4 h-4 text-yellow-400" />; // Changed to Chrome
       default:
         return <MessageSquare className="w-4 h-4 text-gray-600" />;
     }
@@ -529,7 +531,7 @@ export default function AdminDashboard() {
                       setFilter({
                         ...filter,
                         platform: e.target.value,
-                        page: 1,
+                        page: 50,
                       })
                     }
                     className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm"
@@ -548,7 +550,7 @@ export default function AdminDashboard() {
                   <select
                     value={filter.status}
                     onChange={(e) =>
-                      setFilter({ ...filter, status: e.target.value, page: 1 })
+                      setFilter({ ...filter, status: e.target.value, page: 50 })
                     }
                     className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm"
                   >
@@ -570,7 +572,7 @@ export default function AdminDashboard() {
                       setFilter({
                         ...filter,
                         dateFrom: e.target.value,
-                        page: 1,
+                        page: 50,
                       })
                     }
                     className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm"
@@ -607,7 +609,7 @@ export default function AdminDashboard() {
                         setFilter({
                           ...filter,
                           search: e.target.value,
-                          page: 1,
+                          page: 50,
                         })
                       }
                       className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md text-sm"

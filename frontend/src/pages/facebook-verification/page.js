@@ -443,19 +443,19 @@ export default function FbVerificationTask() {
                   <div className="flex items-center justify-between">
                     <p className="text-blue-700 font-medium">
                       ✓ Link selected - Progress:{" "}
-                      {linkClickCounts[selectedLinkId]}/2 clicks
+                      {linkClickCounts[selectedLinkId]}/5 clicks
                     </p>
-                    {linkClickCounts[selectedLinkId] >= 2 && (
+                    {linkClickCounts[selectedLinkId] >= 5 && (
                       <CheckCircle className="w-5 h-5 text-green-600" />
                     )}
                   </div>
-                  {linkClickCounts[selectedLinkId] >= 2 ? (
+                  {linkClickCounts[selectedLinkId] >= 5 ? (
                     <p className="text-green-700 text-sm mt-1">
                       Ready to submit! Upload your screenshot below.
                     </p>
                   ) : (
                     <p className="text-blue-600 text-sm mt-1">
-                      Click {2 - linkClickCounts[selectedLinkId]} more times to
+                      Click {5 - linkClickCounts[selectedLinkId]} more times to
                       complete
                     </p>
                   )}
@@ -630,10 +630,10 @@ export default function FbVerificationTask() {
                 {/* Submission validation messages */}
                 {selectedLinkId &&
                   linkClickCounts[selectedLinkId] &&
-                  linkClickCounts[selectedLinkId] < 2 && (
+                  linkClickCounts[selectedLinkId] < 5 && (
                     <div className="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
                       <p className="text-yellow-800 font-medium">
-                        ⚠️ Please complete {2 - linkClickCounts[selectedLinkId]}{" "}
+                        ⚠️ Please complete {5 - linkClickCounts[selectedLinkId]}{" "}
                         more clicks on your selected link before submitting.
                       </p>
                     </div>
@@ -644,11 +644,11 @@ export default function FbVerificationTask() {
                   disabled={
                     !file ||
                     isSubmitting ||
-                    (selectedLinkId && linkClickCounts[selectedLinkId] < 2)
+                    (selectedLinkId && linkClickCounts[selectedLinkId] < 5)
                   }
                   className={`w-full py-4 rounded-xl font-bold text-lg transition-all duration-300 transform hover:scale-[1.02] ${
                     file &&
-                    (!selectedLinkId || linkClickCounts[selectedLinkId] >= 2)
+                    (!selectedLinkId || linkClickCounts[selectedLinkId] >= 5)
                       ? "bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white shadow-lg hover:shadow-xl"
                       : "bg-gray-300 text-gray-500 cursor-not-allowed"
                   }`}
