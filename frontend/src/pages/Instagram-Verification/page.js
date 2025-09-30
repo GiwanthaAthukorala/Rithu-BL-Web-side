@@ -10,6 +10,7 @@ import {
   Info,
   Star,
   FileImage,
+  ImageIcon,
 } from "lucide-react";
 import Header from "@/components/Header/Header";
 import api from "@/lib/api";
