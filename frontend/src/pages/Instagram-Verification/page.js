@@ -242,9 +242,8 @@ export default function InstagramVerificationTask() {
               </h3>
               <div className="space-y-3">
                 {[
-                  "https://www.instagram.com/p/DO8fFLECkts/?igsh=YzljYTk1ODg3Zg==",
-                  "https://www.instagram.com/p/DO8fRdDCjlX/?igsh=YzljYTk1ODg3Zg==",
-                  "https://www.instagram.com/p/DPJNo6Fityp/?igsh=YzljYTk1ODg3Zg==",
+                  "https://www.instagram.com/reel/DPOczVaCHHe/?igsh=YzljYTk1ODg3Zg==",
+                  ,
                 ].map((url, idx) => (
                   <a
                     key={idx}

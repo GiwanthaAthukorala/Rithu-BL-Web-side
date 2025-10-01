@@ -30,12 +30,7 @@ const facebookLinks = [
     platform: "facebook",
     earnings: 1.0,
   },
-  {
-    url: "https://www.instagram.com/reel/DPOczVaCHHe/?igsh=YzljYTk1ODg3Zg==",
-    title: "මේ විඩියෝ එකට ලයික් කරන්න",
-    platform: "facebook",
-    earnings: 1.0,
-  },
+
   {
     url: "https://www.facebook.com/share/r/1BPkKAG7jL/?mibextid=wwXIfr",
     title: "පොස්ට් ලයික් කරන්න",
