@@ -148,7 +148,7 @@ export default function InstagramVerificationTask() {
             </h2>
             <p className="text-gray-600 mb-2 text-lg">
               You've earned{" "}
-              <span className="font-bold text-green-600">Rs 0.80</span>
+              <span className="font-bold text-green-600">Rs 1 /=</span>
             </p>
             <p className="text-gray-500 text-sm mb-8">
               Your balance has been updated successfully
