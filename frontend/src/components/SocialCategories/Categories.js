@@ -132,6 +132,30 @@ const SupportedPlatforms = () => {
             </div>
           </div>
         </Link>
+
+        {/*Comments */}
+        <Link href="/FacebookCommentPage/page">
+          <div className="cursor-pointer bg-white shadow-md rounded-lg p-6 border-0 hover:shadow-lg transition">
+            <div className="flex items-center mb-4">
+              <div className="w-16 h-16 flex items-center justify-center mr-3 overflow-hidden">
+                <img
+                  src="/comment.png"
+                  alt="Whatsapp Icon"
+                  className="w-16 h-16 object-contain"
+                />
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900">
+                Comment Section
+              </h3>
+            </div>
+            <p className="text-[#000000]  font-bold mb-4 text-[18px] ">
+              Comment in Post
+            </p>
+            <div className="text-sm text-[#000000] font-medium ">
+              Rs 15/= Comment Section
+            </div>
+          </div>
+        </Link>
       </div>
 
       <button className="bg-blue-600 text-white font-medium px-6 py-3 rounded-lg shadow hover:bg-blue-700 transition">
