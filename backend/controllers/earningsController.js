@@ -147,13 +147,18 @@ exports.withdrawEarnings = async (req, res) => {
     });
 
     earnings.availableBalance -= amount;
-    earnings.pendingWithdrawal += amount;
+    earnings.withdrawnAmount += amount;
     await earnings.save();
 
     // Emit socket event if needed
     const io = req.app.get("io");
     if (io) {
       io.to(req.user._id.toString()).emit("earningsUpdate", earnings);
+      io.to(req.user._id.toString()).emit("withdrawalSuccess", {
+        message: "Withdrawal processed successfully!",
+        amount: amount,
+        transaction: transaction,
+      });
     }
 
     res.json({

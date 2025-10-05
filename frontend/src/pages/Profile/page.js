@@ -126,13 +126,21 @@ export default function Profile() {
 
     try {
       const response = await api.post("/earnings/withdraw", { amount });
-      const updated = response.data?.earnings;
-      if (updated) {
-        setEarnings(updated);
+      if (response.data.success) {
+        const updatedEarnings = response.data.earnings;
+        const transaction = response.data.transaction;
+
+        setEarnings(updatedEarnings);
         setIsWithdrawModalOpen(false);
         setWithdrawAmount("500");
-        setSuccess("Withdrawal request submitted successfully!");
-        setTimeout(() => setSuccess(null), 5000);
+
+        // Show immediate success message
+        setSuccess(
+          `Withdrawal of Rs ${amount} processed successfully! Funds will be transferred to your bank account.`
+        );
+        setTimeout(() => setSuccess(null), 8000);
+
+        // If you have transaction history, you might want to update it here
       }
     } catch (error) {
       setError(error.response?.data?.message || "Withdrawal failed");
