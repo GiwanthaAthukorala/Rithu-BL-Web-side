@@ -383,12 +383,12 @@ export default function InstagramVerificationTask() {
                           Follow Our Main Account
                         </h4>
                         <p className="text-white/90 text-sm">
-                          ඉන්ස්ට්‍රග්‍රෑම් එකවුන්ට් එක ෆලෝ කරන්න • Frontier
-                          Lanka Tours and Travels Pvt. Ltd.
+                          ඉන්ස්ට්‍රග්‍රෑම් එකවුන්ට් එක ෆලෝ කරන්න • One Fine
+                          Product/service Sri Lanka🇱🇰
                         </p>
                       </div>
                       <a
-                        href="https://www.instagram.com/frontiersrilankatours?utm_source=qr&igsh=MmlyZnQ1dDVieTg2"
+                        href="https://www.instagram.com/_.one_.fine_?igsh=ZHZocWd5c3Jxd24w"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="flex items-center justify-center bg-white text-pink-600 px-6 py-3 rounded-xl hover:bg-pink-50 transition-all duration-200 font-bold shadow-lg hover:shadow-xl transform hover:scale-105"
