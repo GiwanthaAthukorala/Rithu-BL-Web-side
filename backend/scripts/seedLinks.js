@@ -1,4 +1,4 @@
-require("dotenv").config(); // Add this line at the top
+require("dotenv").config();
 const mongoose = require("mongoose");
 const Link = require("../models/Link");
 
@@ -10,8 +10,6 @@ const connectDB = async () => {
     }
 
     await mongoose.connect(process.env.MONGO_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
       serverSelectionTimeoutMS: 10000,
       socketTimeoutMS: 45000,
     });
@@ -25,36 +23,37 @@ const connectDB = async () => {
 
 const facebookLinks = [
   {
-    url: "https://www.facebook.com/share/r/17KQTY2QEs/?mibextid=wwXIfr",
+    url: "https://www.facebook.com/share/r/17E5PRE11w/?mibextid=wwXIfr",
     title: "පොස්ට් ලයික් කරන්න",
     platform: "facebook",
     earnings: 1.0,
   },
   {
-    url: "https://www.facebook.com/share/p/1JGtoo7c8f/?mibextid=wwXIfr",
+    url: "https://www.facebook.com/share/p/1AYuo8S7kF/?mibextid=wwXIfr",
     title: "පොස්ට් ලයික් කරන්න",
     platform: "facebook",
     earnings: 1.0,
   },
   {
-    url: "https://www.facebook.com/share/p/19vCFHcs2h/?mibextid=wwXIfr",
+    url: "https://www.facebook.com/share/p/1RJqvFgNHM/?mibextid=wwXIfr",
     title: "පොස්ට් ලයික් කරන්න",
     platform: "facebook",
     earnings: 1.0,
   },
   {
-    url: "https://www.facebook.com/share/r/1MerP8VqPQ/",
+    url: "https://www.facebook.com/share/r/17a2AArVtz/?mibextid=wwXIfr",
     title: "පොස්ට් ලයික් කරන්න",
     platform: "facebook",
     earnings: 1.0,
   },
   {
-    url: "https://www.facebook.com/share/p/19vCFHcs2h/?mibextid=wwXIfr",
+    url: "https://www.facebook.com/share/p/16kk1Cb5N1/?mibextid=wwXIfr",
     title: "පොස්ට් ලයික් කරන්න",
     platform: "facebook",
     earnings: 1.0,
   },
 
+  // Removed duplicate URL that was causing the error
   /*
   {
     url: "https://www.facebook.com/share/1ARA89E5H1/",
@@ -63,19 +62,22 @@ const facebookLinks = [
     earnings: 1.0,
   },*/
 ];
+
 async function seedLinks() {
   try {
     await connectDB();
 
+    // Clear existing Facebook links
     await Link.deleteMany({ platform: "facebook" });
     console.log("Cleared existing Facebook links");
 
+    // Insert all links
     for (const linkData of facebookLinks) {
       await Link.create(linkData);
       console.log(`Added link: ${linkData.title}`);
     }
 
-    console.log("Links seeding completed");
+    console.log("Links seeding completed successfully");
     process.exit(0);
   } catch (error) {
     console.error("Seeding error:", error);
