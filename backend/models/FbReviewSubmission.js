@@ -11,7 +11,7 @@ const fbReviewSubmissionSchema = new mongoose.Schema(
       type: String,
       required: true,
       enum: ["facebook", "instagram", "tiktok", "youtube", "whatsapp"],
-      default: "facebook",
+      default: "fbreview",
     },
     screenshot: {
       type: String,

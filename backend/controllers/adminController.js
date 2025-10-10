@@ -100,7 +100,7 @@ const getAllSubmissions = async (req, res) => {
   try {
     const {
       page = 20,
-      limit = 50,
+      limit = 100,
       platform,
       platformType,
       status,
