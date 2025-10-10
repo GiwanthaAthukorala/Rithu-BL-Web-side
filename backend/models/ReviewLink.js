@@ -13,7 +13,7 @@ const ReviewlinkSchema = new mongoose.Schema(
     },
     platform: {
       type: String,
-      default: "facebook",
+      default: "fbreview",
     },
     active: {
       type: Boolean,
