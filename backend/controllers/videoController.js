@@ -1,0 +1,269 @@
+const Video = require("../models/Video");
+const VideoWatchSession = require("../models/VideoWatchSession");
+const Earnings = require("../models/Earnings");
+
+// Get all available videos for user
+exports.getAvailableVideos = async (req, res) => {
+  try {
+    const userId = req.user._id;
+
+    // Find videos that user hasn't watched completely
+    const watchedVideos = await VideoWatchSession.find({
+      user: userId,
+      status: "completed",
+    }).select("video");
+
+    const watchedVideoIds = watchedVideos.map((session) => session.video);
+
+    const availableVideos = await Video.find({
+      isActive: true,
+      _id: { $nin: watchedVideoIds },
+    });
+
+    res.json({
+      success: true,
+      data: availableVideos,
+    });
+  } catch (error) {
+    console.error("Get videos error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch videos",
+    });
+  }
+};
+
+// Start video watching session
+exports.startVideoSession = async (req, res) => {
+  try {
+    const { videoId } = req.params;
+    const userId = req.user._id;
+
+    // Check if video exists and is active
+    const video = await Video.findOne({
+      _id: videoId,
+      isActive: true,
+    });
+
+    if (!video) {
+      return res.status(404).json({
+        success: false,
+        message: "Video not found or inactive",
+      });
+    }
+
+    // Check if user already completed this video
+    const existingCompletedSession = await VideoWatchSession.findOne({
+      user: userId,
+      video: videoId,
+      status: "completed",
+    });
+
+    if (existingCompletedSession) {
+      return res.status(400).json({
+        success: false,
+        message: "You have already watched this video and earned the reward",
+      });
+    }
+
+    // Check if there's an existing watching session
+    const existingWatchingSession = await VideoWatchSession.findOne({
+      user: userId,
+      video: videoId,
+      status: "watching",
+    });
+
+    let session;
+    if (existingWatchingSession) {
+      // Resume existing session
+      session = existingWatchingSession;
+      session.startTime = new Date();
+    } else {
+      // Create new session
+      session = await VideoWatchSession.create({
+        user: userId,
+        video: videoId,
+        startTime: new Date(),
+        status: "watching",
+      });
+    }
+
+    await session.save();
+
+    res.json({
+      success: true,
+      data: {
+        sessionId: session._id,
+        video: video,
+        startTime: session.startTime,
+      },
+    });
+  } catch (error) {
+    console.error("Start video session error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to start video session",
+    });
+  }
+};
+
+// Update video watch progress
+exports.updateWatchProgress = async (req, res) => {
+  try {
+    const { sessionId } = req.params;
+    const { currentTime } = req.body;
+    const userId = req.user._id;
+
+    const session = await VideoWatchSession.findOne({
+      _id: sessionId,
+      user: userId,
+    }).populate("video");
+
+    if (!session) {
+      return res.status(404).json({
+        success: false,
+        message: "Session not found",
+      });
+    }
+
+    if (session.status === "completed") {
+      return res.status(400).json({
+        success: false,
+        message: "Video already completed",
+      });
+    }
+
+    // Update watch duration (only increase, never decrease)
+    session.watchDuration = Math.max(session.watchDuration, currentTime);
+
+    // Check if video is completed (watched for required duration)
+    const requiredDuration = session.video.duration;
+    if (currentTime >= requiredDuration && !session.rewardGiven) {
+      console.log(
+        `Video completed! User: ${userId}, Video: ${session.video._id}, Duration: ${currentTime}s`
+      );
+      await completeVideoSession(session);
+    }
+
+    await session.save();
+
+    res.json({
+      success: true,
+      data: {
+        watchDuration: session.watchDuration,
+        status: session.status,
+        rewardGiven: session.rewardGiven,
+        amountEarned: session.amountEarned,
+      },
+    });
+  } catch (error) {
+    console.error("Update progress error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to update progress",
+    });
+  }
+};
+
+// Complete video session and give reward
+const completeVideoSession = async (session) => {
+  const sessionWithVideo = await VideoWatchSession.findById(
+    session._id
+  ).populate("video");
+
+  try {
+    sessionWithVideo.status = "completed";
+    sessionWithVideo.endTime = new Date();
+    sessionWithVideo.rewardGiven = true;
+    sessionWithVideo.amountEarned = sessionWithVideo.video.rewardAmount;
+
+    console.log(
+      `Completing session for user ${sessionWithVideo.user} - Awarding Rs ${sessionWithVideo.amountEarned}`
+    );
+
+    // Update video views
+    await Video.findByIdAndUpdate(sessionWithVideo.video._id, {
+      $inc: { currentViews: 1 },
+    });
+
+    // Update user earnings
+    await updateUserEarnings(
+      sessionWithVideo.user,
+      sessionWithVideo.video.rewardAmount
+    );
+
+    await sessionWithVideo.save();
+
+    // Emit socket event for real-time update
+    const io = require("../server").io;
+    if (io) {
+      io.to(sessionWithVideo.user.toString()).emit("videoCompleted", {
+        videoId: sessionWithVideo.video._id,
+        videoTitle: sessionWithVideo.video.title,
+        amount: sessionWithVideo.video.rewardAmount,
+        sessionId: sessionWithVideo._id,
+      });
+    }
+
+    console.log(
+      `Successfully completed video session and awarded Rs ${sessionWithVideo.amountEarned} to user ${sessionWithVideo.user}`
+    );
+  } catch (error) {
+    console.error("Complete session error:", error);
+    throw error;
+  }
+};
+
+// Update user earnings
+const updateUserEarnings = async (userId, amount) => {
+  try {
+    let earnings = await Earnings.findOne({ user: userId });
+
+    if (!earnings) {
+      earnings = await Earnings.create({
+        user: userId,
+        totalEarned: amount,
+        availableBalance: amount,
+      });
+      console.log(
+        `Created new earnings record for user ${userId} with Rs ${amount}`
+      );
+    } else {
+      earnings.totalEarned += amount;
+      earnings.availableBalance += amount;
+      await earnings.save();
+      console.log(
+        `Updated earnings for user ${userId}: Total: Rs ${earnings.totalEarned}, Available: Rs ${earnings.availableBalance}`
+      );
+    }
+
+    return earnings;
+  } catch (error) {
+    console.error("Update earnings error:", error);
+    throw error;
+  }
+};
+
+// Get user's video watch history
+exports.getWatchHistory = async (req, res) => {
+  try {
+    const userId = req.user._id;
+
+    const history = await VideoWatchSession.find({
+      user: userId,
+    })
+      .populate("video")
+      .sort({ createdAt: -1 });
+
+    res.json({
+      success: true,
+      data: history,
+    });
+  } catch (error) {
+    console.error("Get history error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch watch history",
+    });
+  }
+};

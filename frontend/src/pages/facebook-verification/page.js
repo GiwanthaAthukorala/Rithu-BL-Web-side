@@ -235,7 +235,7 @@ export default function FbVerificationTask() {
               You've earned Rs 1.00! Your balance has been updated.
             </p>
             <button
-              onClick={() => router.push("/Profile/page")}
+              onClick={() => router.push("/facebook-verification/page")}
               className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
             >
               View Your Earnings

@@ -1,7 +1,6 @@
 import axios from "axios";
 
-const API_URL =
-  process.env.NEXT_PUBLIC_API_URL || "https://rithu-bl-web-side.vercel.app/api";
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
 
 // Create axios instance
 const api = axios.create({
@@ -61,6 +60,8 @@ export const endpoints = {
   youtubeSubmission: "/youtubeSubmissions",
   fbReviews: "/fb-reviews",
   FacebookComments: "/fb-comments",
+  videos: "/videos",
+  videoSessions: "/videos/session",
 };
 
 export const register = async (userData) => {

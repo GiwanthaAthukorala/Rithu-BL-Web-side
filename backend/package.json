@@ -9,7 +9,8 @@
     "seed-links": "node scripts/seedLinks.js",
     "create-superadmin": "node scripts/createSuperAdmin.js",
     "create-admin": "node scripts/createSuperAdminAlternative.js",
-    "setup-admin": "node scripts/createSuperAdminAlternative.js"
+    "setup-admin": "node scripts/createSuperAdminAlternative.js",
+    "seed-videos":"node scripts/seedVideos.js"
   },
   "keywords": [],
   "author": "",

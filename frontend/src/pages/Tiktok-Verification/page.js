@@ -160,7 +160,7 @@ export default function TikTokVerificationTask() {
               Your balance has been updated.
             </p>
             <button
-              onClick={() => router.push("/Profile/page")}
+              onClick={() => router.push("/Tiktok-Verification/page")}
               className="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-6 sm:px-8 py-2.5 sm:py-3 rounded-xl hover:from-green-600 hover:to-emerald-700 transform hover:scale-105 transition-all duration-200 shadow-lg font-semibold text-sm sm:text-base"
             >
               View Your Earnings

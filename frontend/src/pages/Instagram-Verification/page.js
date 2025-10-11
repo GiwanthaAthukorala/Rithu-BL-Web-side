@@ -212,7 +212,7 @@ export default function InstagramVerificationTask() {
             </div>
 
             <button
-              onClick={() => router.push("/Profile/page")}
+              onClick={() => router.push("/Instagram-Verification/page")}
               className="w-full bg-gradient-to-r from-emerald-600 via-green-600 to-teal-500 text-white px-8 py-4 rounded-2xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 font-bold text-lg shadow-lg"
             >
               View Your Earnings

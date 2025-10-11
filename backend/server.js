@@ -13,10 +13,7 @@ const httpServer = createServer(app);
 // === Socket.IO Configuration ===
 const io = new Server(httpServer, {
   cors: {
-    origin: [
-      process.env.FRONTEND_URL,
-      "https://rithu-business-client-side-2131.vercel.app",
-    ],
+    origin: [process.env.FRONTEND_URL, "http://localhost:3000"],
     methods: ["GET", "POST"],
     credentials: true,
   },
@@ -47,7 +44,7 @@ connectDB().catch((err) => {
 });
 
 // === Middleware ===
-const allowedOrigins = ["https://rithu-business-client-side-2131.vercel.app"];
+const allowedOrigins = ["http://localhost:3000"];
 
 // CORS middleware
 app.use(
@@ -116,6 +113,7 @@ app.use("/api/fb-reviews", require("./routes/ReviewRoutes")); // For submissions
 app.use("/api/fb-comments", require("./routes/CommentRoutes"));
 app.use("/api/googlereviews", require("./routes/GoogleReviewRoutes"));
 app.use("/api/admin", require("./routes/adminRoutes"));
+app.use("/api/videos", require("./routes/videoRoutes"));
 
 // === Health Check ===
 app.get("/health", (req, res) => {

@@ -63,7 +63,7 @@ export default function LandingPage() {
                     Today's Earnings
                   </h2>
                   <span className="text-green-600 font-bold text-base">
-                    +$24.80
+                    Rs 500/=
                   </span>
                 </div>
 
@@ -85,7 +85,7 @@ export default function LandingPage() {
                       </span>
                     </div>
                     <span className="text-green-600 font-bold text-sm">
-                      +$11.20
+                      Rs 100/=
                     </span>
                   </div>
 
@@ -100,7 +100,7 @@ export default function LandingPage() {
                       </span>
                     </div>
                     <span className="text-green-600 font-bold text-sm">
-                      +$7.20
+                      Rs 345/=
                     </span>
                   </div>
 
@@ -111,11 +111,11 @@ export default function LandingPage() {
                         <div className="w-5 h-5 bg-white rounded-full"></div>
                       </div>
                       <span className="font-medium text-gray-700 text-sm">
-                        Twitter
+                        Facebook
                       </span>
                     </div>
                     <span className="text-green-600 font-bold text-sm">
-                      +$6.40
+                      Rs 1000/=
                     </span>
                   </div>
                 </div>
@@ -130,7 +130,7 @@ export default function LandingPage() {
                         style={{ width: "68%" }}
                       ></div>
                     </div>
-                    <p className="text-xs text-gray-600">$168 / $250</p>
+                    <p className="text-xs text-gray-600">Rs 500 / Rs 2000/=</p>
                   </div>
                 </div>
               </div>
