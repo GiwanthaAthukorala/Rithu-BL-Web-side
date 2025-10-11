@@ -13,7 +13,10 @@ const httpServer = createServer(app);
 // === Socket.IO Configuration ===
 const io = new Server(httpServer, {
   cors: {
-    origin: [process.env.FRONTEND_URL, "http://localhost:3000"],
+    origin: [
+      process.env.FRONTEND_URL,
+      "https://rithu-business-client-side-2131.vercel.app",
+    ],
     methods: ["GET", "POST"],
     credentials: true,
   },
@@ -44,7 +47,7 @@ connectDB().catch((err) => {
 });
 
 // === Middleware ===
-const allowedOrigins = ["http://localhost:3000"];
+const allowedOrigins = ["https://rithu-business-client-side-2131.vercel.app"];
 
 // CORS middleware
 app.use(
