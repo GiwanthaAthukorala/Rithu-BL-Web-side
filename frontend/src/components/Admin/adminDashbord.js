@@ -162,8 +162,6 @@ export default function AdminDashboard() {
           return <Star className="w-4 h-4 text-yellow-600" />;
         if (submissionType === "comment")
           return <MessageCircle className="w-4 h-4 text-blue-600" />;
-        if (submissionType === "page")
-          return <ThumbsUp className="w-4 h-4 text-green-600" />;
         return <Facebook className="w-4 h-4 text-blue-600" />;
       case "youtube":
         return <Youtube className="w-4 h-4 text-red-600" />;
@@ -540,11 +538,10 @@ export default function AdminDashboard() {
                     className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm"
                   >
                     <option value="all">All Platforms</option>
-                    <option value="facebook_page">Facebook Page Likes</option>
-                    <option value="facebook_review">Facebook Reviews</option>
-                    <option value="facebook_comment">Facebook Comments</option>
+                    <option value="facebook">Facebook</option>
+                    <option value="comment">Comment</option>
                     <option value="youtube">YouTube</option>
-                    <option value="google">Google Reviews</option>
+                    <option value="google">Google</option>
                   </select>
                 </div>
 
