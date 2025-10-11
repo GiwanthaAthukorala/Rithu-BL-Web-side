@@ -354,7 +354,7 @@ export default function InstagramVerificationTask() {
                     Complete These Tasks
                   </h3>
                   {/**/}{" "}
-                  <div className="space-y-4">
+                  {/* <div className="space-y-4">
                     <a
                       href=""
                       target="_blank"
@@ -400,231 +400,232 @@ export default function InstagramVerificationTask() {
                   </div>
                 </div>
               </div>
-              {/**/}
-
-              {/* Requirements */}
-              <div className="p-8 lg:p-10 bg-gradient-to-br from-amber-50 to-yellow-50">
-                <h3 className="font-black text-gray-800 mb-6 flex items-center gap-3 text-2xl">
-                  <div className="w-10 h-10 bg-gradient-to-br from-amber-400 to-orange-400 rounded-xl flex items-center justify-center shadow-lg">
-                    <CheckCircle className="w-6 h-6 text-white" />
-                  </div>
-                  Screenshot Requirements
-                </h3>
-                <div className="grid md:grid-cols-2 gap-4">
-                  {[
-                    "Must clearly show the liked post",
-                    "Show your profile or browser context",
-                    "No edited or cropped images",
-                    "File size under 5MB",
-                    "JPEG, PNG formats only",
-                    "Clear and readable content",
-                  ].map((req, idx) => (
-                    <div
-                      key={idx}
-                      className="flex items-start gap-3 bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow border border-amber-200"
-                    >
-                      <div className="w-6 h-6 bg-gradient-to-br from-green-400 to-emerald-500 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 shadow-md">
-                        <CheckCircle className="w-4 h-4 text-white" />
+              */}
+                  {/* Requirements */}
+                  <div className="p-8 lg:p-10 bg-gradient-to-br from-amber-50 to-yellow-50">
+                    <h3 className="font-black text-gray-800 mb-6 flex items-center gap-3 text-2xl">
+                      <div className="w-10 h-10 bg-gradient-to-br from-amber-400 to-orange-400 rounded-xl flex items-center justify-center shadow-lg">
+                        <CheckCircle className="w-6 h-6 text-white" />
                       </div>
-                      <span className="text-sm font-semibold text-gray-700">
-                        {req}
-                      </span>
+                      Screenshot Requirements
+                    </h3>
+                    <div className="grid md:grid-cols-2 gap-4">
+                      {[
+                        "Must clearly show the liked post",
+                        "Show your profile or browser context",
+                        "No edited or cropped images",
+                        "File size under 5MB",
+                        "JPEG, PNG formats only",
+                        "Clear and readable content",
+                      ].map((req, idx) => (
+                        <div
+                          key={idx}
+                          className="flex items-start gap-3 bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow border border-amber-200"
+                        >
+                          <div className="w-6 h-6 bg-gradient-to-br from-green-400 to-emerald-500 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 shadow-md">
+                            <CheckCircle className="w-4 h-4 text-white" />
+                          </div>
+                          <span className="text-sm font-semibold text-gray-700">
+                            {req}
+                          </span>
+                        </div>
+                      ))}
                     </div>
-                  ))}
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
 
-          {/* Right Column - Upload Section */}
-          <div className="lg:col-span-1">
-            <div className="bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl overflow-hidden border border-white/20 sticky top-8">
-              <div className="p-8 lg:p-10">
-                <div className="flex items-center gap-4 mb-8">
-                  <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-500 rounded-2xl flex items-center justify-center shadow-lg">
-                    <Upload className="w-7 h-7 text-white" />
-                  </div>
-                  <h3 className="text-3xl font-black text-gray-800">
-                    Upload Screenshot
-                  </h3>
-                </div>
-
-                <form onSubmit={handleSubmit}>
-                  <div className="mb-8">
-                    {preview ? (
-                      <div className="border-4 border-dashed border-green-400 rounded-3xl p-8 bg-gradient-to-br from-green-50 to-emerald-50 relative overflow-hidden">
-                        <div className="absolute top-0 right-0 w-64 h-64 bg-green-400/10 rounded-full -mr-32 -mt-32 blur-3xl"></div>
-                        <div className="relative">
-                          <img
-                            src={preview}
-                            alt="Screenshot preview"
-                            className="max-h-96 mx-auto rounded-2xl shadow-2xl border-4 border-white"
-                          />
-                          <div className="absolute top-4 right-4 bg-gradient-to-r from-green-500 to-emerald-500 text-white px-4 py-2 rounded-full text-sm font-bold flex items-center gap-2 shadow-xl">
-                            <CheckCircle className="w-5 h-5" />
-                            Ready to Submit
-                          </div>
-                        </div>
-                        <div className="mt-6 bg-white p-4 rounded-2xl shadow-md">
-                          <p className="text-green-700 font-bold text-center flex items-center justify-center gap-2">
-                            <FileImage className="w-5 h-5" />
-                            {file.name}
-                          </p>
-                        </div>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setFile(null);
-                            setPreview(null);
-                          }}
-                          className="mt-4 mx-auto block text-sm text-red-600 hover:text-red-800 font-bold hover:underline"
-                        >
-                          Remove and choose different file
-                        </button>
+              {/* Right Column - Upload Section */}
+              <div className="lg:col-span-1">
+                <div className="bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl overflow-hidden border border-white/20 sticky top-8">
+                  <div className="p-8 lg:p-10">
+                    <div className="flex items-center gap-4 mb-8">
+                      <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-500 rounded-2xl flex items-center justify-center shadow-lg">
+                        <Upload className="w-7 h-7 text-white" />
                       </div>
-                    ) : (
-                      <div
-                        onDragOver={handleDragOver}
-                        onDragLeave={handleDragLeave}
-                        onDrop={handleDrop}
-                        className={`border-4 border-dashed rounded-3xl p-16 text-center bg-gradient-to-br from-gray-50 to-slate-50 transition-all duration-300 ${
-                          isDragging
-                            ? "border-purple-500 bg-purple-50 scale-105 shadow-2xl"
-                            : "border-gray-300 hover:border-purple-400 hover:shadow-xl"
+                      <h3 className="text-3xl font-black text-gray-800">
+                        Upload Screenshot
+                      </h3>
+                    </div>
+
+                    <form onSubmit={handleSubmit}>
+                      <div className="mb-8">
+                        {preview ? (
+                          <div className="border-4 border-dashed border-green-400 rounded-3xl p-8 bg-gradient-to-br from-green-50 to-emerald-50 relative overflow-hidden">
+                            <div className="absolute top-0 right-0 w-64 h-64 bg-green-400/10 rounded-full -mr-32 -mt-32 blur-3xl"></div>
+                            <div className="relative">
+                              <img
+                                src={preview}
+                                alt="Screenshot preview"
+                                className="max-h-96 mx-auto rounded-2xl shadow-2xl border-4 border-white"
+                              />
+                              <div className="absolute top-4 right-4 bg-gradient-to-r from-green-500 to-emerald-500 text-white px-4 py-2 rounded-full text-sm font-bold flex items-center gap-2 shadow-xl">
+                                <CheckCircle className="w-5 h-5" />
+                                Ready to Submit
+                              </div>
+                            </div>
+                            <div className="mt-6 bg-white p-4 rounded-2xl shadow-md">
+                              <p className="text-green-700 font-bold text-center flex items-center justify-center gap-2">
+                                <FileImage className="w-5 h-5" />
+                                {file.name}
+                              </p>
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setFile(null);
+                                setPreview(null);
+                              }}
+                              className="mt-4 mx-auto block text-sm text-red-600 hover:text-red-800 font-bold hover:underline"
+                            >
+                              Remove and choose different file
+                            </button>
+                          </div>
+                        ) : (
+                          <div
+                            onDragOver={handleDragOver}
+                            onDragLeave={handleDragLeave}
+                            onDrop={handleDrop}
+                            className={`border-4 border-dashed rounded-3xl p-16 text-center bg-gradient-to-br from-gray-50 to-slate-50 transition-all duration-300 ${
+                              isDragging
+                                ? "border-purple-500 bg-purple-50 scale-105 shadow-2xl"
+                                : "border-gray-300 hover:border-purple-400 hover:shadow-xl"
+                            }`}
+                          >
+                            <div className="relative inline-block mb-6">
+                              <div className="absolute inset-0 bg-gradient-to-br from-purple-500 to-pink-500 rounded-3xl blur-xl opacity-50 animate-pulse"></div>
+                              <div className="relative w-24 h-24 bg-gradient-to-br from-purple-500 via-pink-500 to-orange-500 rounded-3xl flex items-center justify-center shadow-2xl">
+                                <Upload className="w-12 h-12 text-white" />
+                              </div>
+                            </div>
+                            <p className="text-gray-800 mb-3 font-black text-2xl">
+                              Drop your screenshot here
+                            </p>
+                            <p className="text-gray-600 mb-4 text-lg font-medium">
+                              or click the button below to browse
+                            </p>
+                            <p className="text-sm text-gray-400 mb-8">
+                              Supported: PNG, JPG, JPEG • Max 5MB
+                            </p>
+                            <label className="inline-block bg-gradient-to-r from-purple-600 via-pink-600 to-orange-500 text-white px-10 py-4 rounded-2xl cursor-pointer hover:shadow-2xl transform hover:scale-105 transition-all duration-300 font-bold text-lg shadow-lg">
+                              Choose File
+                              <input
+                                type="file"
+                                accept=".png,.jpg,.jpeg"
+                                onChange={handleFileChange}
+                                className="hidden"
+                              />
+                            </label>
+                          </div>
+                        )}
+
+                        {error && (
+                          <div className="mt-6 p-5 bg-red-50 border-l-4 border-red-500 rounded-2xl shadow-lg">
+                            <p className="text-sm text-red-700 font-bold">
+                              {error}
+                            </p>
+                          </div>
+                        )}
+                      </div>
+
+                      <button
+                        type="submit"
+                        disabled={!file || isSubmitting}
+                        className={`w-full py-5 rounded-2xl font-black text-xl transition-all duration-300 shadow-xl ${
+                          file
+                            ? "bg-gradient-to-r from-green-500 via-emerald-500 to-teal-500 hover:from-green-600 hover:via-emerald-600 hover:to-teal-600 text-white hover:shadow-2xl transform hover:scale-105"
+                            : "bg-gray-200 text-gray-400 cursor-not-allowed"
                         }`}
                       >
-                        <div className="relative inline-block mb-6">
-                          <div className="absolute inset-0 bg-gradient-to-br from-purple-500 to-pink-500 rounded-3xl blur-xl opacity-50 animate-pulse"></div>
-                          <div className="relative w-24 h-24 bg-gradient-to-br from-purple-500 via-pink-500 to-orange-500 rounded-3xl flex items-center justify-center shadow-2xl">
-                            <Upload className="w-12 h-12 text-white" />
-                          </div>
-                        </div>
-                        <p className="text-gray-800 mb-3 font-black text-2xl">
-                          Drop your screenshot here
-                        </p>
-                        <p className="text-gray-600 mb-4 text-lg font-medium">
-                          or click the button below to browse
-                        </p>
-                        <p className="text-sm text-gray-400 mb-8">
-                          Supported: PNG, JPG, JPEG • Max 5MB
-                        </p>
-                        <label className="inline-block bg-gradient-to-r from-purple-600 via-pink-600 to-orange-500 text-white px-10 py-4 rounded-2xl cursor-pointer hover:shadow-2xl transform hover:scale-105 transition-all duration-300 font-bold text-lg shadow-lg">
-                          Choose File
-                          <input
-                            type="file"
-                            accept=".png,.jpg,.jpeg"
-                            onChange={handleFileChange}
-                            className="hidden"
-                          />
-                        </label>
-                      </div>
-                    )}
-
-                    {error && (
-                      <div className="mt-6 p-5 bg-red-50 border-l-4 border-red-500 rounded-2xl shadow-lg">
-                        <p className="text-sm text-red-700 font-bold">
-                          {error}
-                        </p>
-                      </div>
-                    )}
+                        {isSubmitting ? (
+                          <span className="flex items-center justify-center gap-3">
+                            <div className="w-6 h-6 border-3 border-white border-t-transparent rounded-full animate-spin"></div>
+                            Submitting...
+                          </span>
+                        ) : (
+                          <span className="flex items-center justify-center gap-3">
+                            <Upload className="w-6 h-6" />
+                            Submit Screenshot & Earn Rs 1.00
+                            <Sparkles className="w-6 h-6" />
+                          </span>
+                        )}
+                      </button>
+                    </form>
                   </div>
-
-                  <button
-                    type="submit"
-                    disabled={!file || isSubmitting}
-                    className={`w-full py-5 rounded-2xl font-black text-xl transition-all duration-300 shadow-xl ${
-                      file
-                        ? "bg-gradient-to-r from-green-500 via-emerald-500 to-teal-500 hover:from-green-600 hover:via-emerald-600 hover:to-teal-600 text-white hover:shadow-2xl transform hover:scale-105"
-                        : "bg-gray-200 text-gray-400 cursor-not-allowed"
-                    }`}
-                  >
-                    {isSubmitting ? (
-                      <span className="flex items-center justify-center gap-3">
-                        <div className="w-6 h-6 border-3 border-white border-t-transparent rounded-full animate-spin"></div>
-                        Submitting...
-                      </span>
-                    ) : (
-                      <span className="flex items-center justify-center gap-3">
-                        <Upload className="w-6 h-6" />
-                        Submit Screenshot & Earn Rs 1.00
-                        <Sparkles className="w-6 h-6" />
-                      </span>
-                    )}
-                  </button>
-                </form>
+                </div>
               </div>
             </div>
           </div>
+
+          {/* Floating Action Button */}
+          <div className="fixed bottom-8 right-8 z-50">
+            <button
+              onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+              className="bg-gradient-to-r from-purple-600 to-pink-600 text-white p-4 rounded-2xl shadow-2xl hover:shadow-3xl transform hover:scale-110 transition-all duration-300"
+            >
+              <TrendingUp className="w-6 h-6" />
+            </button>
+          </div>
+
+          <style jsx>{`
+            @keyframes float {
+              0%,
+              100% {
+                transform: translateY(0px);
+              }
+              50% {
+                transform: translateY(-20px);
+              }
+            }
+            @keyframes float-delayed {
+              0%,
+              100% {
+                transform: translateY(0px);
+              }
+              50% {
+                transform: translateY(20px);
+              }
+            }
+            @keyframes scale-in {
+              0% {
+                transform: scale(0.9);
+                opacity: 0;
+              }
+              100% {
+                transform: scale(1);
+                opacity: 1;
+              }
+            }
+            @keyframes bounce-slow {
+              0%,
+              100% {
+                transform: translateY(0);
+              }
+              50% {
+                transform: translateY(-10px);
+              }
+            }
+            .animate-float {
+              animation: float 6s ease-in-out infinite;
+            }
+            .animate-float-delayed {
+              animation: float-delayed 8s ease-in-out infinite;
+            }
+            .animate-scale-in {
+              animation: scale-in 0.5s ease-out;
+            }
+            .animate-bounce-slow {
+              animation: bounce-slow 2s ease-in-out infinite;
+            }
+            .delay-300 {
+              animation-delay: 300ms;
+            }
+            .delay-700 {
+              animation-delay: 700ms;
+            }
+          `}</style>
         </div>
       </div>
-
-      {/* Floating Action Button */}
-      <div className="fixed bottom-8 right-8 z-50">
-        <button
-          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-          className="bg-gradient-to-r from-purple-600 to-pink-600 text-white p-4 rounded-2xl shadow-2xl hover:shadow-3xl transform hover:scale-110 transition-all duration-300"
-        >
-          <TrendingUp className="w-6 h-6" />
-        </button>
-      </div>
-
-      <style jsx>{`
-        @keyframes float {
-          0%,
-          100% {
-            transform: translateY(0px);
-          }
-          50% {
-            transform: translateY(-20px);
-          }
-        }
-        @keyframes float-delayed {
-          0%,
-          100% {
-            transform: translateY(0px);
-          }
-          50% {
-            transform: translateY(20px);
-          }
-        }
-        @keyframes scale-in {
-          0% {
-            transform: scale(0.9);
-            opacity: 0;
-          }
-          100% {
-            transform: scale(1);
-            opacity: 1;
-          }
-        }
-        @keyframes bounce-slow {
-          0%,
-          100% {
-            transform: translateY(0);
-          }
-          50% {
-            transform: translateY(-10px);
-          }
-        }
-        .animate-float {
-          animation: float 6s ease-in-out infinite;
-        }
-        .animate-float-delayed {
-          animation: float-delayed 8s ease-in-out infinite;
-        }
-        .animate-scale-in {
-          animation: scale-in 0.5s ease-out;
-        }
-        .animate-bounce-slow {
-          animation: bounce-slow 2s ease-in-out infinite;
-        }
-        .delay-300 {
-          animation-delay: 300ms;
-        }
-        .delay-700 {
-          animation-delay: 700ms;
-        }
-      `}</style>
     </div>
   );
 }

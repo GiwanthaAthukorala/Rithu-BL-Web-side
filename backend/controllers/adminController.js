@@ -96,13 +96,13 @@ const adminLogout = (req, res) => {
 };
 
 // Get all submissions with enhanced filtering
+// Get all submissions with enhanced filtering
 const getAllSubmissions = async (req, res) => {
   try {
     const {
-      page = 20,
+      page = 1,
       limit = 100,
       platform,
-      platformType,
       status,
       dateFrom,
       dateTo,
@@ -114,10 +114,14 @@ const getAllSubmissions = async (req, res) => {
     const limitNum = parseInt(limit);
     const skip = (pageNum - 1) * limitNum;
 
-    // Build filter object for each model
+    // Build filter object for each model with better platform handling
     const buildFilter = (baseFilter = {}) => {
       const filter = { ...baseFilter };
+
+      // Status filter
       if (status && status !== "all") filter.status = status;
+
+      // User filter
       if (userId) filter.user = userId;
 
       // Date range filter
@@ -145,7 +149,12 @@ const getAllSubmissions = async (req, res) => {
         ],
       }).select("_id");
 
-      userFilter.user = { $in: users.map((u) => u._id) };
+      if (users.length > 0) {
+        userFilter.user = { $in: users.map((u) => u._id) };
+      } else {
+        // If no users found, return empty results
+        userFilter.user = { $in: [] };
+      }
     }
 
     // Get submissions from all platforms with proper filtering
@@ -155,39 +164,60 @@ const getAllSubmissions = async (req, res) => {
       fbReviewSubmissions,
       fbCommentSubmissions,
       googleReviewSubmissions,
+      totalFbSubmissions,
+      totalYoutubeSubmissions,
+      totalFbReviewSubmissions,
+      totalFbCommentSubmissions,
+      totalGoogleReviewSubmissions,
     ] = await Promise.all([
       // Facebook Page Submissions
       Submission.find(buildFilter({ ...userFilter }))
         .populate("user", "firstName lastName email phoneNumber")
         .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limitNum)
         .lean(),
 
       // YouTube Submissions
       YoutubeSubmission.find(buildFilter(userFilter))
         .populate("user", "firstName lastName email phoneNumber")
         .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limitNum)
         .lean(),
 
       // Facebook Review Submissions
       FbReviewSubmission.find(buildFilter(userFilter))
         .populate("user", "firstName lastName email phoneNumber")
         .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limitNum)
         .lean(),
 
       // Facebook Comment Submissions
       FbCommentSubmission.find(buildFilter(userFilter))
         .populate("user", "firstName lastName email phoneNumber")
         .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limitNum)
         .lean(),
 
       // Google Review Submissions
       GoogleReviewSubmission.find(buildFilter(userFilter))
         .populate("user", "firstName lastName email phoneNumber")
         .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limitNum)
         .lean(),
+
+      // Total counts for pagination
+      Submission.countDocuments(buildFilter({ ...userFilter })),
+      YoutubeSubmission.countDocuments(buildFilter(userFilter)),
+      FbReviewSubmission.countDocuments(buildFilter(userFilter)),
+      FbCommentSubmission.countDocuments(buildFilter(userFilter)),
+      GoogleReviewSubmission.countDocuments(buildFilter(userFilter)),
     ]);
 
-    // Combine all submissions with platform type and proper identification
     // Combine all submissions with proper platform identification
     const allSubmissions = [
       ...fbSubmissions.map((sub) => ({
@@ -196,6 +226,7 @@ const getAllSubmissions = async (req, res) => {
         submissionType: "page",
         combinedId: `facebook_page_${sub._id}`,
         _id: `facebook_page_${sub._id}`,
+        originalId: sub._id,
       })),
       ...youtubeSubmissions.map((sub) => ({
         ...sub,
@@ -203,6 +234,7 @@ const getAllSubmissions = async (req, res) => {
         submissionType: "video",
         combinedId: `youtube_video_${sub._id}`,
         _id: `youtube_video_${sub._id}`,
+        originalId: sub._id,
       })),
       ...fbReviewSubmissions.map((sub) => ({
         ...sub,
@@ -210,6 +242,7 @@ const getAllSubmissions = async (req, res) => {
         submissionType: "review",
         combinedId: `facebook_review_${sub._id}`,
         _id: `facebook_review_${sub._id}`,
+        originalId: sub._id,
       })),
       ...fbCommentSubmissions.map((sub) => ({
         ...sub,
@@ -217,6 +250,7 @@ const getAllSubmissions = async (req, res) => {
         submissionType: "comment",
         combinedId: `facebook_comment_${sub._id}`,
         _id: `facebook_comment_${sub._id}`,
+        originalId: sub._id,
       })),
       ...googleReviewSubmissions.map((sub) => ({
         ...sub,
@@ -224,14 +258,75 @@ const getAllSubmissions = async (req, res) => {
         submissionType: "review",
         combinedId: `google_review_${sub._id}`,
         _id: `google_review_${sub._id}`,
+        originalId: sub._id,
       })),
     ].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
+    // Apply platform filter if specified
     let filteredSubmissions = allSubmissions;
+    let totalCount = 0;
+
     if (platform && platform !== "all") {
-      filteredSubmissions = allSubmissions.filter(
-        (sub) => sub.platformType === platform
-      );
+      if (platform.includes("_")) {
+        // Handle specific platform types like facebook_review, facebook_comment
+        const [platformType, submissionType] = platform.split("_");
+        filteredSubmissions = allSubmissions.filter(
+          (sub) =>
+            sub.platformType === platformType &&
+            sub.submissionType === submissionType
+        );
+
+        // Get the correct total count for this specific type
+        switch (platform) {
+          case "facebook_page":
+            totalCount = totalFbSubmissions;
+            break;
+          case "facebook_review":
+            totalCount = totalFbReviewSubmissions;
+            break;
+          case "facebook_comment":
+            totalCount = totalFbCommentSubmissions;
+            break;
+          case "youtube_video":
+            totalCount = totalYoutubeSubmissions;
+            break;
+          case "google_review":
+            totalCount = totalGoogleReviewSubmissions;
+            break;
+          default:
+            totalCount = filteredSubmissions.length;
+        }
+      } else {
+        // Handle general platform filter (e.g., just 'facebook')
+        filteredSubmissions = allSubmissions.filter(
+          (sub) => sub.platformType === platform
+        );
+        // Sum counts for all types of this platform
+        switch (platform) {
+          case "facebook":
+            totalCount =
+              totalFbSubmissions +
+              totalFbReviewSubmissions +
+              totalFbCommentSubmissions;
+            break;
+          case "youtube":
+            totalCount = totalYoutubeSubmissions;
+            break;
+          case "google":
+            totalCount = totalGoogleReviewSubmissions;
+            break;
+          default:
+            totalCount = filteredSubmissions.length;
+        }
+      }
+    } else {
+      // No platform filter - get total count of all submissions
+      totalCount =
+        totalFbSubmissions +
+        totalYoutubeSubmissions +
+        totalFbReviewSubmissions +
+        totalFbCommentSubmissions +
+        totalGoogleReviewSubmissions;
     }
 
     // Apply status filter
@@ -239,20 +334,11 @@ const getAllSubmissions = async (req, res) => {
       filteredSubmissions = filteredSubmissions.filter(
         (sub) => sub.status === status
       );
+      // Recalculate total count after status filter
+      totalCount = filteredSubmissions.length;
     }
 
-    // Paginate results
-    const startIndex = skip;
-    const endIndex = startIndex + limitNum;
-    const paginatedSubmissions = filteredSubmissions.slice(
-      startIndex,
-      endIndex
-    );
-
-    // Get counts for statistics
-    const totalCount = filteredSubmissions.length;
-
-    // Status counts
+    // Status counts based on filtered results
     const statusCounts = {
       pending: filteredSubmissions.filter((s) => s.status === "pending").length,
       approved: filteredSubmissions.filter((s) => s.status === "approved")
@@ -260,6 +346,14 @@ const getAllSubmissions = async (req, res) => {
       rejected: filteredSubmissions.filter((s) => s.status === "rejected")
         .length,
     };
+
+    // For platform filter, we need to paginate the already filtered results
+    const startIndex = skip;
+    const endIndex = startIndex + limitNum;
+    const paginatedSubmissions = filteredSubmissions.slice(
+      startIndex,
+      endIndex
+    );
 
     res.json({
       success: true,

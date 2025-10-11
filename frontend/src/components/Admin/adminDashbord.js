@@ -4,7 +4,7 @@ import { useAdminAuth } from "@/Context/AdminAuthContext";
 import { useRouter } from "next/navigation";
 import adminApi from "@/lib/adminApi";
 
-// Icons - Fixed import (removed Google, added Chrome)
+// Icons
 import {
   Users,
   DollarSign,
@@ -27,7 +27,7 @@ import {
   ThumbsUp,
   MessageCircle,
   StarIcon,
-  Chrome, // Use Chrome icon for Google
+  Chrome,
 } from "lucide-react";
 
 export default function AdminDashboard() {
@@ -45,7 +45,7 @@ export default function AdminDashboard() {
   const [filter, setFilter] = useState({
     platform: "all",
     status: "all",
-    page: 100,
+    page: 1,
     search: "",
     dateFrom: "",
     dateTo: "",
@@ -54,6 +54,7 @@ export default function AdminDashboard() {
   const [showImageModal, setShowImageModal] = useState(false);
   const [actionLoading, setActionLoading] = useState(null);
 
+  // Fetch data when filters or active tab changes
   useEffect(() => {
     if (isAuthenticated()) {
       if (activeTab === "dashboard") {
@@ -64,14 +65,17 @@ export default function AdminDashboard() {
     } else {
       router.push("/admin/login");
     }
-  }, [adminUser, filter, activeTab, isAuthenticated, router]);
+  }, [activeTab, filter, isAuthenticated, router]);
 
   const fetchStatistics = async () => {
     try {
+      setLoading(true);
       const response = await adminApi.get("/admin/stats");
       setStatistics(response.data.data);
     } catch (error) {
       console.error("Failed to fetch statistics:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -79,18 +83,9 @@ export default function AdminDashboard() {
     setLoading(true);
     try {
       const params = new URLSearchParams();
-      if (filter.platform !== "all") {
-        if (filter.platform.startsWith("facebook_")) {
-          // For Facebook subtypes, we need to handle them differently
-          const [platform, type] = filter.platform.split("_");
-          params.append("platform", platform);
-          // You might need to adjust your backend to handle this
-          // For now, we'll filter on the frontend
-        } else {
-          params.append("platform", filter.platform);
-        }
-      }
 
+      // Add all filter parameters
+      if (filter.platform !== "all") params.append("platform", filter.platform);
       if (filter.status !== "all") params.append("status", filter.status);
       if (filter.search) params.append("search", filter.search);
       if (filter.dateFrom) params.append("dateFrom", filter.dateFrom);
@@ -99,43 +94,17 @@ export default function AdminDashboard() {
       params.append("limit", "100");
 
       const response = await adminApi.get(`/admin/submissions?${params}`);
-
-      let filteredData = response.data.data;
-
-      if (filter.platform.startsWith("facebook_")) {
-        const [_, type] = filter.platform.split("_");
-        filteredData.submissions = filteredData.submissions.filter(
-          (sub) =>
-            sub.platformType === "facebook" && sub.submissionType === type
-        );
-
-        // Recalculate counts
-        filteredData.statusCounts = {
-          pending: filteredData.submissions.filter(
-            (s) => s.status === "pending"
-          ).length,
-          approved: filteredData.submissions.filter(
-            (s) => s.status === "approved"
-          ).length,
-          rejected: filteredData.submissions.filter(
-            (s) => s.status === "rejected"
-          ).length,
-        };
-
-        // Recalculate pagination
-        filteredData.pagination = {
-          ...filteredData.pagination,
-          totalSubmissions: filteredData.submissions.length,
-          totalPages: Math.ceil(filteredData.submissions.length / 100),
-        };
-      }
-
-      setSubmissions(filteredData);
+      setSubmissions(response.data.data);
     } catch (error) {
       console.error("Failed to fetch submissions:", error);
+      alert("Failed to load submissions. Please try again.");
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleFilterChange = (newFilter) => {
+    setFilter({ ...newFilter, page: 1 }); // Reset to page 1 when filters change
   };
 
   const updateSubmissionStatus = async (
@@ -151,7 +120,7 @@ export default function AdminDashboard() {
         rejectionReason,
       });
 
-      // Refresh data
+      // Refresh current data
       if (activeTab === "dashboard") {
         fetchStatistics();
       } else {
@@ -180,7 +149,7 @@ export default function AdminDashboard() {
 
       await adminApi.delete(`/admin/submissions/${platformType}/${actualId}`);
 
-      // Refresh data
+      // Refresh current data
       if (activeTab === "dashboard") {
         fetchStatistics();
       } else {
@@ -213,20 +182,6 @@ export default function AdminDashboard() {
         return <Chrome className="w-4 h-4 text-green-600" />;
       default:
         return <MessageSquare className="w-4 h-4 text-gray-600" />;
-    }
-  };
-  const getSubmissionTypeIcon = (submissionType) => {
-    switch (submissionType) {
-      case "page":
-        return <ThumbsUp className="w-4 h-4 text-green-600" />;
-      case "review":
-        return <StarIcon className="w-4 h-4 text-yellow-600" />;
-      case "comment":
-        return <MessageCircle className="w-4 h-4 text-blue-600" />;
-      case "video":
-        return <Youtube className="w-4 h-4 text-red-600" />;
-      default:
-        return <FileImage className="w-4 h-4 text-gray-600" />;
     }
   };
 
@@ -282,17 +237,16 @@ export default function AdminDashboard() {
       "User Phone",
     ];
 
-    const data =
-      submissions.submissions?.map((sub) => [
-        `${sub.user?.firstName || ""} ${sub.user?.lastName || ""}`.trim(),
-        sub.platformType,
-        sub.submissionType,
-        sub.status,
-        getAmountByType(sub),
-        new Date(sub.createdAt).toLocaleDateString(),
-        sub.user?.email || "",
-        sub.user?.phoneNumber || "",
-      ]) || [];
+    const data = submissions.submissions.map((sub) => [
+      `${sub.user?.firstName || ""} ${sub.user?.lastName || ""}`.trim(),
+      sub.platformType,
+      sub.submissionType,
+      sub.status,
+      getAmountByType(sub),
+      new Date(sub.createdAt).toLocaleDateString(),
+      sub.user?.email || "",
+      sub.user?.phoneNumber || "",
+    ]);
 
     const csvContent = [headers, ...data]
       .map((row) => row.map((field) => `"${field}"`).join(","))
@@ -305,6 +259,24 @@ export default function AdminDashboard() {
     a.download = `submissions-${new Date().toISOString().split("T")[0]}.csv`;
     a.click();
     window.URL.revokeObjectURL(url);
+  };
+
+  const handleSearch = (searchTerm) => {
+    handleFilterChange({
+      ...filter,
+      search: searchTerm,
+    });
+  };
+
+  const clearFilters = () => {
+    handleFilterChange({
+      platform: "all",
+      status: "all",
+      search: "",
+      dateFrom: "",
+      dateTo: "",
+      page: 1,
+    });
   };
 
   if (!isAuthenticated()) {
@@ -391,7 +363,11 @@ export default function AdminDashboard() {
               </div>
             </div>
 
-            {statistics && (
+            {loading ? (
+              <div className="flex justify-center items-center py-12">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+              </div>
+            ) : statistics ? (
               <>
                 {/* Stats Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
@@ -542,6 +518,11 @@ export default function AdminDashboard() {
                   </div>
                 )}
               </>
+            ) : (
+              <div className="text-center py-12">
+                <AlertCircle className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+                <p className="text-gray-500">Failed to load statistics</p>
+              </div>
             )}
           </div>
         )}
@@ -555,17 +536,31 @@ export default function AdminDashboard() {
               <div className="flex space-x-3">
                 <button
                   onClick={exportSubmissions}
-                  className="flex items-center space-x-2 bg-green-600 text-white px-4 py-2 rounded-md text-sm hover:bg-green-700 transition-colors"
+                  disabled={submissions.submissions.length === 0}
+                  className="flex items-center space-x-2 bg-green-600 text-white px-4 py-2 rounded-md text-sm hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <Download className="w-4 h-4" />
                   <span>Export CSV</span>
                 </button>
+                {(filter.platform !== "all" ||
+                  filter.status !== "all" ||
+                  filter.search ||
+                  filter.dateFrom ||
+                  filter.dateTo) && (
+                  <button
+                    onClick={clearFilters}
+                    className="flex items-center space-x-2 bg-gray-600 text-white px-4 py-2 rounded-md text-sm hover:bg-gray-700 transition-colors"
+                  >
+                    <Filter className="w-4 h-4" />
+                    <span>Clear Filters</span>
+                  </button>
+                )}
               </div>
             </div>
 
             {/* Filters */}
             <div className="bg-white p-6 rounded-lg shadow-sm mb-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Platform & Type
@@ -573,10 +568,9 @@ export default function AdminDashboard() {
                   <select
                     value={filter.platform}
                     onChange={(e) =>
-                      setFilter({
+                      handleFilterChange({
                         ...filter,
                         platform: e.target.value,
-                        page: 1,
                       })
                     }
                     className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm"
@@ -589,6 +583,7 @@ export default function AdminDashboard() {
                     <option value="google">Google Reviews</option>
                   </select>
                 </div>
+
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Status
@@ -596,7 +591,10 @@ export default function AdminDashboard() {
                   <select
                     value={filter.status}
                     onChange={(e) =>
-                      setFilter({ ...filter, status: e.target.value, page: 1 })
+                      handleFilterChange({
+                        ...filter,
+                        status: e.target.value,
+                      })
                     }
                     className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm"
                   >
@@ -615,10 +613,9 @@ export default function AdminDashboard() {
                     type="date"
                     value={filter.dateFrom}
                     onChange={(e) =>
-                      setFilter({
+                      handleFilterChange({
                         ...filter,
                         dateFrom: e.target.value,
-                        page: 50,
                       })
                     }
                     className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm"
@@ -633,35 +630,95 @@ export default function AdminDashboard() {
                     type="date"
                     value={filter.dateTo}
                     onChange={(e) =>
-                      setFilter({ ...filter, dateTo: e.target.value, page: 1 })
+                      handleFilterChange({
+                        ...filter,
+                        dateTo: e.target.value,
+                      })
                     }
                     className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm"
                   />
                 </div>
-              </div>
 
-              <div className="flex space-x-4">
-                <div className="flex-1">
+                <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Search Users
+                    &nbsp;
                   </label>
                   <div className="relative">
                     <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
                     <input
                       type="text"
-                      placeholder="Search by name or email..."
+                      placeholder="Search users..."
                       value={filter.search}
-                      onChange={(e) =>
-                        setFilter({
-                          ...filter,
-                          search: e.target.value,
-                          page: 50,
-                        })
-                      }
+                      onChange={(e) => handleSearch(e.target.value)}
                       className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md text-sm"
                     />
                   </div>
                 </div>
+              </div>
+
+              {/* Active Filters Display */}
+              <div className="flex flex-wrap gap-2">
+                {filter.platform !== "all" && (
+                  <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                    Platform: {filter.platform.replace("_", " ")}
+                    <button
+                      onClick={() =>
+                        handleFilterChange({
+                          ...filter,
+                          platform: "all",
+                        })
+                      }
+                      className="ml-1 hover:bg-blue-200 rounded-full"
+                    >
+                      ×
+                    </button>
+                  </span>
+                )}
+                {filter.status !== "all" && (
+                  <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                    Status: {filter.status}
+                    <button
+                      onClick={() =>
+                        handleFilterChange({
+                          ...filter,
+                          status: "all",
+                        })
+                      }
+                      className="ml-1 hover:bg-green-200 rounded-full"
+                    >
+                      ×
+                    </button>
+                  </span>
+                )}
+                {filter.search && (
+                  <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                    Search: {filter.search}
+                    <button
+                      onClick={() => handleSearch("")}
+                      className="ml-1 hover:bg-purple-200 rounded-full"
+                    >
+                      ×
+                    </button>
+                  </span>
+                )}
+                {(filter.dateFrom || filter.dateTo) && (
+                  <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800">
+                    Date: {filter.dateFrom || "Start"} to{" "}
+                    {filter.dateTo || "End"}
+                    <button
+                      onClick={() =>
+                        handleFilterChange({
+                          ...filter,
+                          dateFrom: "",
+                          dateTo: "",
+                        })
+                      }
+                      className="ml-1 hover:bg-orange-200 rounded-full"
+                    >
+                      ×
+                    </button>
+                  </span>
+                )}
               </div>
             </div>
 
@@ -707,19 +764,31 @@ export default function AdminDashboard() {
               </div>
             ) : (
               <div className="bg-white shadow overflow-hidden sm:rounded-md">
-                {submissions.submissions?.length === 0 ? (
+                {submissions.submissions.length === 0 ? (
                   <div className="text-center py-12">
                     <Image className="w-16 h-16 text-gray-400 mx-auto mb-4" />
                     <p className="text-gray-500">
                       No submissions found matching your filters.
                     </p>
+                    {(filter.platform !== "all" ||
+                      filter.status !== "all" ||
+                      filter.search ||
+                      filter.dateFrom ||
+                      filter.dateTo) && (
+                      <button
+                        onClick={clearFilters}
+                        className="mt-4 bg-blue-600 text-white px-4 py-2 rounded-md text-sm hover:bg-blue-700 transition-colors"
+                      >
+                        Clear all filters
+                      </button>
+                    )}
                   </div>
                 ) : (
                   <>
                     <ul className="divide-y divide-gray-200">
-                      {submissions.submissions?.map((submission) => (
+                      {submissions.submissions.map((submission) => (
                         <li
-                          key={submission._id}
+                          key={submission.combinedId || submission._id}
                           className="hover:bg-gray-50 transition-colors"
                         >
                           <div className="px-4 py-4">
@@ -743,14 +812,15 @@ export default function AdminDashboard() {
 
                                 <div className="flex-1 min-w-0">
                                   <div className="flex items-center space-x-3 mb-2">
-                                    <div className="flex items-center space-x-2 mb-2">
+                                    <div className="flex items-center space-x-2">
                                       {getPlatformIcon(
                                         submission.platformType,
                                         submission.submissionType
                                       )}
                                       <span className="text-sm font-medium text-gray-900 capitalize">
-                                        {submission.platformType}{" "}
-                                        {submission.submissionType}
+                                        {submission.platformType === "facebook"
+                                          ? `Facebook ${submission.submissionType}`
+                                          : `${submission.platformType} ${submission.submissionType}`}
                                       </span>
                                       <span
                                         className={getStatusBadge(
@@ -772,7 +842,7 @@ export default function AdminDashboard() {
                                       <span className="font-medium">
                                         Email:
                                       </span>{" "}
-                                      {submission.user?.email}
+                                      {submission.user?.email || "N/A"}
                                     </div>
                                     <div>
                                       <span className="font-medium">
@@ -792,7 +862,13 @@ export default function AdminDashboard() {
                                       <span className="font-medium">
                                         Phone:
                                       </span>{" "}
-                                      {submission.user?.phoneNumber}
+                                      {submission.user?.phoneNumber || "N/A"}
+                                    </div>
+                                    <div>
+                                      <span className="font-medium">ID:</span>{" "}
+                                      {submission.originalId
+                                        ?.toString()
+                                        .slice(-8) || "N/A"}
                                     </div>
                                   </div>
 
@@ -890,40 +966,48 @@ export default function AdminDashboard() {
                     </ul>
 
                     {/* Pagination */}
-                    {submissions.pagination && (
-                      <div className="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
-                        <div className="flex justify-between items-center w-full">
-                          <div>
-                            <p className="text-sm text-gray-700">
-                              Showing page {submissions.pagination.currentPage}{" "}
-                              of {submissions.pagination.totalPages} •{" "}
-                              {submissions.pagination.totalSubmissions} total
-                              submissions
-                            </p>
-                          </div>
-                          <div className="flex space-x-2">
-                            <button
-                              onClick={() =>
-                                setFilter({ ...filter, page: filter.page - 1 })
-                              }
-                              disabled={!submissions.pagination.hasPrev}
-                              className="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50"
-                            >
-                              Previous
-                            </button>
-                            <button
-                              onClick={() =>
-                                setFilter({ ...filter, page: filter.page + 1 })
-                              }
-                              disabled={!submissions.pagination.hasNext}
-                              className="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50"
-                            >
-                              Next
-                            </button>
+                    {submissions.pagination &&
+                      submissions.pagination.totalPages > 1 && (
+                        <div className="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
+                          <div className="flex justify-between items-center w-full">
+                            <div>
+                              <p className="text-sm text-gray-700">
+                                Showing page{" "}
+                                {submissions.pagination.currentPage} of{" "}
+                                {submissions.pagination.totalPages} •{" "}
+                                {submissions.pagination.totalSubmissions} total
+                                submissions
+                              </p>
+                            </div>
+                            <div className="flex space-x-2">
+                              <button
+                                onClick={() =>
+                                  setFilter({
+                                    ...filter,
+                                    page: filter.page - 1,
+                                  })
+                                }
+                                disabled={!submissions.pagination.hasPrev}
+                                className="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                              >
+                                Previous
+                              </button>
+                              <button
+                                onClick={() =>
+                                  setFilter({
+                                    ...filter,
+                                    page: filter.page + 1,
+                                  })
+                                }
+                                disabled={!submissions.pagination.hasNext}
+                                className="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                              >
+                                Next
+                              </button>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    )}
+                      )}
                   </>
                 )}
               </div>
@@ -954,7 +1038,7 @@ export default function AdminDashboard() {
               <img
                 src={selectedSubmission.screenshot}
                 alt="Full size submission"
-                className="w-full h-auto rounded-lg shadow-lg"
+                className="w-full h-auto rounded-lg shadow-lg max-w-2xl mx-auto"
                 onError={(e) => {
                   e.target.src =
                     "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='3' width='18' height='18' rx='2' ry='2'%3E%3C/rect%3E%3Ccircle cx='8.5' cy='8.5' r='1.5'%3E%3C/circle%3E%3Cpolyline points='21,15 16,10 5,21'%3E%3C/polyline%3E%3C/svg%3E";
@@ -966,10 +1050,12 @@ export default function AdminDashboard() {
                   {selectedSubmission.user?.lastName}
                 </div>
                 <div>
-                  <strong>Email:</strong> {selectedSubmission.user?.email}
+                  <strong>Email:</strong>{" "}
+                  {selectedSubmission.user?.email || "N/A"}
                 </div>
                 <div>
-                  <strong>Phone:</strong> {selectedSubmission.user?.phoneNumber}
+                  <strong>Phone:</strong>{" "}
+                  {selectedSubmission.user?.phoneNumber || "N/A"}
                 </div>
                 <div>
                   <strong>Submitted:</strong>{" "}
