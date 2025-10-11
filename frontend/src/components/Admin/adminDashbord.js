@@ -79,18 +79,7 @@ export default function AdminDashboard() {
     setLoading(true);
     try {
       const params = new URLSearchParams();
-      if (filter.platform !== "all") {
-        if (filter.platform.startsWith("facebook_")) {
-          // For Facebook subtypes, we need to handle them differently
-          const [platform, type] = filter.platform.split("_");
-          params.append("platform", platform);
-          // You might need to adjust your backend to handle this
-          // For now, we'll filter on the frontend
-        } else {
-          params.append("platform", filter.platform);
-        }
-      }
-
+      if (filter.platform !== "all") params.append("platform", filter.platform);
       if (filter.status !== "all") params.append("status", filter.status);
       if (filter.search) params.append("search", filter.search);
       if (filter.dateFrom) params.append("dateFrom", filter.dateFrom);
@@ -99,38 +88,7 @@ export default function AdminDashboard() {
       params.append("limit", "100");
 
       const response = await adminApi.get(`/admin/submissions?${params}`);
-
-      let filteredData = response.data.data;
-
-      if (filter.platform.startsWith("facebook_")) {
-        const [_, type] = filter.platform.split("_");
-        filteredData.submissions = filteredData.submissions.filter(
-          (sub) =>
-            sub.platformType === "facebook" && sub.submissionType === type
-        );
-
-        // Recalculate counts
-        filteredData.statusCounts = {
-          pending: filteredData.submissions.filter(
-            (s) => s.status === "pending"
-          ).length,
-          approved: filteredData.submissions.filter(
-            (s) => s.status === "approved"
-          ).length,
-          rejected: filteredData.submissions.filter(
-            (s) => s.status === "rejected"
-          ).length,
-        };
-
-        // Recalculate pagination
-        filteredData.pagination = {
-          ...filteredData.pagination,
-          totalSubmissions: filteredData.submissions.length,
-          totalPages: Math.ceil(filteredData.submissions.length / 100),
-        };
-      }
-
-      setSubmissions(filteredData);
+      setSubmissions(response.data.data);
     } catch (error) {
       console.error("Failed to fetch submissions:", error);
     } finally {
@@ -568,7 +526,7 @@ export default function AdminDashboard() {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Platform & Type
+                    Platform
                   </label>
                   <select
                     value={filter.platform}
@@ -585,10 +543,11 @@ export default function AdminDashboard() {
                     <option value="facebook_page">Facebook Page Likes</option>
                     <option value="facebook_review">Facebook Reviews</option>
                     <option value="facebook_comment">Facebook Comments</option>
-                    <option value="youtube">YouTube Submissions</option>
+                    <option value="youtube">YouTube</option>
                     <option value="google">Google Reviews</option>
                   </select>
                 </div>
+
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Status
