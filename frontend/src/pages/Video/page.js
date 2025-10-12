@@ -19,7 +19,7 @@ import {
   Eye,
 } from "lucide-react";
 import Header from "@/components/Header/Header";
-import SmartVideoPlayer from "@/components/SmartVideoPlayer";
+import SmartVideoPlayer from "@/components/Videos/SmartVideoPlayer";
 
 export default function VideoRewards() {
   const [videos, setVideos] = useState([]);
