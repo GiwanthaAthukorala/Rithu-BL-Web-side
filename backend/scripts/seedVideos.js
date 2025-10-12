@@ -22,10 +22,11 @@ const connectDB = async () => {
 
 const sampleVideos = [
   {
-    title: "Digital Marketing Tips",
+    title: "Digital Marketing Masterclass",
     description:
-      "Learn essential digital marketing strategies. Watch for 1 minute to earn Rs 1.",
-    videoUrl: "https://www.youtube.com/embed/zBjJUV-lzHo?autoplay=1",
+      "Learn advanced digital marketing strategies. Watch for 1 minute to earn Rs 1.",
+    videoUrl: "https://www.youtube.com/watch?v=zBjJUV-lzHo",
+    embedUrl: "https://www.youtube.com/embed/zBjJUV-lzHo?autoplay=1",
     thumbnailUrl: "https://i.ytimg.com/vi/zBjJUV-lzHo/hqdefault.jpg",
     platform: "youtube",
     duration: 60,
@@ -33,40 +34,46 @@ const sampleVideos = [
     isActive: true,
   },
   {
-    title: "Facebook Business Tutorial",
-    description: "Learn how to grow your business on Facebook.",
-    videoUrl:
-      "https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2Ffacebook%2Fvideos%2F10153231379946729%2F&show_text=0&width=560",
-    thumbnailUrl: "https://img.youtube.com/vi/dQw4w9WgXcQ/hqdefault.jpg", // Fallback thumbnail
+    title: "Facebook Business Growth Tips",
+    description: "Grow your business using Facebook marketing techniques.",
+    videoUrl: "https://www.facebook.com/facebook/videos/10153231379946729/",
+    embedUrl: "", // Facebook doesn't allow embedding
+    thumbnailUrl:
+      "https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=400&h=225&fit=crop",
     platform: "facebook",
     duration: 60,
     rewardAmount: 1,
     isActive: true,
   },
   {
-    title: "Instagram Reels Tips",
-    description: "Create engaging Instagram Reels content.",
-    videoUrl: "https://www.instagram.com/p/CrYKenNveYh/embed/",
-    thumbnailUrl: "https://img.youtube.com/vi/dQw4w9WgXcQ/hqdefault.jpg", // Fallback thumbnail
+    title: "Instagram Content Creation",
+    description: "Create engaging content for Instagram platform.",
+    videoUrl: "https://www.instagram.com/reel/CrYKenNveYh/",
+    embedUrl: "", // Instagram doesn't allow embedding
+    thumbnailUrl:
+      "https://images.unsplash.com/photo-1611262588024-d12430b98920?w=400&h=225&fit=crop",
     platform: "instagram",
     duration: 60,
     rewardAmount: 1,
     isActive: true,
   },
   {
-    title: "TikTok Viral Trends",
-    description: "Learn the latest TikTok trends and techniques.",
-    videoUrl: "https://www.tiktok.com/embed/v2/7156741793881197866",
-    thumbnailUrl: "https://img.youtube.com/vi/dQw4w9WgXcQ/hqdefault.jpg", // Fallback thumbnail
+    title: "TikTok Viral Strategies",
+    description: "Learn how to create viral content on TikTok.",
+    videoUrl: "https://www.tiktok.com/@example/video/1234567890123456789",
+    embedUrl: "", // TikTok doesn't allow embedding
+    thumbnailUrl:
+      "https://images.unsplash.com/photo-1611605698335-8b1569810432?w=400&h=225&fit=crop",
     platform: "tiktok",
     duration: 60,
     rewardAmount: 1,
     isActive: true,
   },
   {
-    title: "Morning Exercise Routine",
-    description: "Start your day with this energizing workout.",
-    videoUrl: "https://www.youtube.com/embed/ml6cT4AZdqI?autoplay=1",
+    title: "Morning Yoga Routine",
+    description: "Start your day with this peaceful yoga session.",
+    videoUrl: "https://www.youtube.com/watch?v=ml6cT4AZdqI",
+    embedUrl: "https://www.youtube.com/embed/ml6cT4AZdqI?autoplay=1",
     thumbnailUrl: "https://i.ytimg.com/vi/ml6cT4AZdqI/hqdefault.jpg",
     platform: "youtube",
     duration: 60,

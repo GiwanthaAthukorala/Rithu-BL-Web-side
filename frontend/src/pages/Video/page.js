@@ -19,7 +19,7 @@ import {
   Eye,
 } from "lucide-react";
 import Header from "@/components/Header/Header";
-import UniversalVideoPlayer from "@/components/Videos/UniversalVideoPlayer";
+import SmartVideoPlayer from "@/components/SmartVideoPlayer";
 
 export default function VideoRewards() {
   const [videos, setVideos] = useState([]);
@@ -90,6 +90,7 @@ export default function VideoRewards() {
       setTrackingSession(session);
       setSecondsWatched(0);
 
+      // Start tracking immediately
       startTimeTracking(session.sessionId, video.duration);
     } catch (error) {
       console.error("Start session error:", error);
@@ -233,70 +234,52 @@ export default function VideoRewards() {
     }
   };
 
+  // Check if video can be embedded
+  const canEmbedVideo = (video) => {
+    return video.platform === "youtube" && video.embedUrl;
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 py-12 relative overflow-hidden">
       <Header />
 
-      {/* Animated background elements */}
+      {/* Background elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-20 left-10 w-72 h-72 bg-purple-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse"></div>
         <div
           className="absolute top-40 right-10 w-72 h-72 bg-pink-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse"
           style={{ animationDelay: "2s" }}
         ></div>
-        <div
-          className="absolute -bottom-8 left-1/2 w-72 h-72 bg-indigo-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse"
-          style={{ animationDelay: "4s" }}
-        ></div>
       </div>
 
       <div className="max-w-7xl mx-auto px-4 relative z-10">
         {/* Header Section */}
         <div className="text-center mb-12">
-          <div className="inline-flex items-center justify-center mb-4">
-            <Sparkles className="text-yellow-500 animate-pulse" size={28} />
-            <h1 className="text-5xl font-extrabold bg-gradient-to-r from-purple-600 via-pink-600 to-indigo-600 bg-clip-text text-transparent mx-3">
-              Universal Video Rewards
-            </h1>
-            <Sparkles className="text-yellow-500 animate-pulse" size={28} />
-          </div>
+          <h1 className="text-5xl font-extrabold bg-gradient-to-r from-purple-600 via-pink-600 to-indigo-600 bg-clip-text text-transparent mb-4">
+            Smart Video Rewards
+          </h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
-            Watch videos from ALL platforms - YouTube, Facebook, Instagram,
-            TikTok! All videos play directly on this page.
+            Watch videos from all platforms! YouTube plays embedded, other
+            platforms open in new tabs with automatic time tracking.
           </p>
 
           {/* Stats Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
-            <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-purple-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
-              <div className="flex items-center justify-center mb-2">
-                <div className="p-3 bg-gradient-to-br from-green-400 to-emerald-500 rounded-xl">
-                  <DollarSign className="text-white" size={24} />
-                </div>
-              </div>
+            <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-purple-100">
               <div className="text-3xl font-bold text-gray-900">
                 Rs {totalEarned}
               </div>
               <div className="text-sm text-gray-600">Total Earned</div>
             </div>
 
-            <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-purple-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
-              <div className="flex items-center justify-center mb-2">
-                <div className="p-3 bg-gradient-to-br from-blue-400 to-indigo-500 rounded-xl">
-                  <Eye className="text-white" size={24} />
-                </div>
-              </div>
+            <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-purple-100">
               <div className="text-3xl font-bold text-gray-900">
                 {watchHistory.filter((s) => s.status === "completed").length}
               </div>
               <div className="text-sm text-gray-600">Videos Watched</div>
             </div>
 
-            <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-purple-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
-              <div className="flex items-center justify-center mb-2">
-                <div className="p-3 bg-gradient-to-br from-purple-400 to-pink-500 rounded-xl">
-                  <TrendingUp className="text-white" size={24} />
-                </div>
-              </div>
+            <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-purple-100">
               <div className="text-3xl font-bold text-gray-900">
                 {videos.length}
               </div>
@@ -307,168 +290,120 @@ export default function VideoRewards() {
 
         {/* Notifications */}
         {error && (
-          <div className="mb-6 p-5 bg-white rounded-2xl border-2 border-red-200 text-red-700 shadow-lg flex items-center justify-between animate-slideIn">
+          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl text-red-700">
             <div className="flex items-center">
-              <div className="p-2 bg-red-100 rounded-xl mr-3">
-                <AlertCircle size={24} />
-              </div>
-              <span className="font-medium">{error}</span>
+              <AlertCircle size={20} className="mr-2" />
+              <span>{error}</span>
             </div>
-            <button
-              onClick={() => setError(null)}
-              className="p-2 hover:bg-red-100 rounded-lg transition-colors duration-200"
-            >
-              <X size={20} />
-            </button>
           </div>
         )}
 
         {success && (
-          <div className="mb-6 p-5 bg-white rounded-2xl border-2 border-green-200 text-green-700 shadow-lg flex items-center justify-between animate-slideIn">
+          <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-xl text-green-700">
             <div className="flex items-center">
-              <div className="p-2 bg-green-100 rounded-xl mr-3">
-                <CheckCircle size={24} />
-              </div>
-              <span className="font-medium">{success}</span>
+              <CheckCircle size={20} className="mr-2" />
+              <span>{success}</span>
             </div>
-            <button
-              onClick={() => setSuccess(null)}
-              className="p-2 hover:bg-green-100 rounded-lg transition-colors duration-200"
-            >
-              <X size={20} />
-            </button>
           </div>
         )}
 
         {/* Video Player Modal */}
         {currentVideo && (
-          <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fadeIn">
-            <div className="bg-white rounded-3xl max-w-5xl w-full max-h-[90vh] overflow-hidden shadow-2xl">
+          <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+            <div className="bg-white rounded-3xl max-w-4xl w-full max-h-[90vh] overflow-hidden shadow-2xl">
               {/* Header */}
-              <div className="bg-gradient-to-r from-purple-600 via-pink-600 to-indigo-600 text-white p-6 flex justify-between items-center">
-                <div className="flex items-center space-x-3">
-                  <div className="p-2 bg-white/20 rounded-xl">
-                    {getPlatformIcon(currentVideo.platform)}
-                  </div>
-                  <div>
-                    <h3 className="text-2xl font-bold">{currentVideo.title}</h3>
-                    <p className="text-purple-100 flex items-center mt-1">
-                      <Sparkles size={16} className="mr-1" />
-                      Earn Rs {currentVideo.rewardAmount} by watching
-                    </p>
-                  </div>
+              <div className="bg-gradient-to-r from-purple-600 to-pink-600 text-white p-6 flex justify-between items-center">
+                <div>
+                  <h3 className="text-xl font-bold">{currentVideo.title}</h3>
+                  <p className="text-purple-100">
+                    Earn Rs {currentVideo.rewardAmount} by watching
+                  </p>
                 </div>
                 <button
                   onClick={closeVideo}
-                  className="p-3 hover:bg-white/20 rounded-xl transition-all duration-200"
+                  className="p-2 hover:bg-white/20 rounded-xl"
                 >
                   <X size={24} />
                 </button>
               </div>
 
-              {/* Video Player */}
-              <div className="p-8">
-                <UniversalVideoPlayer video={currentVideo} />
+              {/* Video Content */}
+              <div className="p-6">
+                <SmartVideoPlayer video={currentVideo} onClose={closeVideo} />
 
-                {/* Enhanced Progress Tracking */}
-                <div className="mt-6 p-6 bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl border-2 border-purple-200 shadow-lg">
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center space-x-2">
-                      <Clock className="text-purple-600" size={20} />
-                      <span className="text-lg font-bold text-gray-800">
-                        {formatTime(secondsWatched)} /{" "}
-                        {formatTime(currentVideo.duration)}
-                      </span>
-                    </div>
-                    <div className="flex items-center space-x-1">
-                      <Award className="text-pink-600" size={20} />
-                      <span className="text-lg font-bold text-gray-800">
-                        {Math.round(getProgressPercentage())}% Complete
-                      </span>
-                    </div>
+                {/* Progress Tracking */}
+                <div className="mt-6 p-4 bg-gray-50 rounded-xl border">
+                  <div className="flex justify-between text-sm text-gray-700 mb-2">
+                    <span>
+                      Progress: {formatTime(secondsWatched)} /{" "}
+                      {formatTime(currentVideo.duration)}
+                    </span>
+                    <span>{Math.round(getProgressPercentage())}% Complete</span>
                   </div>
-
-                  <div className="relative w-full bg-gray-200 rounded-full h-4 overflow-hidden shadow-inner">
+                  <div className="w-full bg-gray-200 rounded-full h-2">
                     <div
-                      className="absolute inset-0 bg-gradient-to-r from-purple-500 via-pink-500 to-indigo-500 rounded-full transition-all duration-300 shadow-lg"
+                      className="bg-green-500 h-2 rounded-full transition-all duration-300"
                       style={{ width: `${getProgressPercentage()}%` }}
-                    >
-                      <div className="absolute inset-0 bg-white/20 animate-pulse"></div>
-                    </div>
+                    ></div>
                   </div>
 
                   {secondsWatched >= currentVideo.duration && (
-                    <div className="mt-5 p-4 bg-gradient-to-r from-green-400 to-emerald-500 rounded-xl shadow-lg animate-slideIn">
-                      <div className="flex items-center justify-center text-white">
-                        <CheckCircle size={24} className="mr-3" />
-                        <span className="text-lg font-bold">
-                          🎉 Video Completed! Rs {currentVideo.rewardAmount}{" "}
+                    <div className="mt-3 p-3 bg-green-100 border border-green-300 rounded-lg">
+                      <div className="flex items-center text-green-700">
+                        <CheckCircle size={20} className="mr-2" />
+                        <span className="font-medium">
+                          Video Completed! Rs {currentVideo.rewardAmount}{" "}
                           earned!
                         </span>
                       </div>
                     </div>
                   )}
                 </div>
-
-                {/* Universal Instructions */}
-                <div className="mt-4 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 border-2 border-blue-300 rounded-xl shadow-md">
-                  <p className="text-blue-800 font-medium text-center flex items-center justify-center">
-                    <AlertCircle size={18} className="mr-2" />
-                    All videos play directly on this page! No external tabs
-                    needed.
-                  </p>
-                </div>
               </div>
             </div>
           </div>
         )}
 
+        {/* Rest of your component remains the same for tabs and video display */}
         {/* Tab Navigation */}
-        <div className="flex justify-center mb-10">
-          <div className="bg-white/80 backdrop-blur-sm rounded-3xl p-2 shadow-xl border border-purple-200">
+        <div className="flex justify-center mb-8">
+          <div className="bg-white rounded-2xl p-1 shadow-lg border">
             <button
               onClick={() => setActiveTab("available")}
-              className={`px-8 py-4 rounded-2xl font-bold transition-all duration-300 ${
+              className={`px-6 py-3 rounded-xl font-medium transition-all duration-200 ${
                 activeTab === "available"
-                  ? "bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg transform scale-105"
-                  : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+                  ? "bg-purple-600 text-white shadow-md"
+                  : "text-gray-600 hover:text-gray-900"
               }`}
             >
-              <div className="flex items-center space-x-2">
-                <Video size={20} />
-                <span>Available Videos</span>
-              </div>
+              Available Videos
             </button>
             <button
               onClick={() => setActiveTab("history")}
-              className={`px-8 py-4 rounded-2xl font-bold transition-all duration-300 ${
+              className={`px-6 py-3 rounded-xl font-medium transition-all duration-200 ${
                 activeTab === "history"
-                  ? "bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg transform scale-105"
-                  : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+                  ? "bg-purple-600 text-white shadow-md"
+                  : "text-gray-600 hover:text-gray-900"
               }`}
             >
-              <div className="flex items-center space-x-2">
-                <History size={20} />
-                <span>Watch History</span>
-              </div>
+              Watch History
             </button>
           </div>
         </div>
 
-        {/* Available Videos */}
+        {/* Available Videos Grid */}
         {activeTab === "available" && (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {videos.length === 0 ? (
-              <div className="col-span-full text-center py-16">
-                <div className="w-32 h-32 bg-gradient-to-br from-purple-100 to-pink-100 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
-                  <Clock size={48} className="text-purple-400" />
+              <div className="col-span-full text-center py-12">
+                <div className="w-24 h-24 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Clock size={32} className="text-gray-400" />
                 </div>
-                <h3 className="text-2xl font-bold text-gray-700 mb-3">
-                  No Videos Available Right Now
+                <h3 className="text-xl font-semibold text-gray-600 mb-2">
+                  No Videos Available
                 </h3>
-                <p className="text-gray-500 text-lg">
-                  You've completed all available videos! Check back soon for
-                  fresh content.
+                <p className="text-gray-500">
+                  Check back later for new videos to watch and earn money.
                 </p>
               </div>
             ) : (
@@ -479,72 +414,58 @@ export default function VideoRewards() {
                 return (
                   <div
                     key={video._id}
-                    className="group bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl overflow-hidden border border-purple-100 hover:shadow-2xl hover:-translate-y-2 transition-all duration-500"
+                    className="bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-200 hover:shadow-xl transition-all duration-300"
                   >
-                    <div className="relative h-56 bg-gradient-to-br from-purple-100 to-pink-100 overflow-hidden">
+                    <div className="relative h-48 bg-gray-100">
                       {getThumbnailUrl(video) ? (
                         <img
                           src={getThumbnailUrl(video)}
                           alt={video.title}
-                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                          className="w-full h-full object-cover"
                           onError={() => handleImageError(video._id)}
                         />
                       ) : (
-                        <div className="w-full h-full flex items-center justify-center">
-                          <div className="text-center">
-                            <Video
-                              size={48}
-                              className="text-purple-300 mx-auto mb-3"
-                            />
-                            <p className="text-sm text-purple-400 font-medium">
-                              Video Preview
-                            </p>
-                          </div>
+                        <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-purple-100 to-pink-100">
+                          <Video size={32} className="text-gray-400" />
                         </div>
                       )}
 
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-
-                      <div className="absolute top-4 right-4 bg-black/75 backdrop-blur-sm text-white px-4 py-2 rounded-full text-sm font-bold shadow-lg flex items-center">
-                        <Clock size={16} className="mr-1" />
+                      <div className="absolute top-3 right-3 bg-black/75 text-white px-2 py-1 rounded-full text-xs">
                         {formatTime(video.duration)}
                       </div>
-                      <div className="absolute bottom-4 left-4 bg-gradient-to-r from-green-500 to-emerald-500 text-white px-4 py-2 rounded-full text-sm font-bold flex items-center shadow-lg">
-                        <DollarSign size={16} className="mr-1" />
-                        Rs {video.rewardAmount}
-                      </div>
-
-                      {/* Platform Badge */}
-                      <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm text-gray-800 px-3 py-1 rounded-full text-xs font-bold flex items-center shadow-lg">
+                      <div className="absolute top-3 left-3 bg-white/90 text-gray-800 px-2 py-1 rounded-full text-xs font-medium flex items-center">
                         {getPlatformIcon(video.platform)}
-                        <span className="ml-1 capitalize">
+                        <span className="ml-1 capitalize text-xs">
                           {video.platform}
                         </span>
                       </div>
+                      <div className="absolute bottom-3 left-3 bg-green-600 text-white px-2 py-1 rounded-full text-xs font-medium">
+                        Rs {video.rewardAmount}
+                      </div>
                     </div>
 
-                    <div className="p-6">
-                      <h3 className="text-xl font-bold text-gray-900 mb-3 line-clamp-2 group-hover:text-purple-600 transition-colors duration-300">
+                    <div className="p-4">
+                      <h3 className="font-bold text-gray-900 mb-2 line-clamp-2">
                         {video.title}
                       </h3>
-                      <p className="text-gray-600 text-sm mb-6 line-clamp-3">
+                      <p className="text-gray-600 text-sm mb-4 line-clamp-2">
                         {video.description}
                       </p>
 
                       <button
                         onClick={() => startVideoSession(video)}
                         disabled={isLoading || currentVideo}
-                        className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white py-4 px-6 rounded-2xl font-bold transition-all duration-300 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl transform hover:scale-105"
+                        className="w-full bg-purple-600 hover:bg-purple-700 text-white py-2 px-4 rounded-xl font-medium transition-all duration-200 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         {isLoading ? (
                           <>
-                            <div className="animate-spin rounded-full h-5 w-5 border-3 border-white border-t-transparent mr-2"></div>
+                            <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent mr-2"></div>
                             Starting...
                           </>
                         ) : (
                           <>
-                            <Play size={20} className="mr-2" />
-                            Watch & Earn Rs {video.rewardAmount}
+                            <Play size={16} className="mr-2" />
+                            Watch & Earn
                           </>
                         )}
                       </button>
@@ -558,88 +479,39 @@ export default function VideoRewards() {
 
         {/* Watch History */}
         {activeTab === "history" && (
-          <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl border border-purple-200 overflow-hidden">
-            <div className="p-8 bg-gradient-to-r from-purple-50 to-pink-50 border-b border-purple-200">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h2 className="text-3xl font-bold text-gray-900 flex items-center mb-2">
-                    <History className="mr-3 text-purple-600" size={32} />
-                    Your Watch History
-                  </h2>
-                  <p className="text-gray-600 text-lg flex items-center">
-                    <Award className="mr-2 text-green-500" size={20} />
-                    Total earned:{" "}
-                    <span className="font-bold text-green-600 ml-2">
-                      Rs {totalEarned}
-                    </span>
-                  </p>
-                </div>
-              </div>
+          <div className="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden">
+            <div className="p-6 border-b border-gray-200">
+              <h2 className="text-2xl font-bold text-gray-900 flex items-center">
+                <History className="mr-3" size={24} />
+                Your Watch History
+              </h2>
             </div>
-
-            <div className="divide-y divide-purple-100">
+            <div className="divide-y divide-gray-100">
               {watchHistory.length === 0 ? (
-                <div className="p-16 text-center">
-                  <div className="w-24 h-24 bg-gradient-to-br from-purple-100 to-pink-100 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
-                    <History size={40} className="text-purple-400" />
-                  </div>
-                  <h3 className="text-xl font-bold text-gray-700 mb-3">
-                    No Watch History Yet
-                  </h3>
-                  <p className="text-gray-500 text-lg">
-                    Start watching videos to build your earning history!
-                  </p>
+                <div className="p-12 text-center">
+                  <p className="text-gray-500">No watch history yet.</p>
                 </div>
               ) : (
                 watchHistory.map((session) => (
-                  <div
-                    key={session._id}
-                    className="p-6 hover:bg-purple-50/50 transition-all duration-300"
-                  >
-                    <div className="flex items-center justify-between">
-                      <div className="flex-1">
-                        <h4 className="font-bold text-gray-900 mb-2 text-lg">
+                  <div key={session._id} className="p-4 hover:bg-gray-50">
+                    <div className="flex justify-between items-center">
+                      <div>
+                        <h4 className="font-semibold text-gray-900">
                           {session.video?.title}
                         </h4>
-                        <div className="flex items-center flex-wrap gap-4 text-sm">
-                          <span className="flex items-center text-gray-600 bg-gray-100 px-3 py-1 rounded-full">
-                            <Clock size={14} className="mr-1" />
-                            {formatTime(session.watchDuration)}
+                        <div className="flex items-center space-x-4 text-sm text-gray-600 mt-1">
+                          <span>
+                            Watched: {formatTime(session.watchDuration)}
                           </span>
                           {session.amountEarned > 0 && (
-                            <span className="flex items-center text-green-700 bg-green-100 px-3 py-1 rounded-full font-bold">
-                              <DollarSign size={14} className="mr-1" />
-                              Rs {session.amountEarned}
-                            </span>
-                          )}
-                          <span
-                            className={`px-3 py-1 rounded-full text-xs font-bold ${
-                              session.status === "completed"
-                                ? "bg-green-100 text-green-700"
-                                : session.status === "watching"
-                                ? "bg-blue-100 text-blue-700"
-                                : "bg-yellow-100 text-yellow-700"
-                            }`}
-                          >
-                            {session.status.toUpperCase()}
-                          </span>
-                          {session.video?.platform && (
-                            <span className="flex items-center text-purple-700 bg-purple-100 px-3 py-1 rounded-full">
-                              {getPlatformIcon(session.video.platform)}
-                              <span className="ml-1 capitalize text-xs">
-                                {session.video.platform}
-                              </span>
+                            <span className="text-green-600 font-medium">
+                              Earned: Rs {session.amountEarned}
                             </span>
                           )}
                         </div>
                       </div>
-                      <div className="text-right ml-4">
-                        <div className="text-sm font-medium text-gray-700">
-                          {new Date(session.createdAt).toLocaleDateString()}
-                        </div>
-                        <div className="text-xs text-gray-500">
-                          {new Date(session.createdAt).toLocaleTimeString()}
-                        </div>
+                      <div className="text-right text-sm text-gray-500">
+                        {new Date(session.createdAt).toLocaleDateString()}
                       </div>
                     </div>
                   </div>
@@ -648,100 +520,7 @@ export default function VideoRewards() {
             </div>
           </div>
         )}
-
-        {/* Enhanced Instructions */}
-        <div className="mt-12 bg-gradient-to-r from-yellow-50 to-orange-50 border-2 border-yellow-300 rounded-3xl p-8 shadow-xl">
-          <h3 className="text-2xl font-bold text-yellow-800 mb-6 flex items-center">
-            <AlertCircle size={28} className="mr-3" />
-            Universal Video Platform Guide
-          </h3>
-          <div className="grid md:grid-cols-2 gap-6">
-            <div className="flex items-start space-x-3">
-              <div className="p-2 bg-yellow-200 rounded-lg mt-1">
-                <span className="text-2xl">📺</span>
-              </div>
-              <div>
-                <div className="font-bold text-yellow-900 mb-1">
-                  All Videos Embedded
-                </div>
-                <div className="text-yellow-700 text-sm">
-                  YouTube, Facebook, Instagram, TikTok - all play directly on
-                  this page
-                </div>
-              </div>
-            </div>
-            <div className="flex items-start space-x-3">
-              <div className="p-2 bg-yellow-200 rounded-lg mt-1">
-                <span className="text-2xl">⏱️</span>
-              </div>
-              <div>
-                <div className="font-bold text-yellow-900 mb-1">
-                  Automatic Time Tracking
-                </div>
-                <div className="text-yellow-700 text-sm">
-                  Watch for 1 minute to earn Rs 1 automatically
-                </div>
-              </div>
-            </div>
-            <div className="flex items-start space-x-3">
-              <div className="p-2 bg-yellow-200 rounded-lg mt-1">
-                <span className="text-2xl">🎯</span>
-              </div>
-              <div>
-                <div className="font-bold text-yellow-900 mb-1">
-                  One-Time Viewing
-                </div>
-                <div className="text-yellow-700 text-sm">
-                  Each video can only be watched once per user
-                </div>
-              </div>
-            </div>
-            <div className="flex items-start space-x-3">
-              <div className="p-2 bg-yellow-200 rounded-lg mt-1">
-                <span className="text-2xl">💰</span>
-              </div>
-              <div>
-                <div className="font-bold text-yellow-900 mb-1">
-                  Instant Rewards
-                </div>
-                <div className="text-yellow-700 text-sm">
-                  Rs 1 added to your account immediately after completion
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
-
-      <style jsx>{`
-        @keyframes fadeIn {
-          from {
-            opacity: 0;
-          }
-          to {
-            opacity: 1;
-          }
-        }
-
-        @keyframes slideIn {
-          from {
-            transform: translateY(-20px);
-            opacity: 0;
-          }
-          to {
-            transform: translateY(0);
-            opacity: 1;
-          }
-        }
-
-        .animate-fadeIn {
-          animation: fadeIn 0.3s ease-out;
-        }
-
-        .animate-slideIn {
-          animation: slideIn 0.4s ease-out;
-        }
-      `}</style>
     </div>
   );
 }
