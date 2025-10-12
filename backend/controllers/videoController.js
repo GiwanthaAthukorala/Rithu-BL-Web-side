@@ -126,10 +126,17 @@ exports.updateWatchProgress = async (req, res) => {
       });
     }
 
+    // If video already completed, return success but don't process further
     if (session.status === "completed") {
-      return res.status(400).json({
-        success: false,
-        message: "Video already completed",
+      return res.json({
+        success: true,
+        data: {
+          watchDuration: session.watchDuration,
+          status: session.status,
+          rewardGiven: session.rewardGiven,
+          amountEarned: session.amountEarned,
+          message: "Video already completed",
+        },
       });
     }
 
@@ -143,6 +150,9 @@ exports.updateWatchProgress = async (req, res) => {
         `Video completed! User: ${userId}, Video: ${session.video._id}, Duration: ${currentTime}s`
       );
       await completeVideoSession(session);
+
+      // Refresh the session data after completion
+      await session.populate("video");
     }
 
     await session.save();
@@ -167,46 +177,40 @@ exports.updateWatchProgress = async (req, res) => {
 
 // Complete video session and give reward
 const completeVideoSession = async (session) => {
-  const sessionWithVideo = await VideoWatchSession.findById(
-    session._id
-  ).populate("video");
-
   try {
-    sessionWithVideo.status = "completed";
-    sessionWithVideo.endTime = new Date();
-    sessionWithVideo.rewardGiven = true;
-    sessionWithVideo.amountEarned = sessionWithVideo.video.rewardAmount;
+    // Use the session directly since it's already populated
+    session.status = "completed";
+    session.endTime = new Date();
+    session.rewardGiven = true;
+    session.amountEarned = session.video.rewardAmount;
 
     console.log(
-      `Completing session for user ${sessionWithVideo.user} - Awarding Rs ${sessionWithVideo.amountEarned}`
+      `Completing session for user ${session.user} - Awarding Rs ${session.amountEarned}`
     );
 
     // Update video views
-    await Video.findByIdAndUpdate(sessionWithVideo.video._id, {
+    await Video.findByIdAndUpdate(session.video._id, {
       $inc: { currentViews: 1 },
     });
 
     // Update user earnings
-    await updateUserEarnings(
-      sessionWithVideo.user,
-      sessionWithVideo.video.rewardAmount
-    );
+    await updateUserEarnings(session.user, session.video.rewardAmount);
 
-    await sessionWithVideo.save();
+    await session.save();
 
     // Emit socket event for real-time update
     const io = require("../server").io;
     if (io) {
-      io.to(sessionWithVideo.user.toString()).emit("videoCompleted", {
-        videoId: sessionWithVideo.video._id,
-        videoTitle: sessionWithVideo.video.title,
-        amount: sessionWithVideo.video.rewardAmount,
-        sessionId: sessionWithVideo._id,
+      io.to(session.user.toString()).emit("videoCompleted", {
+        videoId: session.video._id,
+        videoTitle: session.video.title,
+        amount: session.video.rewardAmount,
+        sessionId: session._id,
       });
     }
 
     console.log(
-      `Successfully completed video session and awarded Rs ${sessionWithVideo.amountEarned} to user ${sessionWithVideo.user}`
+      `Successfully completed video session and awarded Rs ${session.amountEarned} to user ${session.user}`
     );
   } catch (error) {
     console.error("Complete session error:", error);

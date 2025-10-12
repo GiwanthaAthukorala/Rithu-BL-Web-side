@@ -17,6 +17,11 @@ import {
   TrendingUp,
   Award,
   Eye,
+  Youtube,
+  Facebook,
+  Instagram,
+  MessageCircle,
+  Globe,
 } from "lucide-react";
 import Header from "@/components/Header/Header";
 
@@ -108,21 +113,14 @@ export default function VideoRewards() {
       setSecondsWatched(localSeconds);
 
       try {
+        // Update progress every 5 seconds
         if (localSeconds % 5 === 0 || localSeconds >= duration) {
-          const response = await api.put(
-            `/videos/session/${sessionId}/progress`,
-            {
-              currentTime: localSeconds,
-            }
-          );
-
-          if (response.data.data.status === "completed") {
-            console.log("Video marked as completed in backend");
-            completeTracking(sessionId, true);
-            return;
-          }
+          await api.put(`/videos/session/${sessionId}/progress`, {
+            currentTime: localSeconds,
+          });
         }
 
+        // Check if video completed locally
         if (localSeconds >= duration) {
           console.log("Video completed locally, sending final update");
           await api.put(`/videos/session/${sessionId}/progress`, {
@@ -132,6 +130,10 @@ export default function VideoRewards() {
         }
       } catch (error) {
         console.error("Progress update error:", error);
+        // If it's "already completed" error, that's fine - just complete tracking
+        if (error.message?.includes("already completed")) {
+          completeTracking(sessionId, true);
+        }
       }
     }, 1000);
   };
@@ -220,6 +222,65 @@ export default function VideoRewards() {
     .filter((session) => session.status === "completed")
     .reduce((total, session) => total + (session.amountEarned || 0), 0);
 
+  // Get platform icon
+  const getPlatformIcon = (platform) => {
+    switch (platform) {
+      case "youtube":
+        return <Youtube size={16} className="text-red-600" />;
+      case "facebook":
+        return <Facebook size={16} className="text-blue-600" />;
+      case "instagram":
+        return <Instagram size={16} className="text-pink-600" />;
+      case "tiktok":
+        return <MessageCircle size={16} className="text-black" />;
+      default:
+        return <Globe size={16} className="text-gray-600" />;
+    }
+  };
+
+  // Render video player based on platform
+  const renderVideoPlayer = (video) => {
+    if (video.platform === "youtube") {
+      return (
+        <iframe
+          src={video.videoUrl}
+          className="w-full h-96 rounded-2xl"
+          frameBorder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
+          title={video.title}
+        />
+      );
+    } else {
+      // For platforms that don't support embedding, show a message with external link
+      return (
+        <div className="w-full h-96 bg-gradient-to-br from-purple-100 to-pink-100 rounded-2xl flex flex-col items-center justify-center p-8 text-center">
+          <div className="text-6xl mb-4">🎬</div>
+          <h3 className="text-2xl font-bold text-gray-800 mb-4">
+            Video Ready to Watch
+          </h3>
+          <p className="text-gray-600 mb-6">
+            This video will open in a new tab for the best viewing experience.
+          </p>
+          <button
+            onClick={() =>
+              window.open(video.videoUrl, "_blank", "noopener,noreferrer")
+            }
+            className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-8 py-4 rounded-2xl font-bold hover:from-purple-700 hover:to-pink-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+          >
+            <div className="flex items-center space-x-2">
+              <Play size={20} />
+              <span>Open Video</span>
+            </div>
+          </button>
+          <p className="text-sm text-gray-500 mt-4">
+            Don't worry, time tracking continues in the background!
+          </p>
+        </div>
+      );
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 py-12 relative overflow-hidden">
       <Header />
@@ -242,13 +303,13 @@ export default function VideoRewards() {
           <div className="inline-flex items-center justify-center mb-4">
             <Sparkles className="text-yellow-500 animate-pulse" size={28} />
             <h1 className="text-5xl font-extrabold bg-gradient-to-r from-purple-600 via-pink-600 to-indigo-600 bg-clip-text text-transparent mx-3">
-              Watch & Earn Platform
+              Universal Video Rewards
             </h1>
             <Sparkles className="text-yellow-500 animate-pulse" size={28} />
           </div>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
-            Transform your time into money! Watch engaging videos and earn
-            instant rewards.
+            Watch videos from YouTube, Facebook, Instagram, TikTok and more!
+            Earn instant rewards.
           </p>
 
           {/* Stats Cards */}
@@ -334,7 +395,7 @@ export default function VideoRewards() {
               <div className="bg-gradient-to-r from-purple-600 via-pink-600 to-indigo-600 text-white p-6 flex justify-between items-center">
                 <div className="flex items-center space-x-3">
                   <div className="p-2 bg-white/20 rounded-xl">
-                    <Video size={24} />
+                    {getPlatformIcon(currentVideo.platform)}
                   </div>
                   <div>
                     <h3 className="text-2xl font-bold">{currentVideo.title}</h3>
@@ -354,19 +415,10 @@ export default function VideoRewards() {
 
               {/* Video Player */}
               <div className="p-8">
-                <div className="relative bg-black rounded-2xl overflow-hidden shadow-2xl">
-                  <iframe
-                    src={currentVideo.videoUrl}
-                    className="w-full h-96"
-                    frameBorder="0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                    title={currentVideo.title}
-                  ></iframe>
-                </div>
+                {renderVideoPlayer(currentVideo)}
 
                 {/* Enhanced Progress Tracking */}
-                <div className="mt-1 p-2 bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl border-2 border-purple-200 shadow-lg">
+                <div className="mt-6 p-6 bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl border-2 border-purple-200 shadow-lg">
                   <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center space-x-2">
                       <Clock className="text-purple-600" size={20} />
@@ -405,14 +457,16 @@ export default function VideoRewards() {
                   )}
                 </div>
 
-                {/* Instructions */}
-                <div className="mt-5 p-4 bg-gradient-to-r from-yellow-50 to-orange-50 border-2 border-yellow-300 rounded-xl shadow-md">
-                  <p className="text-yellow-800 font-medium text-center flex items-center justify-center">
-                    <AlertCircle size={18} className="mr-2" />
-                    Keep this window open until completion to receive your
-                    reward
-                  </p>
-                </div>
+                {/* Platform-specific instructions */}
+                {currentVideo.platform !== "youtube" && (
+                  <div className="mt-4 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 border-2 border-blue-300 rounded-xl shadow-md">
+                    <p className="text-blue-800 font-medium text-center flex items-center justify-center">
+                      <AlertCircle size={18} className="mr-2" />
+                      Video opened in new tab? Perfect! Time tracking continues
+                      here.
+                    </p>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -507,6 +561,14 @@ export default function VideoRewards() {
                       <div className="absolute bottom-4 left-4 bg-gradient-to-r from-green-500 to-emerald-500 text-white px-4 py-2 rounded-full text-sm font-bold flex items-center shadow-lg">
                         <DollarSign size={16} className="mr-1" />
                         Rs {video.rewardAmount}
+                      </div>
+
+                      {/* Platform Badge */}
+                      <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm text-gray-800 px-3 py-1 rounded-full text-xs font-bold flex items-center shadow-lg">
+                        {getPlatformIcon(video.platform)}
+                        <span className="ml-1 capitalize">
+                          {video.platform}
+                        </span>
                       </div>
                     </div>
 
@@ -610,6 +672,14 @@ export default function VideoRewards() {
                           >
                             {session.status.toUpperCase()}
                           </span>
+                          {session.video?.platform && (
+                            <span className="flex items-center text-purple-700 bg-purple-100 px-3 py-1 rounded-full">
+                              {getPlatformIcon(session.video.platform)}
+                              <span className="ml-1 capitalize text-xs">
+                                {session.video.platform}
+                              </span>
+                            </span>
+                          )}
                         </div>
                       </div>
                       <div className="text-right ml-4">
@@ -632,32 +702,45 @@ export default function VideoRewards() {
         <div className="mt-12 bg-gradient-to-r from-yellow-50 to-orange-50 border-2 border-yellow-300 rounded-3xl p-8 shadow-xl">
           <h3 className="text-2xl font-bold text-yellow-800 mb-6 flex items-center">
             <AlertCircle size={28} className="mr-3" />
-            How It Works
+            Universal Video Platform Guide
           </h3>
-          <div className="grid md:grid-cols-2 gap-4">
+          <div className="grid md:grid-cols-2 gap-6">
+            <div className="flex items-start space-x-3">
+              <div className="p-2 bg-yellow-200 rounded-lg mt-1">
+                <Youtube size={20} className="text-yellow-700" />
+              </div>
+              <div>
+                <div className="font-bold text-yellow-900 mb-1">
+                  YouTube Videos
+                </div>
+                <div className="text-yellow-700 text-sm">
+                  Play directly on the website with embedded player
+                </div>
+              </div>
+            </div>
+            <div className="flex items-start space-x-3">
+              <div className="p-2 bg-yellow-200 rounded-lg mt-1">
+                <Facebook size={20} className="text-yellow-700" />
+              </div>
+              <div>
+                <div className="font-bold text-yellow-900 mb-1">
+                  Facebook/Instagram/TikTok
+                </div>
+                <div className="text-yellow-700 text-sm">
+                  Open in new tab - time tracking continues here
+                </div>
+              </div>
+            </div>
             <div className="flex items-start space-x-3">
               <div className="p-2 bg-yellow-200 rounded-lg mt-1">
                 <Play size={20} className="text-yellow-700" />
               </div>
               <div>
                 <div className="font-bold text-yellow-900 mb-1">
-                  Step 1: Choose
+                  How to Watch
                 </div>
                 <div className="text-yellow-700 text-sm">
-                  Click "Watch & Earn" to start any video
-                </div>
-              </div>
-            </div>
-            <div className="flex items-start space-x-3">
-              <div className="p-2 bg-yellow-200 rounded-lg mt-1">
-                <Eye size={20} className="text-yellow-700" />
-              </div>
-              <div>
-                <div className="font-bold text-yellow-900 mb-1">
-                  Step 2: Watch
-                </div>
-                <div className="text-yellow-700 text-sm">
-                  Watch for 1 minute to complete
+                  Click any video and watch for 1 minute to earn Rs 1
                 </div>
               </div>
             </div>
@@ -667,23 +750,10 @@ export default function VideoRewards() {
               </div>
               <div>
                 <div className="font-bold text-yellow-900 mb-1">
-                  Step 3: Earn
+                  Automatic Rewards
                 </div>
                 <div className="text-yellow-700 text-sm">
-                  Get Rs 1 added automatically
-                </div>
-              </div>
-            </div>
-            <div className="flex items-start space-x-3">
-              <div className="p-2 bg-yellow-200 rounded-lg mt-1">
-                <CheckCircle size={20} className="text-yellow-700" />
-              </div>
-              <div>
-                <div className="font-bold text-yellow-900 mb-1">
-                  Step 4: Repeat
-                </div>
-                <div className="text-yellow-700 text-sm">
-                  Watch more videos to earn more
+                  Earnings added instantly after completion
                 </div>
               </div>
             </div>

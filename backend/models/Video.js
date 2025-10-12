@@ -7,6 +7,28 @@ const videoSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
+    platform: {
+      type: String,
+      enum: [
+        "youtube",
+        "facebook",
+        "instagram",
+        "tiktok",
+        "vimeo",
+        "dailymotion",
+        "custom",
+      ],
+      default: [
+        "youtube",
+        "facebook",
+        "instagram",
+        "tiktok",
+        "vimeo",
+        "dailymotion",
+        "custom",
+      ],
+      required: true,
+    },
     description: {
       type: String,
       required: true,
