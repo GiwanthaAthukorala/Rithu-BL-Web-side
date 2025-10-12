@@ -18,15 +18,7 @@ const videoSchema = new mongoose.Schema(
         "dailymotion",
         "custom",
       ],
-      default: [
-        "youtube",
-        "facebook",
-        "instagram",
-        "tiktok",
-        "vimeo",
-        "dailymotion",
-        "custom",
-      ],
+      default: "youtube",
       required: true,
     },
     description: {
