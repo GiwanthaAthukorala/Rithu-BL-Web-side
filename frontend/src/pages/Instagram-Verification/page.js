@@ -383,8 +383,8 @@ export default function InstagramVerificationTask() {
                           Follow Our Main Account
                         </h4>
                         <p className="text-white/90 text-sm">
-                          ඉන්ස්ට්‍රග්‍රෑම් එකවුන්ට් එක ෆලෝ කරන්න • RR BUILDERS -
-                          PVT LTD
+                          ඉන්ස්ට්‍රග්‍රෑම් එකවුන්ට් එක ෆලෝ කරන්න • Nishu Korean
+                          Cosmetic.lk
                         </p>
                       </div>
                       <a
