@@ -2,7 +2,7 @@ const Video = require("../models/Video");
 const VideoWatchSession = require("../models/VideoWatchSession");
 const Earnings = require("../models/Earnings");
 
-// Get all available videos for user
+// Enhanced video controller with better error handling
 exports.getAvailableVideos = async (req, res) => {
   try {
     const userId = req.user._id;
@@ -18,11 +18,17 @@ exports.getAvailableVideos = async (req, res) => {
     const availableVideos = await Video.find({
       isActive: true,
       _id: { $nin: watchedVideoIds },
+      $or: [{ maxViews: { $gt: 0 } }, { maxViews: null }],
     });
+
+    // Filter out videos that reached max views
+    const filteredVideos = availableVideos.filter(
+      (video) => video.maxViews === null || video.currentViews < video.maxViews
+    );
 
     res.json({
       success: true,
-      data: availableVideos,
+      data: filteredVideos,
     });
   } catch (error) {
     console.error("Get videos error:", error);
@@ -33,7 +39,7 @@ exports.getAvailableVideos = async (req, res) => {
   }
 };
 
-// Start video watching session
+// Enhanced session management
 exports.startVideoSession = async (req, res) => {
   try {
     const { videoId } = req.params;
@@ -49,6 +55,14 @@ exports.startVideoSession = async (req, res) => {
       return res.status(404).json({
         success: false,
         message: "Video not found or inactive",
+      });
+    }
+
+    // Check if video reached max views
+    if (video.maxViews && video.currentViews >= video.maxViews) {
+      return res.status(400).json({
+        success: false,
+        message: "This video has reached its maximum view limit",
       });
     }
 
@@ -70,7 +84,7 @@ exports.startVideoSession = async (req, res) => {
     const existingWatchingSession = await VideoWatchSession.findOne({
       user: userId,
       video: videoId,
-      status: "watching",
+      status: { $in: ["watching", "paused"] },
     });
 
     let session;
@@ -78,6 +92,7 @@ exports.startVideoSession = async (req, res) => {
       // Resume existing session
       session = existingWatchingSession;
       session.startTime = new Date();
+      session.status = "watching";
     } else {
       // Create new session
       session = await VideoWatchSession.create({
@@ -85,6 +100,7 @@ exports.startVideoSession = async (req, res) => {
         video: videoId,
         startTime: new Date(),
         status: "watching",
+        watchDuration: 0,
       });
     }
 
@@ -96,6 +112,8 @@ exports.startVideoSession = async (req, res) => {
         sessionId: session._id,
         video: video,
         startTime: session.startTime,
+        platform: video.platform,
+        duration: video.duration,
       },
     });
   } catch (error) {
@@ -107,11 +125,11 @@ exports.startVideoSession = async (req, res) => {
   }
 };
 
-// Update video watch progress
+// Enhanced progress tracking
 exports.updateWatchProgress = async (req, res) => {
   try {
     const { sessionId } = req.params;
-    const { currentTime } = req.body;
+    const { currentTime, isCompleted = false } = req.body;
     const userId = req.user._id;
 
     const session = await VideoWatchSession.findOne({
@@ -140,19 +158,19 @@ exports.updateWatchProgress = async (req, res) => {
       });
     }
 
-    // Update watch duration (only increase, never decrease)
+    // Update watch duration
     session.watchDuration = Math.max(session.watchDuration, currentTime);
 
-    // Check if video is completed (watched for required duration)
+    // Check if video is completed
     const requiredDuration = session.video.duration;
-    if (currentTime >= requiredDuration && !session.rewardGiven) {
+    if (
+      (currentTime >= requiredDuration || isCompleted) &&
+      !session.rewardGiven
+    ) {
       console.log(
-        `Video completed! User: ${userId}, Video: ${session.video._id}, Duration: ${currentTime}s`
+        `Video completed! User: ${userId}, Duration: ${currentTime}s`
       );
       await completeVideoSession(session);
-
-      // Refresh the session data after completion
-      await session.populate("video");
     }
 
     await session.save();
@@ -164,6 +182,10 @@ exports.updateWatchProgress = async (req, res) => {
         status: session.status,
         rewardGiven: session.rewardGiven,
         amountEarned: session.amountEarned,
+        progress: Math.min(
+          100,
+          (session.watchDuration / requiredDuration) * 100
+        ),
       },
     });
   } catch (error) {
@@ -175,18 +197,15 @@ exports.updateWatchProgress = async (req, res) => {
   }
 };
 
-// Complete video session and give reward
+// Enhanced completion handler
 const completeVideoSession = async (session) => {
   try {
-    // Use the session directly since it's already populated
     session.status = "completed";
     session.endTime = new Date();
     session.rewardGiven = true;
     session.amountEarned = session.video.rewardAmount;
 
-    console.log(
-      `Completing session for user ${session.user} - Awarding Rs ${session.amountEarned}`
-    );
+    console.log(`Awarding Rs ${session.amountEarned} to user ${session.user}`);
 
     // Update video views
     await Video.findByIdAndUpdate(session.video._id, {
@@ -210,7 +229,7 @@ const completeVideoSession = async (session) => {
     }
 
     console.log(
-      `Successfully completed video session and awarded Rs ${session.amountEarned} to user ${session.user}`
+      `Successfully awarded Rs ${session.amountEarned} to user ${session.user}`
     );
   } catch (error) {
     console.error("Complete session error:", error);
@@ -218,7 +237,7 @@ const completeVideoSession = async (session) => {
   }
 };
 
-// Update user earnings
+// Update user earnings (fixed - remove dbSession parameter)
 const updateUserEarnings = async (userId, amount) => {
   try {
     let earnings = await Earnings.findOne({ user: userId });

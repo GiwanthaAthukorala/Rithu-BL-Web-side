@@ -36,8 +36,8 @@ const sampleVideos = [
   {
     title: "Facebook Business Growth Tips",
     description: "Grow your business using Facebook marketing techniques.",
-    videoUrl: "https://www.facebook.com/facebook/videos/10153231379946729/",
-    embedUrl: "", // Facebook doesn't allow embedding
+    videoUrl: "https://www.facebook.com/share/r/1JrpBLh7av/",
+    embedUrl: "https://www.facebook.com/share/r/1JrpBLh7av/", // Facebook doesn't allow embedding
     thumbnailUrl:
       "https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=400&h=225&fit=crop",
     platform: "facebook",
@@ -45,7 +45,7 @@ const sampleVideos = [
     rewardAmount: 1,
     isActive: true,
   },
-  {
+  /*{
     title: "Instagram Content Creation",
     description: "Create engaging content for Instagram platform.",
     videoUrl: "https://www.instagram.com/reel/CrYKenNveYh/",
@@ -79,7 +79,7 @@ const sampleVideos = [
     duration: 60,
     rewardAmount: 1,
     isActive: true,
-  },
+  },*/
 ];
 
 const seedVideos = async () => {

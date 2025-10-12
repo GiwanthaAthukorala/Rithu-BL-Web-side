@@ -10,7 +10,7 @@
     "create-superadmin": "node scripts/createSuperAdmin.js",
     "create-admin": "node scripts/createSuperAdminAlternative.js",
     "setup-admin": "node scripts/createSuperAdminAlternative.js",
-    "seed-videos":"node scripts/seedVideos.js"
+    "seed-videos": "node scripts/seedVideos.js"
   },
   "keywords": [],
   "author": "",
@@ -40,6 +40,8 @@
     "phash-im": "^1.0.1",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
+    "react-facebook": "^10.0.1",
+    "react-youtube": "^10.1.0",
     "sharp": "^0.34.4",
     "socket.io": "^4.8.1",
     "tesseract.js": "^6.0.1",
