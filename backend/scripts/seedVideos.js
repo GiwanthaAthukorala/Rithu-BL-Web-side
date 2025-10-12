@@ -21,17 +21,16 @@ const connectDB = async () => {
 };
 
 const sampleVideos = [
-  /* {
-    title: "Introduction to Digital Marketing",
-    description:
-      "Learn the basics of digital marketing in this informative video. Watch for 1 minute to earn Rs 1.",
-    videoUrl: "https://www.youtube.com/embed/zBjJUV-lzHo?autoplay=1",
-    thumbnailUrl: "https://i.ytimg.com/vi/zBjJUV-lzHo/hqdefault.jpg",
+  {
+    title: "Introduction ",
+    description: "Facebook Video in this Watch for 1 minute to earn Rs 1.",
+    videoUrl: "https://www.facebook.com/share/r/1JrpBLh7av/",
+    thumbnailUrl: "https://www.facebook.com/share/r/1JrpBLh7av/",
     duration: 60,
     rewardAmount: 1,
     isActive: true,
   },
-  {
+  /*  {
     title: "Healthy Cooking Tips for Beginners",
     description:
       "Discover easy and healthy cooking techniques that anyone can learn in minutes.",
