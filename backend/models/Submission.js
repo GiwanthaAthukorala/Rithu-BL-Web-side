@@ -11,7 +11,7 @@ const submissionSchema = new mongoose.Schema(
     platform: {
       type: String,
       required: true,
-      enum: ["facebook", "instagram", "tiktok", "youtube", "whatsapp"],
+      enum: ["facebook"],
     },
     screenshot: {
       type: String,

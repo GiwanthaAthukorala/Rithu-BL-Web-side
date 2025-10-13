@@ -4,6 +4,8 @@ const YoutubeSubmission = require("../models/YoutubeSubmission");
 const FbReviewSubmission = require("../models/FbReviewSubmission");
 const FbCommentSubmission = require("../models/FbCommentSubmission");
 const GoogleReviewSubmission = require("../models/GoogleReviewModel");
+const Instrgram = require("../models/InstrgramModel");
+const TiktokSubmission = require("../models/TiktokModel");
 const jwt = require("jsonwebtoken");
 
 // Admin Login
@@ -155,6 +157,8 @@ const getAllSubmissions = async (req, res) => {
       fbReviewSubmissions,
       fbCommentSubmissions,
       googleReviewSubmissions,
+      instagramSubmissions,
+      tiktokSubmission,
     ] = await Promise.all([
       // Facebook Page Submissions
       Submission.find(buildFilter({ ...userFilter }))
@@ -182,6 +186,16 @@ const getAllSubmissions = async (req, res) => {
 
       // Google Review Submissions
       GoogleReviewSubmission.find(buildFilter(userFilter))
+        .populate("user", "firstName lastName email phoneNumber")
+        .sort({ createdAt: -1 })
+        .lean(),
+
+      Instrgram.find(buildFilter(userFilter))
+        .populate("user", "firstName lastName email phoneNumber")
+        .sort({ createdAt: -1 })
+        .lean(),
+
+      TiktokSubmission.find(buildFilter(userFilter))
         .populate("user", "firstName lastName email phoneNumber")
         .sort({ createdAt: -1 })
         .lean(),
@@ -224,6 +238,20 @@ const getAllSubmissions = async (req, res) => {
         submissionType: "review",
         combinedId: `google_review_${sub._id}`,
         _id: `google_review_${sub._id}`,
+      })),
+      ...instagramSubmissions.map((sub) => ({
+        ...sub,
+        platformType: "Instrgram",
+        submissionType: "page",
+        combinedId: `instagram_${sub._id}`,
+        _id: `instagram_${sub._id}`,
+      })),
+      ...tiktokSubmission.map((sub) => ({
+        ...sub,
+        platformType: "Tiktok",
+        submissionType: "page",
+        combinedId: `tiktok_${sub._id}`,
+        _id: `tiktok_${sub._id}`,
       })),
     ].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
@@ -322,6 +350,14 @@ const getSubmissionById = async (req, res) => {
         Model = GoogleReviewSubmission;
         submissionType = "review";
         break;
+      case "instagram":
+        Model = Instrgram;
+        submissionType = "page";
+        break;
+      case "tiktok":
+        Model = TiktokSubmission;
+        submissionType = "page";
+        break;
       default:
         return res.status(400).json({
           success: false,
@@ -394,6 +430,12 @@ const updateSubmissionStatus = async (req, res) => {
       case "facebook_comment":
         Model = FbCommentSubmission;
         break;
+      case "instagram":
+        Model = Instrgram;
+        break;
+      case "tiktok":
+        Model = TiktokSubmission;
+        break;
       case "google_review":
         Model = GoogleReviewSubmission;
         break;
@@ -459,6 +501,12 @@ const deleteSubmission = async (req, res) => {
       case "facebook_comment":
         Model = FbCommentSubmission;
         break;
+      case " instagram":
+        Model = Instrgram;
+        break;
+      case "tiktok":
+        Model = TiktokSubmission;
+        break;
       case "google_review":
         Model = GoogleReviewSubmission;
         break;
@@ -514,6 +562,8 @@ const getAdminStats = async (req, res) => {
         YoutubeSubmission.countDocuments(),
         FbReviewSubmission.countDocuments(),
         FbCommentSubmission.countDocuments(),
+        Instrgram.countDocuments(),
+        TiktokSubmission.countDocuments(),
         GoogleReviewSubmission.countDocuments(),
       ]).then((counts) => counts.reduce((sum, count) => sum + count, 0)),
 
@@ -523,6 +573,8 @@ const getAdminStats = async (req, res) => {
         YoutubeSubmission.countDocuments({ status: "pending" }),
         FbReviewSubmission.countDocuments({ status: "pending" }),
         FbCommentSubmission.countDocuments({ status: "pending" }),
+        TiktokSubmission.countDocuments({ status: "pending" }),
+        Instrgram.countDocuments({ status: "pending" }),
         GoogleReviewSubmission.countDocuments({ status: "pending" }),
       ]).then((counts) => counts.reduce((sum, count) => sum + count, 0)),
 
@@ -533,6 +585,8 @@ const getAdminStats = async (req, res) => {
         FbReviewSubmission.countDocuments({ status: "approved" }),
         FbCommentSubmission.countDocuments({ status: "approved" }),
         GoogleReviewSubmission.countDocuments({ status: "approved" }),
+        Instrgram.countDocuments({ status: "approved" }),
+        TiktokSubmission.countDocuments({ status: "approved" }),
       ]).then((counts) => counts.reduce((sum, count) => sum + count, 0)),
 
       // Rejected submissions
@@ -541,6 +595,9 @@ const getAdminStats = async (req, res) => {
         YoutubeSubmission.countDocuments({ status: "rejected" }),
         FbReviewSubmission.countDocuments({ status: "rejected" }),
         FbCommentSubmission.countDocuments({ status: "rejected" }),
+        Instrgram.countDocuments({ status: "rejected" }),
+        TiktokSubmission.countDocuments({ status: "rejected" }),
+
         GoogleReviewSubmission.countDocuments({ status: "rejected" }),
       ]).then((counts) => counts.reduce((sum, count) => sum + count, 0)),
 
@@ -554,6 +611,12 @@ const getAdminStats = async (req, res) => {
           createdAt: { $gte: thirtyDaysAgo },
         }),
         FbCommentSubmission.countDocuments({
+          createdAt: { $gte: thirtyDaysAgo },
+        }),
+        Instrgram.countDocuments({
+          createdAt: { $gte: thirtyDaysAgo },
+        }),
+        TiktokSubmission.countDocuments({
           createdAt: { $gte: thirtyDaysAgo },
         }),
         GoogleReviewSubmission.countDocuments({
@@ -597,6 +660,23 @@ const getAdminStats = async (req, res) => {
         },
         {
           $lookup: {
+            from: "instrgrams",
+            localField: "_id",
+            foreignField: "user",
+            as: "instagramSubmissions",
+          },
+        },
+        {
+          $lookup: {
+            from: "tiktoksubmissions",
+            localField: "_id",
+            foreignField: "user",
+            as: "tiktokSubmissions",
+          },
+        },
+
+        {
+          $lookup: {
             from: "googlereviewsubmissions",
             localField: "_id",
             foreignField: "user",
@@ -615,6 +695,8 @@ const getAdminStats = async (req, res) => {
                 { $size: "$ytSubmissions" },
                 { $size: "$fbReviewSubmissions" },
                 { $size: "$fbCommentSubmissions" },
+                { $size: "$instagramSubmissions" },
+                { $size: "$tiktokSubmissions" },
                 { $size: "$googleReviewSubmissions" },
               ],
             },

@@ -167,6 +167,10 @@ export default function AdminDashboard() {
         return <Youtube className="w-4 h-4 text-red-600" />;
       case "google":
         return <Chrome className="w-4 h-4 text-green-600" />;
+      case "Instrgram":
+        return <Instagrm className="w-4 h-4 text-purple-600" />;
+      case "Tiktok":
+        return <Instagrm className="w-4 h-4 text-black" />;
       default:
         return <MessageSquare className="w-4 h-4 text-gray-600" />;
     }
@@ -539,6 +543,8 @@ export default function AdminDashboard() {
                   >
                     <option value="all">All Platforms</option>
                     <option value="facebook">Facebook</option>
+                    <option value="Instrgram">Instagrm</option>
+                    <option value="Tiktok">Tiktok</option>
                     <option value="comment">Comment</option>
                     <option value="youtube">YouTube</option>
                     <option value="google">Google</option>

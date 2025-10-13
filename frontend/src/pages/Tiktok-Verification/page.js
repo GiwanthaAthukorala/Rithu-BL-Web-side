@@ -63,7 +63,7 @@ export default function TikTokVerificationTask() {
     try {
       const formData = new FormData();
       formData.append("screenshot", file);
-      formData.append("platform", "facebook");
+      formData.append("platform", "Tiktok");
 
       const token = localStorage.getItem("token");
 
