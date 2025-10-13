@@ -7,6 +7,7 @@ const FbCommentSubmission = require("../models/FbCommentSubmission");
 const GoogleReviewModel = require("../models/GoogleReviewModel");
 const Video = require("../models/Video");
 const Instrgram = require("../models/InstrgramModel");
+const TiktokSubmission = require("../models/TiktokModel");
 
 exports.getUserEarnings = async (req, res) => {
   try {
@@ -36,6 +37,7 @@ exports.getUserEarnings = async (req, res) => {
         commentSubmissions,
         googleReviewsSubmissions,
         instagramSubmissions,
+        tiktokSubmission,
         videoSubmissions,
       ] = await Promise.all([
         Submission.find({ user: req.user._id, status: "approved" }).catch(
@@ -58,6 +60,10 @@ exports.getUserEarnings = async (req, res) => {
           status: "approved",
         }).catch(() => []),
         Instrgram.find({
+          user: req.user._id,
+          status: "approved",
+        }).catch(() => []),
+        TiktokSubmission.find({
           user: req.user._id,
           status: "approved",
         }).catch(() => []),
@@ -92,6 +98,10 @@ exports.getUserEarnings = async (req, res) => {
         (sum, sub) => sum + (sub.amount || 1),
         0
       );
+      const tiktokTotal = (tiktokSubmission || []).reduce(
+        (sum, sub) => sum + (sub.amount || 1),
+        0
+      );
       const videoTotal = (videoSubmissions || []).reduce(
         (sum, sub) => sum + (sub.rewardAmount || 1),
         0
@@ -104,6 +114,7 @@ exports.getUserEarnings = async (req, res) => {
         commentTotal +
         googleTotal +
         instagramTotal +
+        tiktokTotal +
         videoTotal;
 
       // Update earnings if needed
