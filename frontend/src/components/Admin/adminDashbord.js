@@ -27,6 +27,7 @@ import {
   ThumbsUp,
   MessageCircle,
   StarIcon,
+  Instagram,
   Chrome, // Use Chrome icon for Google
 } from "lucide-react";
 
@@ -168,9 +169,9 @@ export default function AdminDashboard() {
       case "google":
         return <Chrome className="w-4 h-4 text-green-600" />;
       case "Instrgram":
-        return <Instagrm className="w-4 h-4 text-purple-600" />;
+        return <Instagram className="w-4 h-4 text-purple-600" />;
       case "Tiktok":
-        return <Instagrm className="w-4 h-4 text-black" />;
+        return <MessageSquare className="w-4 h-4 text-black" />;
       default:
         return <MessageSquare className="w-4 h-4 text-gray-600" />;
     }
