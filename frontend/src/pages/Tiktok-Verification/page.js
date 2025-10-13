@@ -74,9 +74,9 @@ export default function TikTokVerificationTask() {
       const apiUrl =
         process.env.NEXT_PUBLIC_API_URL ||
         "https://rithu-bl-web-side.vercel.app";
-      console.log("Submitting to:", `${apiUrl}/api/submissions`);
+      console.log("Submitting to:", `${apiUrl}/api/tiktok`);
       console.log("Token exists:", !!token);
-      const response = await fetch(`${apiUrl}/api/submissions`, {
+      const response = await fetch(`${apiUrl}/api/tiktok`, {
         method: "POST",
         body: formData,
         credentials: "include", // Important for cookies/auth

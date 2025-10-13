@@ -62,6 +62,7 @@ export const endpoints = {
   fbReviews: "/fb-reviews",
   FacebookComments: "/fb-comments",
   instagram: "/instagram",
+  Tiktok: "/tiktok",
   videos: "/videos",
   videoSessions: "/videos/session",
 };
