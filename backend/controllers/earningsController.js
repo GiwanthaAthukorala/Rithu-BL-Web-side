@@ -5,6 +5,8 @@ const YoutubeSubmission = require("../models/YoutubeSubmission");
 const FbReviewSubmission = require("../models/FbReviewSubmission");
 const FbCommentSubmission = require("../models/FbCommentSubmission");
 const GoogleReviewModel = require("../models/GoogleReviewModel");
+const Video = require("../models/Video");
+const Instrgram = require("../models/InstrgramModel");
 
 exports.getUserEarnings = async (req, res) => {
   try {
@@ -33,6 +35,8 @@ exports.getUserEarnings = async (req, res) => {
         reviewSubmissions,
         commentSubmissions,
         googleReviewsSubmissions,
+        instagramSubmissions,
+        videoSubmissions,
       ] = await Promise.all([
         Submission.find({ user: req.user._id, status: "approved" }).catch(
           () => []
@@ -50,6 +54,14 @@ exports.getUserEarnings = async (req, res) => {
           status: "approved",
         }).catch(() => []),
         GoogleReviewModel.find({
+          user: req.user._id,
+          status: "approved",
+        }).catch(() => []),
+        Instrgram.find({
+          user: req.user._id,
+          status: "approved",
+        }).catch(() => []),
+        Video.find({
           user: req.user._id,
           status: "approved",
         }).catch(() => []),
@@ -76,9 +88,23 @@ exports.getUserEarnings = async (req, res) => {
         (sum, sub) => sum + (sub.amount || 40),
         0
       );
+      const instagramTotal = (instagramSubmissions || []).reduce(
+        (sum, sub) => sum + (sub.amount || 1),
+        0
+      );
+      const videoTotal = (videoSubmissions || []).reduce(
+        (sum, sub) => sum + (sub.rewardAmount || 1),
+        0
+      );
 
       const calculatedTotal =
-        fbTotal + ytTotal + reviewTotal + commentTotal + googleTotal;
+        fbTotal +
+        ytTotal +
+        reviewTotal +
+        commentTotal +
+        googleTotal +
+        instagramTotal +
+        videoTotal;
 
       // Update earnings if needed
       if (earnings.totalEarned !== calculatedTotal) {

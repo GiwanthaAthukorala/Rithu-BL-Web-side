@@ -103,7 +103,7 @@ export default function InstagramVerificationTask() {
         process.env.NEXT_PUBLIC_API_URL ||
         "https://rithu-bl-web-side.vercel.app";
 
-      const response = await fetch(`${apiUrl}/api/submissions`, {
+      const response = await fetch(`${apiUrl}/api/instagram`, {
         method: "POST",
         body: formData,
         credentials: "include",

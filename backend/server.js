@@ -117,6 +117,8 @@ app.use("/api/fb-comments", require("./routes/CommentRoutes"));
 app.use("/api/googlereviews", require("./routes/GoogleReviewRoutes"));
 app.use("/api/admin", require("./routes/adminRoutes"));
 app.use("/api/videos", require("./routes/videoRoutes"));
+app.use("/api/instagram", require("./routes/InstaRouts"));
+app.use("/api/tiktok", require("./routes/TiktokRouts"));
 
 // === Health Check ===
 app.get("/health", (req, res) => {
