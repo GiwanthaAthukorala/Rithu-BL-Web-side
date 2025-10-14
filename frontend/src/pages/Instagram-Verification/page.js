@@ -383,12 +383,12 @@ export default function InstagramVerificationTask() {
                           Follow Our Main Account
                         </h4>
                         <p className="text-white/90 text-sm">
-                          ඉන්ස්ට්‍රග්‍රෑම් එකවුන්ට් එක ෆලෝ කරන්න • Nishu Korean
-                          Cosmetic.lk
+                          ඉන්ස්ට්‍රග්‍රෑම් එකවුන්ට් එක ෆලෝ කරන්න • Kavindu
+                          Nimsara Kahagalla
                         </p>
                       </div>
                       <a
-                        href="https://www.instagram.com/nishu_korean_cosmetic.lk?igsh=OHVmeXZoODB1enQ3"
+                        href="https://www.instagram.com/kavindu_nimsara_kahagalla?igsh=bnIyZ2FyYWF3ZG5x&utm_source=qr"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="flex items-center justify-center bg-white text-pink-600 px-6 py-3 rounded-xl hover:bg-pink-50 transition-all duration-200 font-bold shadow-lg hover:shadow-xl transform hover:scale-105"
