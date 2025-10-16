@@ -11,75 +11,73 @@ const connectDB = async () => {
     await mongoose.connect(process.env.MONGO_URI, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
+      serverSelectionTimeoutMS: 5000,
+      socketTimeoutMS: 45000,
     });
 
     console.log("MongoDB connected successfully for seeding");
   } catch (error) {
     console.error("MongoDB connection failed:", error.message);
-    throw error;
+    process.exit(1);
   }
 };
 
+// Fixed video links with proper embed URLs
 const sampleVideos = [
   {
-    title: "Digital Marketing Masterclass",
+    title: "Motivational Workout Video",
     description:
-      "Learn advanced digital marketing strategies. Watch for 1 minute to earn Rs 1.",
-    videoUrl: "https://www.youtube.com/watch?v=zBjJUV-lzHo",
-    embedUrl: "https://www.youtube.com/embed/zBjJUV-lzHo?autoplay=1",
-    thumbnailUrl: "https://i.ytimg.com/vi/zBjJUV-lzHo/hqdefault.jpg",
+      "Get motivated with this intense workout session. Watch for 1 minute to earn Rs 1.",
+    videoUrl: "https://www.youtube.com/watch?v=UBMk30rjy0o",
+    embedUrl:
+      "https://www.youtube.com/embed/UBMk30rjy0o?rel=0&modestbranding=1",
+    thumbnailUrl: "https://i.ytimg.com/vi/UBMk30rjy0o/hqdefault.jpg",
     platform: "youtube",
     duration: 60,
     rewardAmount: 1,
     isActive: true,
+    maxViews: 1000,
+    currentViews: 0,
+    category: "fitness",
+    tags: ["workout", "motivation", "fitness"],
+    targetAudience: "all",
   },
   {
-    title: "Facebook Business Growth Tips",
-    description: "Grow your business using Facebook marketing techniques.",
-    videoUrl: "https://www.facebook.com/share/r/1JrpBLh7av/",
-    embedUrl: "https://www.facebook.com/share/r/1JrpBLh7av/", // Facebook doesn't allow embedding
-    thumbnailUrl:
-      "https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=400&h=225&fit=crop",
-    platform: "facebook",
-    duration: 60,
-    rewardAmount: 1,
-    isActive: true,
-  },
-  /*{
-    title: "Instagram Content Creation",
-    description: "Create engaging content for Instagram platform.",
-    videoUrl: "https://www.instagram.com/reel/CrYKenNveYh/",
-    embedUrl: "", // Instagram doesn't allow embedding
-    thumbnailUrl:
-      "https://images.unsplash.com/photo-1611262588024-d12430b98920?w=400&h=225&fit=crop",
-    platform: "instagram",
-    duration: 60,
-    rewardAmount: 1,
-    isActive: true,
-  },
-  {
-    title: "TikTok Viral Strategies",
-    description: "Learn how to create viral content on TikTok.",
-    videoUrl: "https://www.tiktok.com/@example/video/1234567890123456789",
-    embedUrl: "", // TikTok doesn't allow embedding
-    thumbnailUrl:
-      "https://images.unsplash.com/photo-1611605698335-8b1569810432?w=400&h=225&fit=crop",
-    platform: "tiktok",
-    duration: 60,
-    rewardAmount: 1,
-    isActive: true,
-  },
-  {
-    title: "Morning Yoga Routine",
-    description: "Start your day with this peaceful yoga session.",
+    title: "Quick Home Exercise",
+    description:
+      "Perfect quick home workout for busy people. Watch for 1 minute to earn Rs 1.",
     videoUrl: "https://www.youtube.com/watch?v=ml6cT4AZdqI",
-    embedUrl: "https://www.youtube.com/embed/ml6cT4AZdqI?autoplay=1",
+    embedUrl:
+      "https://www.youtube.com/embed/ml6cT4AZdqI?rel=0&modestbranding=1",
     thumbnailUrl: "https://i.ytimg.com/vi/ml6cT4AZdqI/hqdefault.jpg",
     platform: "youtube",
     duration: 60,
     rewardAmount: 1,
     isActive: true,
-  },*/
+    maxViews: 1000,
+    currentViews: 0,
+    category: "fitness",
+    tags: ["home workout", "quick", "exercise"],
+    targetAudience: "all",
+  },
+  {
+    title: "Yoga for Beginners",
+    description:
+      "Start your yoga journey with this beginner-friendly session. Watch for 2 minutes to earn Rs 2.",
+    videoUrl: "https://www.youtube.com/watch?v=v7AYKMP6rOE",
+    embedUrl:
+      "https://www.youtube.com/embed/v7AYKMP6rOE?rel=0&modestbranding=1",
+    thumbnailUrl: "https://i.ytimg.com/vi/v7AYKMP6rOE/hqdefault.jpg",
+    platform: "youtube",
+    duration: 120,
+    rewardAmount: 2,
+    isActive: true,
+    maxViews: 500,
+    currentViews: 0,
+    category: "wellness",
+    tags: ["yoga", "beginners", "meditation"],
+    targetAudience: "all",
+  },
 ];
 
 const seedVideos = async () => {
@@ -91,8 +89,8 @@ const seedVideos = async () => {
     console.log("Cleared existing videos");
 
     // Insert sample videos
-    await Video.insertMany(sampleVideos);
-    console.log(`Successfully created ${sampleVideos.length} sample videos`);
+    const result = await Video.insertMany(sampleVideos);
+    console.log(`Successfully created ${result.length} sample videos`);
 
     // Display the created videos
     const createdVideos = await Video.find({});
@@ -103,11 +101,25 @@ const seedVideos = async () => {
       );
     });
 
+    console.log("\nSeeding completed successfully!");
     process.exit(0);
   } catch (error) {
     console.error("Error seeding videos:", error);
     process.exit(1);
   }
 };
+
+// Handle script termination
+process.on("SIGINT", async () => {
+  console.log("\nSeeding interrupted");
+  await mongoose.connection.close();
+  process.exit(0);
+});
+
+process.on("SIGTERM", async () => {
+  console.log("\nSeeding terminated");
+  await mongoose.connection.close();
+  process.exit(0);
+});
 
 seedVideos();
