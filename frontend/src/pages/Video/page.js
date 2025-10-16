@@ -55,7 +55,6 @@ export default function VideoRewards() {
     return () => {
       if (trackingTimerRef.current) {
         clearInterval(trackingTimerRef.current);
-        trackingTimerRef.current = null;
       }
     };
   }, []);
@@ -104,12 +103,6 @@ export default function VideoRewards() {
   };
 
   const startTimeTracking = (sessionId, duration) => {
-    // Clear any existing timer
-    if (trackingTimerRef.current) {
-      clearInterval(trackingTimerRef.current);
-      trackingTimerRef.current = null;
-    }
-
     let localSeconds = 0;
 
     trackingTimerRef.current = setInterval(async () => {
@@ -129,7 +122,6 @@ export default function VideoRewards() {
           console.log("Video completed locally, sending final update");
           await api.put(`/videos/session/${sessionId}/progress`, {
             currentTime: duration,
-            isCompleted: true,
           });
           completeTracking(sessionId, false);
         }
@@ -190,19 +182,6 @@ export default function VideoRewards() {
     stopTracking();
   };
 
-  const handleTimeUpdate = async (currentTime, isCompleted = false) => {
-    if (!trackingSession) return;
-
-    try {
-      await api.put(`/videos/session/${trackingSession.sessionId}/progress`, {
-        currentTime,
-        isCompleted,
-      });
-    } catch (error) {
-      console.error("Time update error:", error);
-    }
-  };
-
   const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60);
     const secs = Math.floor(seconds % 60);
@@ -253,6 +232,11 @@ export default function VideoRewards() {
       default:
         return <span className="text-gray-600">📱</span>;
     }
+  };
+
+  // Check if video can be embedded
+  const canEmbedVideo = (video) => {
+    return video.platform === "youtube" && video.embedUrl;
   };
 
   return (
@@ -345,12 +329,36 @@ export default function VideoRewards() {
 
               {/* Video Content */}
               <div className="p-6">
-                <SmartVideoPlayer
-                  video={currentVideo}
-                  onClose={closeVideo}
-                  onTimeUpdate={handleTimeUpdate}
-                  sessionId={trackingSession?.sessionId}
-                />
+                <SmartVideoPlayer video={currentVideo} onClose={closeVideo} />
+
+                {/* Progress Tracking */}
+                <div className="mt-6 p-4 bg-gray-50 rounded-xl border">
+                  <div className="flex justify-between text-sm text-gray-700 mb-2">
+                    <span>
+                      Progress: {formatTime(secondsWatched)} /{" "}
+                      {formatTime(currentVideo.duration)}
+                    </span>
+                    <span>{Math.round(getProgressPercentage())}% Complete</span>
+                  </div>
+                  <div className="w-full bg-gray-200 rounded-full h-2">
+                    <div
+                      className="bg-green-500 h-2 rounded-full transition-all duration-300"
+                      style={{ width: `${getProgressPercentage()}%` }}
+                    ></div>
+                  </div>
+
+                  {secondsWatched >= currentVideo.duration && (
+                    <div className="mt-3 p-3 bg-green-100 border border-green-300 rounded-lg">
+                      <div className="flex items-center text-green-700">
+                        <CheckCircle size={20} className="mr-2" />
+                        <span className="font-medium">
+                          Video Completed! Rs {currentVideo.rewardAmount}{" "}
+                          earned!
+                        </span>
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           </div>

@@ -20,32 +20,47 @@ const connectDB = async () => {
   }
 };
 
+// Function to extract YouTube ID from URL
+const extractYouTubeId = (url) => {
+  const regExp =
+    /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
+  const match = url.match(regExp);
+  return match && match[7].length === 11 ? match[7] : null;
+};
+
+// Function to extract YouTube Shorts ID
+const extractYouTubeShortsId = (url) => {
+  const regExp = /youtube\.com\/shorts\/([^?&]+)/;
+  const match = url.match(regExp);
+  return match ? match[1] : null;
+};
+
 const sampleVideos = [
   {
     title: "Digital Marketing Masterclass",
     description:
       "Learn advanced digital marketing strategies. Watch for 1 minute to earn Rs 1.",
-    videoUrl: "https://youtube.com/shorts/qRrC3-yoCTg?si=dnAmty0A0E38jLYU",
-    embedUrl: "https://youtube.com/shorts/qRrC3-yoCTg?si=dnAmty0A0E38jLYU",
-    thumbnailUrl: "https://i.ytimg.com/vi/zBjJUV-lzHo/hqdefault.jpg",
+    videoUrl: "https://www.youtube.com/watch?v=dB2GMQYTXGU",
+    embedUrl:
+      "https://www.youtube.com/embed/dB2GMQYTXGU?autoplay=1&controls=1&modestbranding=1",
+    thumbnailUrl: "https://img.youtube.com/vi/dB2GMQYTXGU/hqdefault.jpg",
     platform: "youtube",
     duration: 60,
     rewardAmount: 1,
     isActive: true,
   },
   {
-    title: "Business Growth Strategies",
-    description: "Learn effective business growth techniques.",
-    videoUrl: "https://youtube.com/shorts/w5TMnyrfKAY?si=V77IqydMismlIyzJ",
-    embedUrl: "https://youtube.com/shorts/w5TMnyrfKAY?si=V77IqydMismlIyzJ",
-    thumbnailUrl:
-      "https://images.pexels.com/photos/669996/pexels-photo-669996.jpeg?auto=compress&cs=tinysrgb&w=400&h=225&fit=crop",
-    platform: "custom",
+    title: "Business Growth Short Video",
+    description: "Quick tips for business growth in short format.",
+    videoUrl: "https://www.youtube.com/shorts/w5TMnyrfKAY",
+    embedUrl: "https://www.youtube.com/embed/w5TMnyrfKAY?autoplay=1&controls=1",
+    thumbnailUrl: "https://img.youtube.com/vi/w5TMnyrfKAY/hqdefault.jpg",
+    platform: "youtube",
     duration: 60,
     rewardAmount: 1,
     isActive: true,
   },
-  /*{
+  /* {
     title: "Motivational Success Story",
     description: "Inspirational story about achieving business success.",
     videoUrl:
@@ -72,22 +87,37 @@ const sampleVideos = [
     duration: 60,
     rewardAmount: 1,
     isActive: true,
-  },
-  {
-    title: "Creative Design Process",
-    description: "Learn about creative design thinking and process.",
-    videoUrl:
-      "https://assets.mixkit.co/videos/preview/mixkit-a-girl-blowing-a-bubble-gum-at-an-amusement-park-1226-large.mp4",
-    embedUrl:
-      "https://assets.mixkit.co/videos/preview/mixkit-a-girl-blowing-a-bubble-gum-at-an-amusement-park-1226-large.mp4",
-    thumbnailUrl:
-      "https://images.unsplash.com/photo-1561070791-2526d30994b5?w=400&h=225&fit=crop",
-    platform: "custom",
-    duration: 60,
-    rewardAmount: 1,
-    isActive: true,
   },*/
 ];
+
+// Process YouTube URLs to ensure proper embed format
+const processVideos = (videos) => {
+  return videos.map((video) => {
+    if (video.platform === "youtube") {
+      let videoId = null;
+
+      // Try regular YouTube URL
+      if (video.videoUrl.includes("youtube.com/watch")) {
+        videoId = extractYouTubeId(video.videoUrl);
+      }
+      // Try YouTube Shorts
+      else if (video.videoUrl.includes("youtube.com/shorts")) {
+        videoId = extractYouTubeShortsId(video.videoUrl);
+      }
+
+      if (videoId) {
+        return {
+          ...video,
+          embedUrl: `https://www.youtube.com/embed/${videoId}?autoplay=1&controls=1&modestbranding=1`,
+          thumbnailUrl: `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`,
+        };
+      }
+    }
+    return video;
+  });
+};
+
+const processedVideos = processVideos(sampleVideos);
 
 const seedVideos = async () => {
   try {
@@ -97,9 +127,9 @@ const seedVideos = async () => {
     await Video.deleteMany({});
     console.log("Cleared existing videos");
 
-    // Insert sample videos
-    await Video.insertMany(sampleVideos);
-    console.log(`Successfully created ${sampleVideos.length} sample videos`);
+    // Insert processed videos
+    await Video.insertMany(processedVideos);
+    console.log(`Successfully created ${processedVideos.length} sample videos`);
 
     // Display the created videos
     const createdVideos = await Video.find({});
@@ -108,6 +138,7 @@ const seedVideos = async () => {
       console.log(
         `- ${video.title} (${video.platform}) - ${video.duration}s - Rs ${video.rewardAmount}`
       );
+      console.log(`  Embed URL: ${video.embedUrl}`);
     });
 
     process.exit(0);

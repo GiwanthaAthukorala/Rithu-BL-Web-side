@@ -9,6 +9,7 @@ import {
   X,
   Clock,
   ExternalLink,
+  AlertCircle,
 } from "lucide-react";
 
 const SmartVideoPlayer = ({ video, onClose, onTimeUpdate, sessionId }) => {
@@ -16,7 +17,9 @@ const SmartVideoPlayer = ({ video, onClose, onTimeUpdate, sessionId }) => {
   const [isCompleted, setIsCompleted] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isClient, setIsClient] = useState(false);
+  const [embedError, setEmbedError] = useState(false);
   const videoRef = useRef(null);
+  const iframeRef = useRef(null);
   const timeIntervalRef = useRef(null);
 
   // Platform configuration
@@ -134,20 +137,41 @@ const SmartVideoPlayer = ({ video, onClose, onTimeUpdate, sessionId }) => {
     }
   };
 
-  // YouTube Player
-  const renderYouTubePlayer = () => (
-    <div className="w-full h-96 rounded-2xl overflow-hidden bg-black">
-      <iframe
-        src={video.embedUrl}
-        className="w-full h-full"
-        frameBorder="0"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-        allowFullScreen
-        title={video.title}
-        onLoad={handlePlay}
-      />
-    </div>
-  );
+  const handleIframeError = () => {
+    console.error("Iframe failed to load, using fallback");
+    setEmbedError(true);
+  };
+
+  // YouTube Player with proper embed URL
+  const renderYouTubePlayer = () => {
+    if (embedError) {
+      return renderExternalFallback();
+    }
+
+    return (
+      <div className="w-full h-96 rounded-2xl overflow-hidden bg-black relative">
+        <iframe
+          ref={iframeRef}
+          src={video.embedUrl}
+          className="w-full h-full"
+          frameBorder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
+          title={video.title}
+          onLoad={handlePlay}
+          onError={handleIframeError}
+        />
+        {!isPlaying && (
+          <div className="absolute inset-0 flex items-center justify-center bg-black/50">
+            <div className="text-white text-center">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4"></div>
+              <p>Loading YouTube player...</p>
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  };
 
   // Custom Video Player (MP4, WebM, etc.)
   const renderCustomVideoPlayer = () => (
@@ -181,6 +205,31 @@ const SmartVideoPlayer = ({ video, onClose, onTimeUpdate, sessionId }) => {
     </div>
   );
 
+  // External Fallback when embedding fails
+  const renderExternalFallback = () => (
+    <div className="w-full h-96 rounded-2xl overflow-hidden bg-yellow-50 border-2 border-yellow-200 flex flex-col items-center justify-center p-8 text-center">
+      <AlertCircle size={48} className="text-yellow-500 mb-4" />
+      <h3 className="text-2xl font-bold text-gray-800 mb-4">{video.title}</h3>
+      <p className="text-gray-600 mb-2">Direct embedding not available</p>
+      <p className="text-sm text-gray-500 mb-6 max-w-md">
+        Click below to watch this video on YouTube. Time tracking will continue
+        automatically.
+      </p>
+
+      <button
+        onClick={() => {
+          window.open(video.videoUrl, "_blank");
+          handlePlay();
+        }}
+        className="bg-gradient-to-r from-red-600 to-red-700 text-white px-8 py-4 rounded-2xl font-bold hover:from-red-700 hover:to-red-800 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 flex items-center justify-center space-x-2"
+      >
+        <Play size={20} />
+        <span>Watch on YouTube</span>
+        <ExternalLink size={16} />
+      </button>
+    </div>
+  );
+
   // External Platform Player (for non-embeddable platforms)
   const renderExternalPlatformPlayer = () => (
     <div
@@ -198,7 +247,10 @@ const SmartVideoPlayer = ({ video, onClose, onTimeUpdate, sessionId }) => {
       </p>
 
       <button
-        onClick={() => window.open(video.videoUrl, "_blank")}
+        onClick={() => {
+          window.open(video.videoUrl, "_blank");
+          handlePlay();
+        }}
         className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-8 py-4 rounded-2xl font-bold hover:from-purple-700 hover:to-pink-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 flex items-center justify-center space-x-2"
       >
         <Play size={20} />
