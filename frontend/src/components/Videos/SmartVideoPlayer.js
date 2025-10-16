@@ -15,6 +15,7 @@ const SmartVideoPlayer = ({ video, onClose, onTimeUpdate, sessionId }) => {
   const [currentTime, setCurrentTime] = useState(0);
   const [isCompleted, setIsCompleted] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [isClient, setIsClient] = useState(false);
   const videoRef = useRef(null);
   const timeIntervalRef = useRef(null);
 
@@ -60,12 +61,19 @@ const SmartVideoPlayer = ({ video, onClose, onTimeUpdate, sessionId }) => {
   const config = platformConfig[video.platform] || platformConfig.custom;
 
   useEffect(() => {
+    setIsClient(true);
     return () => {
-      clearInterval(timeIntervalRef.current);
+      if (timeIntervalRef.current) {
+        clearInterval(timeIntervalRef.current);
+      }
     };
   }, []);
 
   const startTimeTracking = () => {
+    if (timeIntervalRef.current) {
+      clearInterval(timeIntervalRef.current);
+    }
+
     let seconds = 0;
     timeIntervalRef.current = setInterval(() => {
       seconds += 1;
@@ -73,7 +81,7 @@ const SmartVideoPlayer = ({ video, onClose, onTimeUpdate, sessionId }) => {
 
       // Send progress update every 5 seconds
       if (seconds % 5 === 0) {
-        onTimeUpdate(seconds);
+        onTimeUpdate?.(seconds);
       }
 
       // Check if video duration reached
@@ -84,10 +92,13 @@ const SmartVideoPlayer = ({ video, onClose, onTimeUpdate, sessionId }) => {
   };
 
   const completeVideo = () => {
-    clearInterval(timeIntervalRef.current);
+    if (timeIntervalRef.current) {
+      clearInterval(timeIntervalRef.current);
+      timeIntervalRef.current = null;
+    }
     setIsCompleted(true);
     setIsPlaying(false);
-    onTimeUpdate(video.duration, true);
+    onTimeUpdate?.(video.duration, true);
   };
 
   const handlePlay = () => {
@@ -97,7 +108,10 @@ const SmartVideoPlayer = ({ video, onClose, onTimeUpdate, sessionId }) => {
 
   const handlePause = () => {
     setIsPlaying(false);
-    clearInterval(timeIntervalRef.current);
+    if (timeIntervalRef.current) {
+      clearInterval(timeIntervalRef.current);
+      timeIntervalRef.current = null;
+    }
   };
 
   const handleVideoEnd = () => {
@@ -108,10 +122,10 @@ const SmartVideoPlayer = ({ video, onClose, onTimeUpdate, sessionId }) => {
     if (videoRef.current) {
       const currentTime = Math.floor(videoRef.current.currentTime);
       setCurrentTime(currentTime);
-      
+
       // Update progress every 5 seconds
       if (currentTime % 5 === 0) {
-        onTimeUpdate(currentTime);
+        onTimeUpdate?.(currentTime);
       }
 
       if (currentTime >= video.duration) {
@@ -152,7 +166,7 @@ const SmartVideoPlayer = ({ video, onClose, onTimeUpdate, sessionId }) => {
         <source src={video.embedUrl} type="video/mp4" />
         Your browser does not support the video tag.
       </video>
-      
+
       {/* Custom play button overlay */}
       {!isPlaying && (
         <div className="absolute inset-0 flex items-center justify-center bg-black/50">
@@ -169,18 +183,22 @@ const SmartVideoPlayer = ({ video, onClose, onTimeUpdate, sessionId }) => {
 
   // External Platform Player (for non-embeddable platforms)
   const renderExternalPlatformPlayer = () => (
-    <div className={`w-full h-96 rounded-2xl overflow-hidden ${config.bgColor} border-2 ${config.borderColor} flex flex-col items-center justify-center p-8 text-center`}>
+    <div
+      className={`w-full h-96 rounded-2xl overflow-hidden ${config.bgColor} border-2 ${config.borderColor} flex flex-col items-center justify-center p-8 text-center`}
+    >
       <div className="text-4xl mb-4">{config.icon}</div>
       <h3 className="text-2xl font-bold text-gray-800 mb-4">{video.title}</h3>
       <p className="text-gray-600 mb-2">
-        Watch on {video.platform.charAt(0).toUpperCase() + video.platform.slice(1)}
+        Watch on{" "}
+        {video.platform.charAt(0).toUpperCase() + video.platform.slice(1)}
       </p>
       <p className="text-sm text-gray-500 mb-6 max-w-md">
-        This video platform doesn't support embedded playback. Click below to open in a new tab.
+        This video platform doesn't support embedded playback. Click below to
+        open in a new tab.
       </p>
-      
+
       <button
-        onClick={() => window.open(video.videoUrl, '_blank')}
+        onClick={() => window.open(video.videoUrl, "_blank")}
         className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-8 py-4 rounded-2xl font-bold hover:from-purple-700 hover:to-pink-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 flex items-center justify-center space-x-2"
       >
         <Play size={20} />
@@ -209,6 +227,14 @@ const SmartVideoPlayer = ({ video, onClose, onTimeUpdate, sessionId }) => {
       return renderExternalPlatformPlayer();
     }
   };
+
+  if (!isClient) {
+    return (
+      <div className="w-full h-96 rounded-2xl overflow-hidden bg-gray-200 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="relative">
@@ -251,7 +277,8 @@ const SmartVideoPlayer = ({ video, onClose, onTimeUpdate, sessionId }) => {
       {/* Instructions */}
       <div className="mt-4 p-4 bg-blue-50 border border-blue-300 rounded-xl">
         <p className="text-blue-800 text-sm text-center">
-          💡 <strong>Keep this window open</strong> while watching to receive your Rs {video.rewardAmount} reward
+          💡 <strong>Keep this window open</strong> while watching to receive
+          your Rs {video.rewardAmount} reward
         </p>
       </div>
     </div>
