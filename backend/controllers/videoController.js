@@ -2,7 +2,7 @@ const Video = require("../models/Video");
 const VideoWatchSession = require("../models/VideoWatchSession");
 const Earnings = require("../models/Earnings");
 
-// Enhanced video controller with better error handling and YouTube embed fixes
+// Enhanced video controller with better error handling
 exports.getAvailableVideos = async (req, res) => {
   try {
     const userId = req.user._id;
@@ -18,33 +18,17 @@ exports.getAvailableVideos = async (req, res) => {
     const availableVideos = await Video.find({
       isActive: true,
       _id: { $nin: watchedVideoIds },
+      $or: [{ maxViews: { $gt: 0 } }, { maxViews: null }],
     });
 
     // Filter out videos that reached max views
     const filteredVideos = availableVideos.filter(
-      (video) => !video.maxViews || video.currentViews < video.maxViews
+      (video) => video.maxViews === null || video.currentViews < video.maxViews
     );
-
-    // Enhance embed URLs to prevent blocking
-    const enhancedVideos = filteredVideos.map((video) => {
-      if (video.platform === "youtube") {
-        // Add parameters to prevent blocking
-        const enhancedEmbedUrl = video.embedUrl.includes("?")
-          ? `${video.embedUrl}&rel=0&modestbranding=1&playsinline=1`
-          : `${video.embedUrl}?rel=0&modestbranding=1&playsinline=1`;
-
-        return {
-          ...video.toObject(),
-          embedUrl: enhancedEmbedUrl,
-        };
-      }
-      return video;
-    });
 
     res.json({
       success: true,
-      data: enhancedVideos,
-      count: enhancedVideos.length,
+      data: filteredVideos,
     });
   } catch (error) {
     console.error("Get videos error:", error);
@@ -55,19 +39,11 @@ exports.getAvailableVideos = async (req, res) => {
   }
 };
 
-// Enhanced session management with better validation
+// Enhanced session management
 exports.startVideoSession = async (req, res) => {
   try {
     const { videoId } = req.params;
     const userId = req.user._id;
-
-    // Validate videoId
-    if (!mongoose.Types.ObjectId.isValid(videoId)) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid video ID",
-      });
-    }
 
     // Check if video exists and is active
     const video = await Video.findOne({
@@ -104,20 +80,19 @@ exports.startVideoSession = async (req, res) => {
       });
     }
 
-    // Check if there's an existing active session
-    const existingActiveSession = await VideoWatchSession.findOne({
+    // Check if there's an existing watching session
+    const existingWatchingSession = await VideoWatchSession.findOne({
       user: userId,
       video: videoId,
       status: { $in: ["watching", "paused"] },
     });
 
     let session;
-    if (existingActiveSession) {
+    if (existingWatchingSession) {
       // Resume existing session
-      session = existingActiveSession;
+      session = existingWatchingSession;
       session.startTime = new Date();
       session.status = "watching";
-      await session.save();
     } else {
       // Create new session
       session = await VideoWatchSession.create({
@@ -129,26 +104,16 @@ exports.startVideoSession = async (req, res) => {
       });
     }
 
-    // Enhance embed URL for frontend
-    let enhancedEmbedUrl = video.embedUrl;
-    if (video.platform === "youtube") {
-      enhancedEmbedUrl = video.embedUrl.includes("?")
-        ? `${video.embedUrl}&rel=0&modestbranding=1&playsinline=1`
-        : `${video.embedUrl}?rel=0&modestbranding=1&playsinline=1`;
-    }
+    await session.save();
 
     res.json({
       success: true,
       data: {
         sessionId: session._id,
-        video: {
-          ...video.toObject(),
-          embedUrl: enhancedEmbedUrl,
-        },
+        video: video,
         startTime: session.startTime,
         platform: video.platform,
         duration: video.duration,
-        requiredWatchTime: video.duration, // Minimum time to earn reward
       },
     });
   } catch (error) {
@@ -160,20 +125,12 @@ exports.startVideoSession = async (req, res) => {
   }
 };
 
-// Enhanced progress tracking with fraud prevention
+// Enhanced progress tracking
 exports.updateWatchProgress = async (req, res) => {
   try {
     const { sessionId } = req.params;
     const { currentTime, isCompleted = false } = req.body;
     const userId = req.user._id;
-
-    // Validate sessionId
-    if (!mongoose.Types.ObjectId.isValid(sessionId)) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid session ID",
-      });
-    }
 
     const session = await VideoWatchSession.findOne({
       _id: sessionId,
@@ -201,28 +158,17 @@ exports.updateWatchProgress = async (req, res) => {
       });
     }
 
-    // Validate currentTime (fraud prevention)
-    const maxAllowedTime = session.video.duration + 10; // Allow 10 seconds buffer
-    const validatedCurrentTime = Math.min(
-      Math.max(0, currentTime),
-      maxAllowedTime
-    );
-
-    // Update watch duration (only if it's progressing forward)
-    if (validatedCurrentTime > session.watchDuration) {
-      session.watchDuration = validatedCurrentTime;
-    }
+    // Update watch duration
+    session.watchDuration = Math.max(session.watchDuration, currentTime);
 
     // Check if video is completed
     const requiredDuration = session.video.duration;
-    const completionThreshold = requiredDuration * 0.9; // 90% completion required
-
     if (
-      (session.watchDuration >= completionThreshold || isCompleted) &&
+      (currentTime >= requiredDuration || isCompleted) &&
       !session.rewardGiven
     ) {
       console.log(
-        `Video completed! User: ${userId}, Duration: ${session.watchDuration}s`
+        `Video completed! User: ${userId}, Duration: ${currentTime}s`
       );
       await completeVideoSession(session);
     }
@@ -240,7 +186,6 @@ exports.updateWatchProgress = async (req, res) => {
           100,
           (session.watchDuration / requiredDuration) * 100
         ),
-        requiredDuration: requiredDuration,
       },
     });
   } catch (error) {
@@ -252,89 +197,64 @@ exports.updateWatchProgress = async (req, res) => {
   }
 };
 
-// Enhanced completion handler with transaction support
+// Enhanced completion handler
 const completeVideoSession = async (session) => {
-  const dbSession = await mongoose.startSession();
-
   try {
-    await dbSession.withTransaction(async () => {
-      session.status = "completed";
-      session.endTime = new Date();
-      session.rewardGiven = true;
-      session.amountEarned = session.video.rewardAmount;
+    session.status = "completed";
+    session.endTime = new Date();
+    session.rewardGiven = true;
+    session.amountEarned = session.video.rewardAmount;
 
-      console.log(
-        `Awarding Rs ${session.amountEarned} to user ${session.user}`
-      );
+    console.log(`Awarding Rs ${session.amountEarned} to user ${session.user}`);
 
-      // Update video views
-      await Video.findByIdAndUpdate(
-        session.video._id,
-        { $inc: { currentViews: 1 } },
-        { session: dbSession }
-      );
-
-      // Update user earnings
-      await updateUserEarnings(
-        session.user,
-        session.video.rewardAmount,
-        dbSession
-      );
-
-      await session.save({ session: dbSession });
-
-      // Emit socket event for real-time update
-      const io = require("../server").io;
-      if (io) {
-        io.to(session.user.toString()).emit("videoCompleted", {
-          videoId: session.video._id,
-          videoTitle: session.video.title,
-          amount: session.video.rewardAmount,
-          sessionId: session._id,
-          timestamp: new Date(),
-        });
-      }
-
-      console.log(
-        `Successfully awarded Rs ${session.amountEarned} to user ${session.user}`
-      );
+    // Update video views
+    await Video.findByIdAndUpdate(session.video._id, {
+      $inc: { currentViews: 1 },
     });
+
+    // Update user earnings
+    await updateUserEarnings(session.user, session.video.rewardAmount);
+
+    await session.save();
+
+    // Emit socket event for real-time update
+    const io = require("../server").io;
+    if (io) {
+      io.to(session.user.toString()).emit("videoCompleted", {
+        videoId: session.video._id,
+        videoTitle: session.video.title,
+        amount: session.video.rewardAmount,
+        sessionId: session._id,
+      });
+    }
+
+    console.log(
+      `Successfully awarded Rs ${session.amountEarned} to user ${session.user}`
+    );
   } catch (error) {
     console.error("Complete session error:", error);
     throw error;
-  } finally {
-    await dbSession.endSession();
   }
 };
 
-// Update user earnings with transaction support
-const updateUserEarnings = async (userId, amount, dbSession = null) => {
+// Update user earnings (fixed - remove dbSession parameter)
+const updateUserEarnings = async (userId, amount) => {
   try {
-    const options = dbSession ? { session: dbSession } : {};
-
-    let earnings = await Earnings.findOne({ user: userId }, null, options);
+    let earnings = await Earnings.findOne({ user: userId });
 
     if (!earnings) {
-      earnings = await Earnings.create(
-        [
-          {
-            user: userId,
-            totalEarned: amount,
-            availableBalance: amount,
-            lifetimeEarnings: amount,
-          },
-        ],
-        options
-      );
-      earnings = earnings[0];
+      earnings = await Earnings.create({
+        user: userId,
+        totalEarned: amount,
+        availableBalance: amount,
+      });
       console.log(
         `Created new earnings record for user ${userId} with Rs ${amount}`
       );
     } else {
       earnings.totalEarned += amount;
       earnings.availableBalance += amount;
-      earnings.lifetimeEarnings += amount;
-      await earnings.save(options);
+      await earnings.save();
       console.log(
         `Updated earnings for user ${userId}: Total: Rs ${earnings.totalEarned}, Available: Rs ${earnings.availableBalance}`
       );
@@ -347,33 +267,20 @@ const updateUserEarnings = async (userId, amount, dbSession = null) => {
   }
 };
 
-// Get user's video watch history with pagination
+// Get user's video watch history
 exports.getWatchHistory = async (req, res) => {
   try {
     const userId = req.user._id;
-    const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 10;
-    const skip = (page - 1) * limit;
 
     const history = await VideoWatchSession.find({
       user: userId,
     })
       .populate("video")
-      .sort({ createdAt: -1 })
-      .skip(skip)
-      .limit(limit);
-
-    const total = await VideoWatchSession.countDocuments({ user: userId });
+      .sort({ createdAt: -1 });
 
     res.json({
       success: true,
       data: history,
-      pagination: {
-        page,
-        limit,
-        total,
-        pages: Math.ceil(total / limit),
-      },
     });
   } catch (error) {
     console.error("Get history error:", error);

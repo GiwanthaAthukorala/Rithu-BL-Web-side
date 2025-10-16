@@ -28,9 +28,8 @@ const sampleVideos = [
     title: "Motivational Workout Video",
     description:
       "Get motivated with this intense workout session. Watch for 1 minute to earn Rs 1.",
-    videoUrl: "https://www.youtube.com/watch?v=UBMk30rjy0o",
-    embedUrl:
-      "https://www.youtube.com/embed/UBMk30rjy0o?rel=0&modestbranding=1",
+    videoUrl: "https://www.youtube.com/shorts/qRrC3-yoCTg",
+    embedUrl: "https://youtube.com/shorts/w5TMnyrfKAY?si=V77IqydMismlIyzJ",
     thumbnailUrl: "https://i.ytimg.com/vi/UBMk30rjy0o/hqdefault.jpg",
     platform: "youtube",
     duration: 60,
@@ -46,9 +45,8 @@ const sampleVideos = [
     title: "Quick Home Exercise",
     description:
       "Perfect quick home workout for busy people. Watch for 1 minute to earn Rs 1.",
-    videoUrl: "https://www.youtube.com/watch?v=ml6cT4AZdqI",
-    embedUrl:
-      "https://www.youtube.com/embed/ml6cT4AZdqI?rel=0&modestbranding=1",
+    videoUrl: "https://youtube.com/shorts/w5TMnyrfKAY?si=V77IqydMismlIyzJ",
+    embedUrl: "https://youtube.com/shorts/w5TMnyrfKAY?si=V77IqydMismlIyzJ",
     thumbnailUrl: "https://i.ytimg.com/vi/ml6cT4AZdqI/hqdefault.jpg",
     platform: "youtube",
     duration: 60,
@@ -58,24 +56,6 @@ const sampleVideos = [
     currentViews: 0,
     category: "fitness",
     tags: ["home workout", "quick", "exercise"],
-    targetAudience: "all",
-  },
-  {
-    title: "Yoga for Beginners",
-    description:
-      "Start your yoga journey with this beginner-friendly session. Watch for 2 minutes to earn Rs 2.",
-    videoUrl: "https://www.youtube.com/watch?v=v7AYKMP6rOE",
-    embedUrl:
-      "https://www.youtube.com/embed/v7AYKMP6rOE?rel=0&modestbranding=1",
-    thumbnailUrl: "https://i.ytimg.com/vi/v7AYKMP6rOE/hqdefault.jpg",
-    platform: "youtube",
-    duration: 120,
-    rewardAmount: 2,
-    isActive: true,
-    maxViews: 500,
-    currentViews: 0,
-    category: "wellness",
-    tags: ["yoga", "beginners", "meditation"],
     targetAudience: "all",
   },
 ];
