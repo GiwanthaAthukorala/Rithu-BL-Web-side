@@ -16,7 +16,7 @@ const videoSchema = new mongoose.Schema(
         "tiktok",
         "vimeo",
         "dailymotion",
-        "custom",
+        "custom", // Add this for direct video files
       ],
       default: "youtube",
       required: true,
@@ -33,6 +33,7 @@ const videoSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+
     thumbnailUrl: {
       type: String,
       required: true,
@@ -59,27 +60,10 @@ const videoSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
-    // Add these missing fields
-    category: {
-      type: String,
-      default: "general",
-    },
-    tags: [
-      {
-        type: String,
-      },
-    ],
-    targetAudience: {
-      type: String,
-      default: "all",
-    },
   },
   {
     timestamps: true,
   }
 );
-
-// Add index for better performance
-videoSchema.index({ isActive: 1, maxViews: 1, currentViews: 1 });
 
 module.exports = mongoose.model("Video", videoSchema);

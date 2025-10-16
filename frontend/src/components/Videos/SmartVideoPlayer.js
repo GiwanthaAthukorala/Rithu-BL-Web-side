@@ -3,24 +3,20 @@
 import React, { useState, useEffect, useRef } from "react";
 import {
   Youtube,
-  Facebook,
-  Instagram,
-  MessageCircle,
-  ExternalLink,
+  Video,
   Play,
-  AlertCircle,
   CheckCircle,
-  Clock,
   X,
+  Clock,
+  ExternalLink,
 } from "lucide-react";
 
 const SmartVideoPlayer = ({ video, onClose, onTimeUpdate, sessionId }) => {
   const [currentTime, setCurrentTime] = useState(0);
   const [isCompleted, setIsCompleted] = useState(false);
-  const [useExternalPlayer, setUseExternalPlayer] = useState(false);
-  const [externalWindow, setExternalWindow] = useState(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const videoRef = useRef(null);
   const timeIntervalRef = useRef(null);
-  const externalTimerRef = useRef(null);
 
   // Platform configuration
   const platformConfig = {
@@ -31,48 +27,47 @@ const SmartVideoPlayer = ({ video, onClose, onTimeUpdate, sessionId }) => {
       bgColor: "bg-red-50",
       borderColor: "border-red-200",
     },
+    custom: {
+      embeddable: true,
+      icon: <Video size={20} className="text-purple-500" />,
+      color: "text-purple-600",
+      bgColor: "bg-purple-50",
+      borderColor: "border-purple-200",
+    },
     facebook: {
-      embeddable: false, // Facebook embedding is complex, use external
-      icon: <Facebook size={20} className="text-blue-500" />,
+      embeddable: false,
+      icon: <span className="text-blue-500">📘</span>,
       color: "text-blue-600",
       bgColor: "bg-blue-50",
       borderColor: "border-blue-200",
     },
     instagram: {
       embeddable: false,
-      icon: <Instagram size={20} className="text-pink-500" />,
+      icon: <span className="text-pink-500">📷</span>,
       color: "text-pink-600",
       bgColor: "bg-pink-50",
       borderColor: "border-pink-200",
     },
     tiktok: {
       embeddable: false,
-      icon: <MessageCircle size={20} className="text-black" />,
+      icon: <span className="text-black">🎵</span>,
       color: "text-black",
       bgColor: "bg-gray-50",
       borderColor: "border-gray-200",
     },
   };
 
-  const config = platformConfig[video.platform] || platformConfig.youtube;
+  const config = platformConfig[video.platform] || platformConfig.custom;
 
   useEffect(() => {
-    if (useExternalPlayer && externalWindow) {
-      startExternalTimeTracking();
-    }
-
     return () => {
       clearInterval(timeIntervalRef.current);
-      clearInterval(externalTimerRef.current);
-      if (externalWindow && !externalWindow.closed) {
-        externalWindow.close();
-      }
     };
-  }, [useExternalPlayer, externalWindow]);
+  }, []);
 
-  const startExternalTimeTracking = () => {
+  const startTimeTracking = () => {
     let seconds = 0;
-    externalTimerRef.current = setInterval(() => {
+    timeIntervalRef.current = setInterval(() => {
       seconds += 1;
       setCurrentTime(seconds);
 
@@ -88,120 +83,110 @@ const SmartVideoPlayer = ({ video, onClose, onTimeUpdate, sessionId }) => {
     }, 1000);
   };
 
-  const startTimeTracking = () => {
-    let seconds = 0;
-    timeIntervalRef.current = setInterval(() => {
-      seconds += 1;
-      setCurrentTime(seconds);
-
-      // Send progress update
-      if (seconds % 5 === 0) {
-        onTimeUpdate(seconds);
-      }
-
-      if (seconds >= video.duration) {
-        completeVideo();
-      }
-    }, 1000);
-  };
-
   const completeVideo = () => {
     clearInterval(timeIntervalRef.current);
-    clearInterval(externalTimerRef.current);
     setIsCompleted(true);
-    onTimeUpdate(video.duration, true); // Final update
+    setIsPlaying(false);
+    onTimeUpdate(video.duration, true);
   };
 
-  const openExternalPlayer = () => {
-    const windowFeatures =
-      "width=800,height=600,menubar=no,toolbar=no,location=no";
-    const newWindow = window.open(video.videoUrl, "_blank", windowFeatures);
+  const handlePlay = () => {
+    setIsPlaying(true);
+    startTimeTracking();
+  };
 
-    if (newWindow) {
-      setExternalWindow(newWindow);
-      setUseExternalPlayer(true);
-      startExternalTimeTracking();
-    } else {
-      alert("Please allow popups for this website to watch the video.");
+  const handlePause = () => {
+    setIsPlaying(false);
+    clearInterval(timeIntervalRef.current);
+  };
+
+  const handleVideoEnd = () => {
+    completeVideo();
+  };
+
+  const handleTimeUpdate = () => {
+    if (videoRef.current) {
+      const currentTime = Math.floor(videoRef.current.currentTime);
+      setCurrentTime(currentTime);
+      
+      // Update progress every 5 seconds
+      if (currentTime % 5 === 0) {
+        onTimeUpdate(currentTime);
+      }
+
+      if (currentTime >= video.duration) {
+        completeVideo();
+      }
     }
   };
 
   // YouTube Player
-  const renderYouTubePlayer = () => {
-    // Extract YouTube ID from URL
-    const extractYouTubeId = (url) => {
-      const regExp =
-        /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
-      const match = url.match(regExp);
-      return match && match[7].length === 11 ? match[7] : null;
-    };
+  const renderYouTubePlayer = () => (
+    <div className="w-full h-96 rounded-2xl overflow-hidden bg-black">
+      <iframe
+        src={video.embedUrl}
+        className="w-full h-full"
+        frameBorder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowFullScreen
+        title={video.title}
+        onLoad={handlePlay}
+      />
+    </div>
+  );
 
-    const videoId = extractYouTubeId(video.videoUrl);
-    const embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&controls=1`;
-
-    return (
-      <div className="w-full h-96 rounded-2xl overflow-hidden bg-black">
-        <iframe
-          src={embedUrl}
-          className="w-full h-full"
-          frameBorder="0"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowFullScreen
-          title={video.title}
-          onLoad={startTimeTracking}
-        />
-      </div>
-    );
-  };
-
-  // External Platform Player
-  const renderExternalPlatformPlayer = () => (
-    <div
-      className={`w-full h-96 rounded-2xl overflow-hidden ${config.bgColor} border-2 ${config.borderColor} flex flex-col items-center justify-center p-8 text-center`}
-    >
-      <div className="text-4xl mb-4">{config.icon}</div>
-
-      <h3 className="text-2xl font-bold text-gray-800 mb-4">{video.title}</h3>
-
-      <p className="text-gray-600 mb-2">
-        Watch on{" "}
-        {video.platform.charAt(0).toUpperCase() + video.platform.slice(1)}
-      </p>
-
-      <p className="text-sm text-gray-500 mb-6 max-w-md">
-        Click below to open the video in a new tab. Time tracking will continue
-        automatically.
-      </p>
-
-      <div className="flex flex-col sm:flex-row gap-4">
-        <button
-          onClick={openExternalPlayer}
-          className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-8 py-4 rounded-2xl font-bold hover:from-purple-700 hover:to-pink-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 flex items-center justify-center space-x-2"
-        >
-          <Play size={20} />
-          <span>Open Video</span>
-          <ExternalLink size={16} />
-        </button>
-
-        <button
-          onClick={onClose}
-          className="bg-gray-500 text-white px-8 py-4 rounded-2xl font-bold hover:bg-gray-600 transition-all duration-300 shadow-lg"
-        >
-          Cancel
-        </button>
-      </div>
-
-      {useExternalPlayer && (
-        <div className="mt-6 p-4 bg-green-100 border border-green-300 rounded-xl">
-          <div className="flex items-center text-green-700">
-            <div className="animate-spin rounded-full h-4 w-4 border-2 border-green-500 border-t-transparent mr-2"></div>
-            <span className="font-medium">
-              Time tracking active - {formatTime(currentTime)} /{" "}
-              {formatTime(video.duration)}
-            </span>
-          </div>
+  // Custom Video Player (MP4, WebM, etc.)
+  const renderCustomVideoPlayer = () => (
+    <div className="w-full h-96 rounded-2xl overflow-hidden bg-black relative">
+      <video
+        ref={videoRef}
+        className="w-full h-full"
+        controls
+        autoPlay
+        onPlay={handlePlay}
+        onPause={handlePause}
+        onEnded={handleVideoEnd}
+        onTimeUpdate={handleTimeUpdate}
+        poster={video.thumbnailUrl}
+      >
+        <source src={video.embedUrl} type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
+      
+      {/* Custom play button overlay */}
+      {!isPlaying && (
+        <div className="absolute inset-0 flex items-center justify-center bg-black/50">
+          <button
+            onClick={handlePlay}
+            className="bg-white/90 hover:bg-white text-gray-900 rounded-full p-4 transition-all duration-300 transform hover:scale-110"
+          >
+            <Play size={32} fill="currentColor" />
+          </button>
         </div>
       )}
+    </div>
+  );
+
+  // External Platform Player (for non-embeddable platforms)
+  const renderExternalPlatformPlayer = () => (
+    <div className={`w-full h-96 rounded-2xl overflow-hidden ${config.bgColor} border-2 ${config.borderColor} flex flex-col items-center justify-center p-8 text-center`}>
+      <div className="text-4xl mb-4">{config.icon}</div>
+      <h3 className="text-2xl font-bold text-gray-800 mb-4">{video.title}</h3>
+      <p className="text-gray-600 mb-2">
+        Watch on {video.platform.charAt(0).toUpperCase() + video.platform.slice(1)}
+      </p>
+      <p className="text-sm text-gray-500 mb-6 max-w-md">
+        This video platform doesn't support embedded playback. Click below to open in a new tab.
+      </p>
+      
+      <button
+        onClick={() => window.open(video.videoUrl, '_blank')}
+        className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-8 py-4 rounded-2xl font-bold hover:from-purple-700 hover:to-pink-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 flex items-center justify-center space-x-2"
+      >
+        <Play size={20} />
+        <span>Open Video</span>
+        <ExternalLink size={16} />
+      </button>
     </div>
   );
 
@@ -215,6 +200,16 @@ const SmartVideoPlayer = ({ video, onClose, onTimeUpdate, sessionId }) => {
     return (currentTime / video.duration) * 100;
   };
 
+  const renderVideoPlayer = () => {
+    if (video.platform === "youtube") {
+      return renderYouTubePlayer();
+    } else if (config.embeddable) {
+      return renderCustomVideoPlayer();
+    } else {
+      return renderExternalPlatformPlayer();
+    }
+  };
+
   return (
     <div className="relative">
       {/* Platform Header */}
@@ -224,9 +219,7 @@ const SmartVideoPlayer = ({ video, onClose, onTimeUpdate, sessionId }) => {
       </div>
 
       {/* Video Player */}
-      {config.embeddable
-        ? renderYouTubePlayer()
-        : renderExternalPlatformPlayer()}
+      {renderVideoPlayer()}
 
       {/* Progress Tracking */}
       <div className="mt-4 p-4 bg-white border border-gray-200 rounded-xl shadow-sm">
@@ -258,8 +251,7 @@ const SmartVideoPlayer = ({ video, onClose, onTimeUpdate, sessionId }) => {
       {/* Instructions */}
       <div className="mt-4 p-4 bg-blue-50 border border-blue-300 rounded-xl">
         <p className="text-blue-800 text-sm text-center">
-          💡 <strong>Keep this window open</strong> while watching to receive
-          your Rs {video.rewardAmount} reward
+          💡 <strong>Keep this window open</strong> while watching to receive your Rs {video.rewardAmount} reward
         </p>
       </div>
     </div>

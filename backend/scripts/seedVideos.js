@@ -11,53 +11,82 @@ const connectDB = async () => {
     await mongoose.connect(process.env.MONGO_URI, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
-      serverSelectionTimeoutMS: 5000,
-      socketTimeoutMS: 45000,
     });
 
     console.log("MongoDB connected successfully for seeding");
   } catch (error) {
     console.error("MongoDB connection failed:", error.message);
-    process.exit(1);
+    throw error;
   }
 };
 
-// Fixed video links with proper embed URLs
 const sampleVideos = [
   {
-    title: "Motivational Workout Video",
+    title: "Digital Marketing Masterclass",
     description:
-      "Get motivated with this intense workout session. Watch for 1 minute to earn Rs 1.",
-    videoUrl: "https://www.youtube.com/shorts/qRrC3-yoCTg",
-    embedUrl: "https://youtube.com/shorts/w5TMnyrfKAY?si=V77IqydMismlIyzJ",
-    thumbnailUrl: "https://i.ytimg.com/vi/UBMk30rjy0o/hqdefault.jpg",
+      "Learn advanced digital marketing strategies. Watch for 1 minute to earn Rs 1.",
+    videoUrl: "https://youtube.com/shorts/qRrC3-yoCTg?si=dnAmty0A0E38jLYU",
+    embedUrl: "https://youtube.com/shorts/qRrC3-yoCTg?si=dnAmty0A0E38jLYU",
+    thumbnailUrl: "https://i.ytimg.com/vi/zBjJUV-lzHo/hqdefault.jpg",
     platform: "youtube",
     duration: 60,
     rewardAmount: 1,
     isActive: true,
-    maxViews: 1000,
-    currentViews: 0,
-    category: "fitness",
-    tags: ["workout", "motivation", "fitness"],
-    targetAudience: "all",
   },
   {
-    title: "Quick Home Exercise",
-    description:
-      "Perfect quick home workout for busy people. Watch for 1 minute to earn Rs 1.",
+    title: "Business Growth Strategies",
+    description: "Learn effective business growth techniques.",
     videoUrl: "https://youtube.com/shorts/w5TMnyrfKAY?si=V77IqydMismlIyzJ",
     embedUrl: "https://youtube.com/shorts/w5TMnyrfKAY?si=V77IqydMismlIyzJ",
-    thumbnailUrl: "https://i.ytimg.com/vi/ml6cT4AZdqI/hqdefault.jpg",
-    platform: "youtube",
+    thumbnailUrl:
+      "https://images.pexels.com/photos/669996/pexels-photo-669996.jpeg?auto=compress&cs=tinysrgb&w=400&h=225&fit=crop",
+    platform: "custom",
     duration: 60,
     rewardAmount: 1,
     isActive: true,
-    maxViews: 1000,
-    currentViews: 0,
-    category: "fitness",
-    tags: ["home workout", "quick", "exercise"],
-    targetAudience: "all",
   },
+  /*{
+    title: "Motivational Success Story",
+    description: "Inspirational story about achieving business success.",
+    videoUrl:
+      "https://assets.mixkit.co/videos/preview/mixkit-tree-with-yellow-flowers-1173-large.mp4",
+    embedUrl:
+      "https://assets.mixkit.co/videos/preview/mixkit-tree-with-yellow-flowers-1173-large.mp4",
+    thumbnailUrl:
+      "https://images.unsplash.com/photo-1552664730-d307ca884978?w=400&h=225&fit=crop",
+    platform: "custom",
+    duration: 60,
+    rewardAmount: 1,
+    isActive: true,
+  },
+  {
+    title: "Technology Innovation",
+    description: "Latest trends in technology and innovation.",
+    videoUrl:
+      "https://videos.pexels.com/video-files/855565/855565-hd_1920_1080_25fps.mp4",
+    embedUrl:
+      "https://videos.pexels.com/video-files/855565/855565-hd_1920_1080_25fps.mp4",
+    thumbnailUrl:
+      "https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=400&h=225&fit=crop",
+    platform: "custom",
+    duration: 60,
+    rewardAmount: 1,
+    isActive: true,
+  },
+  {
+    title: "Creative Design Process",
+    description: "Learn about creative design thinking and process.",
+    videoUrl:
+      "https://assets.mixkit.co/videos/preview/mixkit-a-girl-blowing-a-bubble-gum-at-an-amusement-park-1226-large.mp4",
+    embedUrl:
+      "https://assets.mixkit.co/videos/preview/mixkit-a-girl-blowing-a-bubble-gum-at-an-amusement-park-1226-large.mp4",
+    thumbnailUrl:
+      "https://images.unsplash.com/photo-1561070791-2526d30994b5?w=400&h=225&fit=crop",
+    platform: "custom",
+    duration: 60,
+    rewardAmount: 1,
+    isActive: true,
+  },*/
 ];
 
 const seedVideos = async () => {
@@ -69,8 +98,8 @@ const seedVideos = async () => {
     console.log("Cleared existing videos");
 
     // Insert sample videos
-    const result = await Video.insertMany(sampleVideos);
-    console.log(`Successfully created ${result.length} sample videos`);
+    await Video.insertMany(sampleVideos);
+    console.log(`Successfully created ${sampleVideos.length} sample videos`);
 
     // Display the created videos
     const createdVideos = await Video.find({});
@@ -81,25 +110,11 @@ const seedVideos = async () => {
       );
     });
 
-    console.log("\nSeeding completed successfully!");
     process.exit(0);
   } catch (error) {
     console.error("Error seeding videos:", error);
     process.exit(1);
   }
 };
-
-// Handle script termination
-process.on("SIGINT", async () => {
-  console.log("\nSeeding interrupted");
-  await mongoose.connection.close();
-  process.exit(0);
-});
-
-process.on("SIGTERM", async () => {
-  console.log("\nSeeding terminated");
-  await mongoose.connection.close();
-  process.exit(0);
-});
 
 seedVideos();
