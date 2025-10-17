@@ -37,21 +37,19 @@ const extractYouTubeShortsId = (url) => {
 
 const sampleVideos = [
   {
-    title: "Digital Marketing Masterclass",
-    description:
-      "Learn advanced digital marketing strategies. Watch for 1 minute to earn Rs 1.",
-    videoUrl: "https://www.youtube.com/watch?v=dB2GMQYTXGU",
-    embedUrl:
-      "https://www.youtube.com/embed/dB2GMQYTXGU?autoplay=1&controls=1&modestbranding=1",
-    thumbnailUrl: "https://img.youtube.com/vi/dB2GMQYTXGU/hqdefault.jpg",
+    title: "Chamara boy 💪",
+    description: "Work out Fitness. Watch for 1 minute to earn Rs 1.",
+    videoUrl: "https://youtube.com/shorts/qRrC3-yoCTg?si=dnAmty0A0E38jLYU",
+    embedUrl: "https://youtube.com/shorts/qRrC3-yoCTg?si=dnAmty0A0E38jLYU",
+    thumbnailUrl: "https://youtube.com/shorts/qRrC3-yoCTg?si=dnAmty0A0E38jLYU",
     platform: "youtube",
     duration: 60,
     rewardAmount: 1,
     isActive: true,
   },
   {
-    title: "Business Growth Short Video",
-    description: "Quick tips for business growth in short format.",
+    title: "Chamara boy 💪",
+    description: "Quick tips for Jym Fitness growth in short format.",
     videoUrl: "https://www.youtube.com/shorts/w5TMnyrfKAY",
     embedUrl: "https://www.youtube.com/embed/w5TMnyrfKAY?autoplay=1&controls=1",
     thumbnailUrl: "https://img.youtube.com/vi/w5TMnyrfKAY/hqdefault.jpg",
