@@ -23,31 +23,15 @@ const connectDB = async () => {
 
 const facebookLinks = [
   {
-    url: "https://www.facebook.com/share/p/17o4dWKok6/?mibextid=wwXIfr",
-    title: "පොස්ට් ලයික් කරන්න",
+    url: "https://www.facebook.com/share/1CXwEY1U8g/",
+    title:
+      "Anoma Behethge Peiris - පෙජ් එක ලයික්  (Like) or ෆලෝ Follwer කරන්න  ",
     platform: "facebook",
     earnings: 1.0,
   },
+
   {
-    url: "https://www.facebook.com/share/p/1FKwhVfaQt/?mibextid=wwXIfr",
-    title: "පොස්ට් ලයික් කරන්න",
-    platform: "facebook",
-    earnings: 1.0,
-  },
-  {
-    url: "https://www.facebook.com/share/p/1ApXzrN1zd/?mibextid=wwXIfr",
-    title: "පොස්ට් ලයික් කරන්න",
-    platform: "facebook",
-    earnings: 1.0,
-  },
-  {
-    url: "https://www.facebook.com/share/p/1BCtQG9hXq/?mibextid=wwXIfr",
-    title: "පොස්ට් ලයික් කරන්න",
-    platform: "facebook",
-    earnings: 1.0,
-  },
-  {
-    url: "https://www.facebook.com/share/p/1EEZBkZX81/?mibextid=wwXIfr",
+    url: "https://www.facebook.com/share/r/1AXUGyDDtu/?mibextid=wwXIfr",
     title: "පොස්ට් ලයික් කරන්න",
     platform: "facebook",
     earnings: 1.0,

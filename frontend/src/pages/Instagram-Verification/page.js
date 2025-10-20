@@ -375,7 +375,7 @@ export default function InstagramVerificationTask() {
                       <ExternalLink className="w-6 h-6 text-pink-400 group-hover:text-pink-600 transition-colors" />
                     </a>
                   </div>*/}
-                  {/*<div className="mt-6 bg-gradient-to-r from-pink-500 via-rose-500 to-red-500 p-6 rounded-2xl shadow-xl">
+                  <div className="mt-6 bg-gradient-to-r from-pink-500 via-rose-500 to-red-500 p-6 rounded-2xl shadow-xl">
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                       <div className="flex-1">
                         <h4 className="font-black text-white mb-2 text-lg flex items-center gap-2">
@@ -383,12 +383,12 @@ export default function InstagramVerificationTask() {
                           Follow Our Main Account
                         </h4>
                         <p className="text-white/90 text-sm">
-                          ඉන්ස්ට්‍රග්‍රෑම් එකවුන්ට් එක ෆලෝ කරන්න • Kavindu
-                          Nimsara Kahagalla
+                          ඉන්ස්ට්‍රග්‍රෑම් එකවුන්ට් එක ෆලෝ කරන්න • Anoma
+                          Behethge Peiris
                         </p>
                       </div>
                       <a
-                        href="https://www.instagram.com/kavindu_nimsara_kahagalla?igsh=bnIyZ2FyYWF3ZG5x&utm_source=qr"
+                        href="https://www.instagram.com/anomapeirisofficial?igsh=em1tZGd4b2wxN3c1"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="flex items-center justify-center bg-white text-pink-600 px-6 py-3 rounded-xl hover:bg-pink-50 transition-all duration-200 font-bold shadow-lg hover:shadow-xl transform hover:scale-105"
@@ -397,7 +397,8 @@ export default function InstagramVerificationTask() {
                         <ExternalLink className="w-4 h-4 ml-2" />
                       </a>
                     </div>
-                  </div>*/}
+                  </div>{" "}
+                  {/**/}
                 </div>
               </div>
 

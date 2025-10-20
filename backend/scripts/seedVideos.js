@@ -37,27 +37,18 @@ const extractYouTubeShortsId = (url) => {
 
 const sampleVideos = [
   {
-    title: "Chamara boy 💪",
-    description: "Work out Fitness. Watch for 1 minute to earn Rs 1.",
-    videoUrl: "https://youtube.com/shorts/qRrC3-yoCTg?si=dnAmty0A0E38jLYU",
-    embedUrl: "https://youtube.com/shorts/qRrC3-yoCTg?si=dnAmty0A0E38jLYU",
-    thumbnailUrl: "https://youtube.com/shorts/qRrC3-yoCTg?si=dnAmty0A0E38jLYU",
+    title: "Induwara Wickramarachchi - hitha (හිත) Official Music Video",
+    description:
+      "Induwara Wickramarachchi -  hitha (හිත) Official Music Video  Watch for 1 minute to earn Rs 1.",
+    videoUrl: "https://youtu.be/CsYM4vPKXxs?si=Z4-5yKv1_p19V2fF",
+    embedUrl: "https://youtu.be/CsYM4vPKXxs?si=Z4-5yKv1_p19V2fF",
+    thumbnailUrl: "https://youtu.be/CsYM4vPKXxs?si=Z4-5yKv1_p19V2fF",
     platform: "youtube",
     duration: 60,
     rewardAmount: 1,
     isActive: true,
   },
-  {
-    title: "Chamara boy 💪",
-    description: "Quick tips for Jym Fitness growth in short format.",
-    videoUrl: "https://www.youtube.com/shorts/w5TMnyrfKAY",
-    embedUrl: "https://www.youtube.com/embed/w5TMnyrfKAY?autoplay=1&controls=1",
-    thumbnailUrl: "https://img.youtube.com/vi/w5TMnyrfKAY/hqdefault.jpg",
-    platform: "youtube",
-    duration: 60,
-    rewardAmount: 1,
-    isActive: true,
-  },
+
   /* {
     title: "Motivational Success Story",
     description: "Inspirational story about achieving business success.",
