@@ -243,15 +243,15 @@ const getAllSubmissions = async (req, res) => {
         ...sub,
         platformType: "instrgram",
         submissionType: "page",
-        combinedId: `instagram_${sub._id}`,
-        _id: `instagram_${sub._id}`,
+        combinedId: `instagram_page_${sub._id}`,
+        _id: `instagram_page_${sub._id}`,
       })),
       ...tiktokSubmission.map((sub) => ({
         ...sub,
         platformType: "tiktok",
         submissionType: "page",
-        combinedId: `tiktok_${sub._id}`,
-        _id: `tiktok_${sub._id}`,
+        combinedId: `tiktok_page_${sub._id}`,
+        _id: `tiktok_page_${sub._id}`,
       })),
     ].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
@@ -350,11 +350,11 @@ const getSubmissionById = async (req, res) => {
         Model = GoogleReviewSubmission;
         submissionType = "review";
         break;
-      case "instagram":
+      case "instagram_page":
         Model = Instrgram;
         submissionType = "page";
         break;
-      case "tiktok":
+      case "tiktok_page":
         Model = TiktokSubmission;
         submissionType = "page";
         break;
@@ -430,10 +430,10 @@ const updateSubmissionStatus = async (req, res) => {
       case "facebook_comment":
         Model = FbCommentSubmission;
         break;
-      case "instagram":
+      case "instagram_page":
         Model = Instrgram;
         break;
-      case "tiktok":
+      case "tiktok_page":
         Model = TiktokSubmission;
         break;
       case "google_review":
