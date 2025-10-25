@@ -501,7 +501,7 @@ const deleteSubmission = async (req, res) => {
       case "facebook_comment":
         Model = FbCommentSubmission;
         break;
-      case " instagram":
+      case "instagram":
         Model = Instrgram;
         break;
       case "tiktok":
