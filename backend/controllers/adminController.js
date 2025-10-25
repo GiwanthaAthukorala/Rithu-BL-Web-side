@@ -241,14 +241,14 @@ const getAllSubmissions = async (req, res) => {
       })),
       ...instagramSubmissions.map((sub) => ({
         ...sub,
-        platformType: "Instrgram",
+        platformType: "instrgram",
         submissionType: "page",
         combinedId: `instagram_${sub._id}`,
         _id: `instagram_${sub._id}`,
       })),
       ...tiktokSubmission.map((sub) => ({
         ...sub,
-        platformType: "Tiktok",
+        platformType: "tiktok",
         submissionType: "page",
         combinedId: `tiktok_${sub._id}`,
         _id: `tiktok_${sub._id}`,
@@ -501,10 +501,10 @@ const deleteSubmission = async (req, res) => {
       case "facebook_comment":
         Model = FbCommentSubmission;
         break;
-      case "instagram":
+      case "instagram_page":
         Model = Instrgram;
         break;
-      case "tiktok":
+      case "tiktok_page":
         Model = TiktokSubmission;
         break;
       case "google_review":
