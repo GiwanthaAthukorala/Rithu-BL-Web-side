@@ -241,17 +241,17 @@ const getAllSubmissions = async (req, res) => {
       })),
       ...instagramSubmissions.map((sub) => ({
         ...sub,
-        platformType: "instrgram",
+        platformType: "Instrgram",
         submissionType: "page",
-        combinedId: `instagram_page_${sub._id}`,
-        _id: `instagram_page_${sub._id}`,
+        combinedId: `instagram_${sub._id}`,
+        _id: `instagram_${sub._id}`,
       })),
       ...tiktokSubmission.map((sub) => ({
         ...sub,
-        platformType: "tiktok",
+        platformType: "Tiktok",
         submissionType: "page",
-        combinedId: `tiktok_page_${sub._id}`,
-        _id: `tiktok_page_${sub._id}`,
+        combinedId: `tiktok_${sub._id}`,
+        _id: `tiktok_${sub._id}`,
       })),
     ].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
@@ -350,11 +350,11 @@ const getSubmissionById = async (req, res) => {
         Model = GoogleReviewSubmission;
         submissionType = "review";
         break;
-      case "instagram_page":
+      case "instagram":
         Model = Instrgram;
         submissionType = "page";
         break;
-      case "tiktok_page":
+      case "tiktok":
         Model = TiktokSubmission;
         submissionType = "page";
         break;
@@ -430,10 +430,10 @@ const updateSubmissionStatus = async (req, res) => {
       case "facebook_comment":
         Model = FbCommentSubmission;
         break;
-      case "instagram_page":
+      case "instagram":
         Model = Instrgram;
         break;
-      case "tiktok_page":
+      case "tiktok":
         Model = TiktokSubmission;
         break;
       case "google_review":
@@ -501,10 +501,10 @@ const deleteSubmission = async (req, res) => {
       case "facebook_comment":
         Model = FbCommentSubmission;
         break;
-      case "instagram_page":
+      case " instagram":
         Model = Instrgram;
         break;
-      case "tiktok_page":
+      case "tiktok":
         Model = TiktokSubmission;
         break;
       case "google_review":
