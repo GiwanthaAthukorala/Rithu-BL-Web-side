@@ -11,8 +11,15 @@ const TiktoksubmissionSchema = new mongoose.Schema(
     platform: {
       type: String,
       required: true,
-      enum: ["facebook", "Tiktok"],
-      default: "Tiktok",
+      enum: [
+        "facebook",
+        "instagram",
+        "tiktok",
+        "youtube",
+        "whatsapp",
+        "comments",
+      ],
+      default: "tiktok",
     },
     screenshot: {
       type: String,

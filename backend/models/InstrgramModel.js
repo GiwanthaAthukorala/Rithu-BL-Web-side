@@ -11,8 +11,15 @@ const InstrgramSubmissionSchema = new mongoose.Schema(
     platform: {
       type: String,
       required: true,
-      enum: ["facebook", "Instrgram"],
-      default: "Instrgram",
+      enum: [
+        "facebook",
+        "instagram",
+        "tiktok",
+        "youtube",
+        "whatsapp",
+        "comments",
+      ],
+      default: "instrgram",
     },
     screenshot: {
       type: String,
