@@ -23,18 +23,43 @@ const connectDB = async () => {
 
 const facebookLinks = [
   {
-    url: "https://www.facebook.com/share/1frkM8ZLsF/",
-    title: "Debian-X Solutions - පෙජ් එක ලයික් (Like) කරන්න  ",
-    platform: "facebook",
-    earnings: 1.0,
-  },
-  {
     url: "https://www.facebook.com/share/r/1A1ypWfo3S/?mibextid=wwXIfr",
     title: "පොස්ට් ලයික් කරන්න",
     platform: "facebook",
     earnings: 1.0,
   },
+
+  {
+    url: "https://www.facebook.com/share/p/1FRZnJUPCc/?mibextid=wwXIfr",
+    title: "පොස්ට් ලයික් කරන්න",
+    platform: "facebook",
+    earnings: 1.0,
+  },
+   {
+    url: "https://www.facebook.com/share/1frkM8ZLsF/",
+    title: "Debian-X Solutions - පෙජ් එක ලයික් (Like) කරන්න  ",
+    platform: "facebook",
+    earnings: 1.0,
+  },
+   {
+    url: "https://www.facebook.com/share/r/17kD3Fgs4C/?mibextid=wwXIfr",
+    title: "පොස්ට් ලයික් කරන්න",
+    platform: "facebook",
+    earnings: 1.0,
+  },
  
+  {
+    url: "https://www.facebook.com/share/p/17BfmJpMiB/?mibextid=wwXIfr",
+    title: "පොස්ට් ලයික් කරන්න",
+    platform: "facebook",
+    earnings: 1.0,
+  },
+  {
+    url: "https://www.facebook.com/share/p/1VmToVkTGY/?mibextid=wwXIfr",
+    title: "පොස්ට් ලයික් කරන්න",
+    platform: "facebook",
+    earnings: 1.0,
+  },
   // Removed duplicate URL that was causing the error
   /*
   {
