@@ -241,14 +241,14 @@ const getAllSubmissions = async (req, res) => {
       })),
       ...instagramSubmissions.map((sub) => ({
         ...sub,
-        platformType: "Instrgram",
+        platformType: "instagram", // ✅ Changed from "Instrgram"
         submissionType: "page",
         combinedId: `instagram_${sub._id}`,
         _id: `instagram_${sub._id}`,
       })),
       ...tiktokSubmission.map((sub) => ({
         ...sub,
-        platformType: "Tiktok",
+        platformType: "tiktok", // ✅ Changed from "Tiktok"
         submissionType: "page",
         combinedId: `tiktok_${sub._id}`,
         _id: `tiktok_${sub._id}`,
@@ -350,11 +350,11 @@ const getSubmissionById = async (req, res) => {
         Model = GoogleReviewSubmission;
         submissionType = "review";
         break;
-      case "instagram":
+      case "instagram": // ✅ Fixed
         Model = Instrgram;
         submissionType = "page";
         break;
-      case "tiktok":
+      case "tiktok": // ✅ Fixed
         Model = TiktokSubmission;
         submissionType = "page";
         break;
@@ -487,6 +487,11 @@ const deleteSubmission = async (req, res) => {
     let Model;
     let actualId = submissionId;
 
+    console.log(`Attempting to delete submission:`, {
+      platformType,
+      submissionId,
+    });
+
     // Determine which model to use based on platform type
     switch (platformType) {
       case "facebook_page":
@@ -501,32 +506,36 @@ const deleteSubmission = async (req, res) => {
       case "facebook_comment":
         Model = FbCommentSubmission;
         break;
-      case " instagram":
+      case "instagram": // ✅ Fixed: removed extra space
         Model = Instrgram;
         break;
-      case "tiktok":
+      case "tiktok": // ✅ Fixed: lowercase to match route
         Model = TiktokSubmission;
         break;
       case "google_review":
         Model = GoogleReviewSubmission;
         break;
       default:
+        console.error(`Invalid platform type: ${platformType}`);
         return res.status(400).json({
           success: false,
-          message: "Invalid platform type",
+          message: `Invalid platform type: ${platformType}`,
         });
     }
 
-    console.log(`Deleting ${platformType} submission:`, actualId);
+    console.log(`Using model: ${Model.modelName}, ID: ${actualId}`);
 
     const submission = await Model.findByIdAndDelete(actualId);
 
     if (!submission) {
+      console.error(`Submission not found with ID: ${actualId}`);
       return res.status(404).json({
         success: false,
         message: "Submission not found",
       });
     }
+
+    console.log(`Successfully deleted submission:`, submission._id);
 
     res.json({
       success: true,
