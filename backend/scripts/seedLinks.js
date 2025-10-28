@@ -23,20 +23,27 @@ const connectDB = async () => {
 
 const facebookLinks = [
   {
-    url: "https://www.facebook.com/share/r/1BX2gLstm9/?mibextid=wwXIfr",
+    url: "https://www.facebook.com/share/r/1UxoJAbEfr/?mibextid=wwXIfr",
     title: "පොස්ට් ලයික් කරන්න",
     platform: "facebook",
     earnings: 1.0,
   },
 
   {
-    url: "https://www.facebook.com/share/r/14MR6fEPtcC/?mibextid=wwXIfr",
+    url: "https://www.facebook.com/share/p/169dKyeoMH/?mibextid=wwXIfr",
     title: "පොස්ට් ලයික් කරන්න",
     platform: "facebook",
     earnings: 1.0,
   },
   {
-    url: "https://www.facebook.com/share/r/1UxoJAbEfr/?mibextid=wwXIfr",
+    url: "https://www.facebook.com/share/r/1CY2FE46VA/?mibextid=wwXIfr",
+    title: "Debian-X Solutions - පෙජ් එක ලයික් (Like) කරන්න  ",
+    platform: "facebook",
+    earnings: 1.0,
+  },
+
+  {
+    url: "https://www.facebook.com/share/r/19XJQkJztY/?mibextid=wwXIfr",
     title: "Debian-X Solutions - පෙජ් එක ලයික් (Like) කරන්න  ",
     platform: "facebook",
     earnings: 1.0,
