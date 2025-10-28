@@ -353,9 +353,9 @@ export default function InstagramVerificationTask() {
                     <span className="text-3xl">📱</span>
                     Complete These Tasks
                   </h3>{" "}
-                  {/*   <div className="space-y-4">
+                  <div className="space-y-4">
                     <a
-                      href="https://www.instagram.com/reel/DKWOmKqhHWS/?igsh=cHpoMXNrc25zYXN3 "
+                      href="https://www.instagram.com/p/DQPhKldE7xi/?igsh=bzVtbTkyaThpenox"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex items-center gap-4 bg-white p-5 rounded-2xl hover:shadow-xl transition-all duration-300 group border-2 border-transparent hover:border-pink-300 transform hover:-translate-y-1"
@@ -373,7 +373,8 @@ export default function InstagramVerificationTask() {
                       </div>
                       <ExternalLink className="w-6 h-6 text-pink-400 group-hover:text-pink-600 transition-colors" />
                     </a>
-                  </div> */}
+                  </div>{" "}
+                  {/*  */}
                   {/*  <div className="mt-6 bg-gradient-to-r from-pink-500 via-rose-500 to-red-500 p-6 rounded-2xl shadow-xl">
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                       <div className="flex-1">

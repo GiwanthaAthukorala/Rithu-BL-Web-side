@@ -37,14 +37,14 @@ const facebookLinks = [
   },
   {
     url: "https://www.facebook.com/share/r/1CY2FE46VA/?mibextid=wwXIfr",
-    title: "Debian-X Solutions - පෙජ් එක ලයික් (Like) කරන්න  ",
+    title: "පොස්ට් ලයික් කරන්න",
     platform: "facebook",
     earnings: 1.0,
   },
 
   {
     url: "https://www.facebook.com/share/r/19XJQkJztY/?mibextid=wwXIfr",
-    title: "Debian-X Solutions - පෙජ් එක ලයික් (Like) කරන්න  ",
+    title: "පොස්ට් ලයික් කරන්න",
     platform: "facebook",
     earnings: 1.0,
   },
