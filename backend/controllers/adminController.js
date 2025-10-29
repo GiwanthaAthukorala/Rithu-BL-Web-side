@@ -241,14 +241,14 @@ const getAllSubmissions = async (req, res) => {
       })),
       ...instagramSubmissions.map((sub) => ({
         ...sub,
-        platformType: "instagram", // ✅ Changed from "Instrgram"
+        platformType: "Instrgram", // ✅ Changed from "Instrgram"
         submissionType: "page",
         combinedId: `instagram_${sub._id}`,
         _id: `instagram_${sub._id}`,
       })),
       ...tiktokSubmission.map((sub) => ({
         ...sub,
-        platformType: "tiktok", // ✅ Changed from "Tiktok"
+        platformType: "Tiktok", // ✅ Changed from "Tiktok"
         submissionType: "page",
         combinedId: `tiktok_${sub._id}`,
         _id: `tiktok_${sub._id}`,
@@ -350,11 +350,11 @@ const getSubmissionById = async (req, res) => {
         Model = GoogleReviewSubmission;
         submissionType = "review";
         break;
-      case "instagram": // ✅ Fixed
+      case "Instrgram": // ✅ Fixed
         Model = Instrgram;
         submissionType = "page";
         break;
-      case "tiktok": // ✅ Fixed
+      case "Tiktok": // ✅ Fixed
         Model = TiktokSubmission;
         submissionType = "page";
         break;
@@ -430,10 +430,10 @@ const updateSubmissionStatus = async (req, res) => {
       case "facebook_comment":
         Model = FbCommentSubmission;
         break;
-      case "instagram":
+      case "Instrgram":
         Model = Instrgram;
         break;
-      case "tiktok":
+      case "Tiktok":
         Model = TiktokSubmission;
         break;
       case "google_review":
@@ -506,10 +506,10 @@ const deleteSubmission = async (req, res) => {
       case "facebook_comment":
         Model = FbCommentSubmission;
         break;
-      case "instagram": // ✅ Fixed: removed extra space
+      case "Instrgram": // ✅ Fixed: removed extra space
         Model = Instrgram;
         break;
-      case "tiktok": // ✅ Fixed: lowercase to match route
+      case "Tiktok": // ✅ Fixed: lowercase to match route
         Model = TiktokSubmission;
         break;
       case "google_review":
@@ -669,7 +669,7 @@ const getAdminStats = async (req, res) => {
         },
         {
           $lookup: {
-            from: "instrgrams",
+            from: "Instrgram",
             localField: "_id",
             foreignField: "user",
             as: "instagramSubmissions",
