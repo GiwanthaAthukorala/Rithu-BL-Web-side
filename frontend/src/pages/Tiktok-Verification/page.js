@@ -352,7 +352,7 @@ export default function TikTokVerificationTask() {
                 </div>{" "}
             
               </div>   */}
-              <div className="bg-gradient-to-r from-gray-800 to-black p-4 sm:p-6 rounded-lg sm:rounded-xl border border-gray-300 hover:shadow-lg transition-all duration-300 group">
+              {/** <div className="bg-gradient-to-r from-gray-800 to-black p-4 sm:p-6 rounded-lg sm:rounded-xl border border-gray-300 hover:shadow-lg transition-all duration-300 group">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-3 sm:space-y-0">
                   <div className="flex-1">
                     <h4 className="font-semibold text-white mb-1 text-sm sm:text-base">
@@ -376,7 +376,7 @@ export default function TikTokVerificationTask() {
                   </a>
                 </div>
               </div>
-              {/** */}
+           */}
               {/* Video Links */}
               <div className="grid gap-3 sm:gap-4">
                 <div className="bg-gradient-to-br from-purple-50 to-pink-50 p-3 sm:p-4 rounded-lg sm:rounded-xl border border-purple-200 hover:shadow-md transition-all duration-300 group">
@@ -384,7 +384,7 @@ export default function TikTokVerificationTask() {
                     Like Video #1 - ටික් ටොක් විඩියෝ එකට ලයික් කරන්න
                   </h4>
                   <a
-                    href="https://vt.tiktok.com/ZSykoEyEo/"
+                    href="https://vt.tiktok.com/ZSyf4bL5T/"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium group-hover:underline text-xs sm:text-sm"
@@ -403,7 +403,7 @@ export default function TikTokVerificationTask() {
                     Like Video #1 - ටික් ටොක් විඩියෝ එකට ලයික් කරන්න
                   </h4>
                   <a
-                    href="https://vt.tiktok.com/ZSyko7L7Q/"
+                    href="https://vt.tiktok.com/ZSyHaWrWB/"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium group-hover:underline text-xs sm:text-sm"
