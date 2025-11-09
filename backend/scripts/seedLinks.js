@@ -23,26 +23,20 @@ const connectDB = async () => {
 
 const facebookLinks = [
   {
-    url: "https://www.facebook.com/share/r/16QfHawdVt/?mibextid=wwXIfr",
+    url: "https://www.facebook.com/share/p/1akHxj8nSr/?mibextid=wwXIfr",
     title: "පොස්ට් ලයික් කරන්න",
     platform: "facebook",
     earnings: 1.0,
   },
   {
-    url: "https://www.facebook.com/share/r/1KXpHKHXTj/?mibextid=wwXIfr",
+    url: "https://www.facebook.com/share/p/1A8fZctoB3/?mibextid=wwXIfr",
     title: "පොස්ට් ලයික් කරන්න",
     platform: "facebook",
     earnings: 1.0,
   },
 
   {
-    url: "https://www.facebook.com/share/r/1Cphddh1iz/?mibextid=wwXIfr",
-    title: "පොස්ට් ලයික් කරන්න",
-    platform: "facebook",
-    earnings: 1.0,
-  },
-  {
-    url: "https://www.facebook.com/share/r/17LoPxHjjA/?mibextid=wwXIfr",
+    url: "https://www.facebook.com/share/r/1B3DTtyqLE/?mibextid=wwXIfr",
     title: "පොස්ට් ලයික් කරන්න",
     platform: "facebook",
     earnings: 1.0,
