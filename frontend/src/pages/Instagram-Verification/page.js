@@ -355,7 +355,7 @@ export default function InstagramVerificationTask() {
                   </h3>{" "}
                   <div className="space-y-4">
                     <a
-                      href="https://www.instagram.com/p/DQy9ifbDEHf/?igsh=MWFvdzdiN2U5Z2NteQ=="
+                      href="https://www.instagram.com/reel/DQ3RgmREzs2/?igsh=N3U2ZnFud2Zha3M4"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex items-center gap-4 bg-white p-5 rounded-2xl hover:shadow-xl transition-all duration-300 group border-2 border-transparent hover:border-pink-300 transform hover:-translate-y-1"
@@ -374,8 +374,8 @@ export default function InstagramVerificationTask() {
                       <ExternalLink className="w-6 h-6 text-pink-400 group-hover:text-pink-600 transition-colors" />
                     </a>
                   </div>{" "}
-                  {/* */}
-                  {/*  <div className="mt-6 bg-gradient-to-r from-pink-500 via-rose-500 to-red-500 p-6 rounded-2xl shadow-xl">
+                  {/*  */}
+                  <div className="mt-6 bg-gradient-to-r from-pink-500 via-rose-500 to-red-500 p-6 rounded-2xl shadow-xl">
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                       <div className="flex-1">
                         <h4 className="font-black text-white mb-2 text-lg flex items-center gap-2">
@@ -383,13 +383,12 @@ export default function InstagramVerificationTask() {
                           Follow Our Main Account
                         </h4>
                         <p className="text-white/90 text-sm">
-                          ඉන්ස්ට්‍රග්‍රෑම් එකවුන්ට් එක ෆලෝ කරන්න • 6 posts 123
-                          followers 1 following Royal Linen Shopping & retail
-                          Luxury in every thread.
+                          ඉන්ස්ට්‍රග්‍රෑම් එකවුන්ට් එක ෆලෝ කරන්න •Japan Cosmetic
+                          Mart LK
                         </p>
                       </div>
                       <a
-                        href="https://www.instagram.com/royal_.linen?igsh=ZHV1bWFiN2hzZHht"
+                        href="https://www.instagram.com/japan_cosmetic_mart_lk?igsh=MW5ybnllcmMyYWQ5Ng=="
                         target="_blank"
                         rel="noopener noreferrer"
                         className="flex items-center justify-center bg-white text-pink-600 px-6 py-3 rounded-xl hover:bg-pink-50 transition-all duration-200 font-bold shadow-lg hover:shadow-xl transform hover:scale-105"
@@ -399,7 +398,7 @@ export default function InstagramVerificationTask() {
                       </a>
                     </div>
                   </div>{" "}
-                  */}
+                  {/*  */}
                 </div>
               </div>
 
