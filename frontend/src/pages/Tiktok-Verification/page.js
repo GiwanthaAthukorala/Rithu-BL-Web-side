@@ -378,13 +378,13 @@ export default function TikTokVerificationTask() {
               </div>
            */}
               {/* Video Links */}
-              {/* <div className="grid gap-3 sm:gap-4">
+              <div className="grid gap-3 sm:gap-4">
                 <div className="bg-gradient-to-br from-purple-50 to-pink-50 p-3 sm:p-4 rounded-lg sm:rounded-xl border border-purple-200 hover:shadow-md transition-all duration-300 group">
                   <h4 className="font-semibold text-gray-800 mb-2 text-sm sm:text-base">
                     Like Video #1 - ටික් ටොක් විඩියෝ එකට ලයික් කරන්න
                   </h4>
                   <a
-                    href="https://vt.tiktok.com/ZSyX6aRDx/"
+                    href="https://vt.tiktok.com/ZSyoJEsV4/"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium group-hover:underline text-xs sm:text-sm"
@@ -403,26 +403,7 @@ export default function TikTokVerificationTask() {
                     Like Video #1 - ටික් ටොක් විඩියෝ එකට ලයික් කරන්න
                   </h4>
                   <a
-                    href="https://vt.tiktok.com/ZSyHaWrWB/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium group-hover:underline text-xs sm:text-sm"
-                  >
-                    <span className="hidden sm:inline">
-                      Watch & Like - ටික් ටොක් විඩියෝ එකට ලයික් කරන්න
-                    </span>
-                    <span className="sm:hidden">Watch & Like</span>
-                    <ExternalLink className="w-3 h-3 sm:w-4 sm:h-4 ml-1" />
-                  </a>
-                </div>
-              </div>{" "}
-               <div className="grid gap-3 sm:gap-4">
-                <div className="bg-gradient-to-br from-purple-50 to-pink-50 p-3 sm:p-4 rounded-lg sm:rounded-xl border border-purple-200 hover:shadow-md transition-all duration-300 group">
-                  <h4 className="font-semibold text-gray-800 mb-2 text-sm sm:text-base">
-                    Like Video #1 - ටික් ටොක් විඩියෝ එකට ලයික් කරන්න
-                  </h4>
-                  <a
-                    href="https://vt.tiktok.com/ZSyRaF2x7/"
+                    href="https://vt.tiktok.com/ZSyohF32s/"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium group-hover:underline text-xs sm:text-sm"
@@ -441,7 +422,7 @@ export default function TikTokVerificationTask() {
                     Like Video #1 - ටික් ටොක් විඩියෝ එකට ලයික් කරන්න
                   </h4>
                   <a
-                    href="https://vt.tiktok.com/ZSUn6N94s/"
+                    href="https://vt.tiktok.com/ZSfd2GsuQ/"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium group-hover:underline text-xs sm:text-sm"
@@ -454,7 +435,26 @@ export default function TikTokVerificationTask() {
                   </a>
                 </div>
               </div>{" "}
-            */}
+              <div className="grid gap-3 sm:gap-4">
+                <div className="bg-gradient-to-br from-purple-50 to-pink-50 p-3 sm:p-4 rounded-lg sm:rounded-xl border border-purple-200 hover:shadow-md transition-all duration-300 group">
+                  <h4 className="font-semibold text-gray-800 mb-2 text-sm sm:text-base">
+                    Like Video #1 - ටික් ටොක් විඩියෝ එකට ලයික් කරන්න
+                  </h4>
+                  <a
+                    href="https://vt.tiktok.com/ZSfd2GGDm/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium group-hover:underline text-xs sm:text-sm"
+                  >
+                    <span className="hidden sm:inline">
+                      Watch & Like - ටික් ටොක් විඩියෝ එකට ලයික් කරන්න
+                    </span>
+                    <span className="sm:hidden">Watch & Like</span>
+                    <ExternalLink className="w-3 h-3 sm:w-4 sm:h-4 ml-1" />
+                  </a>
+                </div>
+              </div>{" "}
+              {/*  */}
             </div>
 
             {/* Requirements Section */}
