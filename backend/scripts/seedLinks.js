@@ -36,19 +36,43 @@ const facebookLinks = [
   },
 
   {
-    url: "https://www.facebook.com/share/p/17eF2cERMi/?mibextid=wwXIfr",
+    url: "https://www.facebook.com/share/r/1BHbkxSqWv/?mibextid=wwXIfr",
     title: "පොස්ට් ලයික් කරන්න",
     platform: "facebook",
     earnings: 1.0,
   },
   {
-    url: "https://www.facebook.com/share/r/17hgBNqiBp/?mibextid=wwXIfr",
+    url: "https://www.facebook.com/share/r/1AdPmLxE73/?mibextid=wwXIfr",
     title: "පොස්ට් ලයික් කරන්න",
     platform: "facebook",
     earnings: 1.0,
   },
   {
-    url: "https://www.facebook.com/share/r/1AW2s2ZnkJ/?mibextid=wwXIfr",
+    url: "https://www.facebook.com/share/r/1BtqmqBubv/?mibextid=wwXIfr",
+    title: "පොස්ට් ලයික් කරන්න",
+    platform: "facebook",
+    earnings: 1.0,
+  },
+  {
+    url: "https://www.facebook.com/share/r/1M2qoF41fQ/?mibextid=wwXIfr",
+    title: "පොස්ට් ලයික් කරන්න",
+    platform: "facebook",
+    earnings: 1.0,
+  },
+  {
+    url: "https://m.facebook.com/story.php?story_fbid=pfbid02zidWHMLpHm6kbGfsNaV1UCKZG8b3szc2WJRr3j34g4sM4CMhm4Q25Gzh1LbDAjEVl&id=100054234190350&mibextid=ZbWKwL",
+    title: "පොස්ට් ලයික් කරන්න",
+    platform: "facebook",
+    earnings: 1.0,
+  },
+  {
+    url: "https://m.facebook.com/story.php?story_fbid=pfbid0q7Yt4mLc7Nsfp5XTHktuE4m7tSEShUa67HB3VzgRXHVq1VVjZKYoBZFUSjtHpWwQl&id=100054234190350&mibextid=ZbWKwL",
+    title: "පොස්ට් ලයික් කරන්න",
+    platform: "facebook",
+    earnings: 1.0,
+  },
+  {
+    url: "https://m.facebook.com/story.php?story_fbid=pfbid02cYMV3ZiMnweWR589wxFxMXiXVEYvcKTBc94TjbzezxsA8KqwJNE5vHYFrVgvVMzul&id=100054234190350&mibextid=ZbWKwL",
     title: "පොස්ට් ලයික් කරන්න",
     platform: "facebook",
     earnings: 1.0,
