@@ -23,44 +23,38 @@ const connectDB = async () => {
 
 const facebookLinks = [
   {
-    url: "https://www.facebook.com/share/p/14QKYst8PTB/?mibextid=wwXIfr",
+    url: "https://www.facebook.com/share/r/17ghPBHkSv/",
     title: "පොස්ට් ලයික් කරන්න",
     platform: "facebook",
     earnings: 1.0,
   },
   {
-    url: "https://www.facebook.com/share/p/17rbBmsNFc/?mibextid=wwXIfr",
+    url: "https://www.facebook.com/share/p/17yTu579hV/?mibextid=wwXIfr",
     title: "පොස්ට් ලයික් කරන්න",
     platform: "facebook",
     earnings: 1.0,
   },
 
   {
-    url: "https://www.facebook.com/share/p/1FXzHxDig3/?mibextid=wwXIfr",
+    url: "https://www.facebook.com/share/r/1AHDG8jPsH/?mibextid=wwXIfr",
     title: "පොස්ට් ලයික් කරන්න",
     platform: "facebook",
     earnings: 1.0,
   },
   {
-    url: "https://www.facebook.com/share/r/16q6J22dXo/?mibextid=wwXIfr",
+    url: "https://www.facebook.com/share/r/1BDJSNYczs/?mibextid=wwXIfr",
     title: "පොස්ට් ලයික් කරන්න",
     platform: "facebook",
     earnings: 1.0,
   },
   {
-    url: "https://www.facebook.com/share/r/17ZCETYWLh/?mibextid=wwXIfr",
+    url: "https://www.facebook.com/share/r/1A4WS3QySy/?mibextid=wwXIfr",
     title: "පොස්ට් ලයික් කරන්න",
     platform: "facebook",
     earnings: 1.0,
   },
   {
-    url: "https://www.facebook.com/share/p/19idYFMTA9/",
-    title: "පොස්ට් ලයික් කරන්න",
-    platform: "facebook",
-    earnings: 1.0,
-  },
-  {
-    url: "https://www.facebook.com/share/p/1Dfu9adbgw/",
+    url: "https://www.facebook.com/share/r/17rUTYYELo/?mibextid=wwXIfr",
     title: "පොස්ට් ලයික් කරන්න",
     platform: "facebook",
     earnings: 1.0,
