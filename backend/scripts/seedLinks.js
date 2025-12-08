@@ -23,38 +23,38 @@ const connectDB = async () => {
 
 const facebookLinks = [
   {
-    url: "https://www.facebook.com/share/r/17ghPBHkSv/",
+    url: "https://www.facebook.com/share/r/1CpxZsgBS9/?mibextid=wwXIfr",
     title: "පොස්ට් ලයික් කරන්න",
     platform: "facebook",
     earnings: 1.0,
   },
   {
-    url: "https://www.facebook.com/share/p/17yTu579hV/?mibextid=wwXIfr",
+    url: "https://www.facebook.com/share/r/1JueqDEx8f/?mibextid=wwXIfr",
     title: "පොස්ට් ලයික් කරන්න",
     platform: "facebook",
     earnings: 1.0,
   },
 
   {
-    url: "https://www.facebook.com/share/r/1AHDG8jPsH/?mibextid=wwXIfr",
+    url: "https://www.facebook.com/share/r/19zEXZ1byr/?mibextid=wwXIfr",
     title: "පොස්ට් ලයික් කරන්න",
     platform: "facebook",
     earnings: 1.0,
   },
   {
-    url: "https://www.facebook.com/share/r/1BDJSNYczs/?mibextid=wwXIfr",
+    url: "https://www.facebook.com/share/r/17iAqXrfao/?mibextid=wwXIfr",
     title: "පොස්ට් ලයික් කරන්න",
     platform: "facebook",
     earnings: 1.0,
   },
   {
-    url: "https://www.facebook.com/share/r/1A4WS3QySy/?mibextid=wwXIfr",
+    url: "https://www.facebook.com/share/r/1EiEamzJsT/?mibextid=wwXIfr",
     title: "පොස්ට් ලයික් කරන්න",
     platform: "facebook",
     earnings: 1.0,
   },
   {
-    url: "https://www.facebook.com/share/r/17rUTYYELo/?mibextid=wwXIfr",
+    url: "https://www.facebook.com/share/p/16kAhaouaT/?mibextid=wwXIfr",
     title: "පොස්ට් ලයික් කරන්න",
     platform: "facebook",
     earnings: 1.0,
